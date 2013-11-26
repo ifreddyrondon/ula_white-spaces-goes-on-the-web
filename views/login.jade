@@ -1,0 +1,20 @@
+.center-screen
+	form(id="form-login")
+		input(id="login_user", name="login_user", autocorrect="off", class="ipt_login border_top_6 Three-Dee ipt_font", type="text", value="Correo/Email", alt="Debe poner su Correo/Email")
+		input(id="login_pass_temp", name="login_pass_temp", class="ipt_login border_bottom_6 ipt_font", type="text", value="Contraseña", alt="Contraseña/clave")
+		input(id="login_pass", name="login_pass", class="ipt_login border_bottom_6 ipt_font", type="password", alt="Contraseña/clave")
+		table
+			tr
+				td
+					.squaredThree
+						input(type="checkbox", value="None", id="squaredThree", name="check")
+						label(for="squaredThree")
+				td
+					h4(class="insetType")	Permanecer conectado
+		.button_wrapper(align="center")
+			.button_underneath(style="width:162px;height:14px")
+				input(id="login_enviar", type="submit", value="Iniciar sesión", class="button", style="width:200px;height:40px;padding-top:6px")
+	br
+	br
+	br
+	.error

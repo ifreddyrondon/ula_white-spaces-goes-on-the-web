@@ -6,7 +6,10 @@ $(document).ready(function(){
 		},
 		'white_spaces': function(){
 			ajax("/white_spaces",null,null,"wrapper");
-		}
+		},
+		'login': function(){
+			ajax("/login",null,null,"wrapper");
+		},
 	});
 	
 	// Select input ------------------------------
