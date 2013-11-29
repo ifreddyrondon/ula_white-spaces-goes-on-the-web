@@ -31,6 +31,7 @@ app.get('/', routes.index);
 app.post('/', function(req,res){ res.render('index'); });
 app.post('/white_spaces', function(req,res){ res.render('que_son_white_spaces'); });
 app.post('/login', function(req,res){ res.render('login'); });
+app.post('/loginSend', user.loginSend);
 
 /*
 app.get('/zona:id', function(req,res){

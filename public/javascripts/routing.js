@@ -1,18 +1,20 @@
 $(document).ready(function(){
-	// Enrutamiento # ---------------------------
+	
+	//--Enrutamiento-local-----------------------------------------------------------------
 	routie({
 		'': function(){
-			ajax("/",null,null,"wrapper");
+			ajaxNormal("/",null,null,"wrapper");
 		},
 		'white_spaces': function(){
-			ajax("/white_spaces",null,null,"wrapper");
+			ajaxNormal("/white_spaces",null,null,"wrapper");
 		},
 		'login': function(){
-			ajax("/login",null,null,"wrapper");
+			ajaxNormal("/login",null,null,"wrapper");
 		},
 	});
 	
-	// Select input ------------------------------
+	
+	// Input Select-----------------------------------------------------------------
 	if (Modernizr.touch) {
 		$(".radio-options").bind("click", function(event) {
 			if (!($(this).parent('.radio-container').hasClass("active")))	{
@@ -26,7 +28,7 @@ $(document).ready(function(){
 		});  
 	}
 
-	// Form opciones validador-----------------------------
+	// Form opciones de ubicacion y frecuenca validador de vacios-----------------------------
 	$(document).on("click","#options-enviar",function(){
 		var val = $(document.getElementsByName('zona'));
 		var error = true;
@@ -54,39 +56,6 @@ $(document).ready(function(){
 				return false;
 				}
 		}
-
-				
-
-		
-	
 	});
 	
-	
 });
-
-
-function ajax(url,datos,reload,renderID){
-		$(document.getElementById(renderID)).fadeOut('fast');
-		$.ajax({
-	  	type: 'POST',
-			url: url,
-			data: datos,
-	    beforeSend: function(){
-			 	$("#bowlG").show();
-			},
-	    success: function(res){
-	    	$("#bowlG").hide();
-	    	if (res == '1')
-	      	alert("error");
-	    	else {
-		    	if(reload)	window.location = res;
-		    	else {
-			    	if(renderID)
-			    		$(document.getElementById(renderID)).html(res).fadeIn('fast');
-			    	else
-			    		alert("No RENDER");
-		    	}
-	    	}
-			}
-		});
-	}
