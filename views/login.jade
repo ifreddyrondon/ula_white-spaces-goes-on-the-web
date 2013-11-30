@@ -1,8 +1,11 @@
 extends layout
 
 block content
-	h1(class="insetType")	Administrador
-	br
+	.back
+		a(href="/")
+			img(src="images/back.png")
+	.top-center-screen
+		h1(class="insetType")	Administrador
 	.center-screen
 		#login_container
 			form(id="form-login")

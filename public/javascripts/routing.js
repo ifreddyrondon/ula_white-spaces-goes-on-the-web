@@ -54,7 +54,10 @@ $(document).ready(function(){
 			if (error == true){
 				$(".error-center-screen").show();
 				return false;
-				}
+			}
+			else {
+				ajaxDatosReload("/choices","form-options","error-center-screen");
+			}	
 		}
 	});
 	

@@ -37,6 +37,7 @@ function login(req, res, next){
 	}
 }
 
+/*-------------------------------------*/
 app.get('/', function(req,res){ 
 	res.render('index'); 
 });
@@ -44,6 +45,10 @@ app.get('/', function(req,res){
 app.get('/white_spaces', function(req,res){ 
 	res.render('que_son_white_spaces'); 
 });
+
+app.post('/choices', user.choices);
+
+/*-------------------------------------*/
 
 app.get('/login', function(req,res){ 
 	res.render('login'); 
@@ -61,12 +66,6 @@ app.get('/logout',function(req,res){
 		res.redirect('/');
 	}
 });
-
-/*
-app.get('/zona:id', function(req,res){
-	console.log(req.params.id);
-});
-*/
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

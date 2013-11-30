@@ -7,8 +7,9 @@ var BD = require('../BD')
  * GET users listing.
  */
 
-exports.list = function(req, res){
-  res.send("respond with a resource");
+exports.choices = function(req, res){
+  console.log(req.body.zona);
+	console.log(req.body.frecuencia);
 };
 
 exports.loginSend = function(req, res){
