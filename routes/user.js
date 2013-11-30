@@ -40,17 +40,8 @@ exports.loginSend = function(req, res){
 			}							
 	    else {
 		    if (rows.length == 1){
-		    	console.log("encontrado");
-					/*var user = {
-	        	id: rows[0]['id_persona'],
-	        	nombre: rows[0]['nombre'],
-	        	tipo: rows[0]['tipo'],
-	        };
-	        req.session.regenerate(function(){
-			      req.session.user = user;
-			      res.send('/');
-		      });
-		      objBD.end();*/
+		    	req.session.user = login_user;
+		    	res.send('/admin');
 				}
 				else
 					res.send('1');

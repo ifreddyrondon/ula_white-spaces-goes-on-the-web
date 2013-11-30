@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	
 	//--Enrutamiento-local-----------------------------------------------------------------
-	routie({
+/*	routie({
 		'': function(){
 			ajaxNormal("/",null,null,"wrapper");
 		},
@@ -12,7 +12,7 @@ $(document).ready(function(){
 			ajaxNormal("/login",null,null,"wrapper");
 		},
 	});
-	
+	*/
 	
 	// Input Select-----------------------------------------------------------------
 	if (Modernizr.touch) {
