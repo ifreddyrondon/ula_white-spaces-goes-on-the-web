@@ -6,6 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
+  , admin = require('./routes/admin')
   , http = require('http')
   , path = require('path');
 
@@ -59,6 +60,8 @@ app.post('/loginSend', user.loginSend);
 app.get('/admin', login, function(req, res){
 	res.render('admin'); 
 });
+
+app.post('/sync/upload', login, admin.syncUpload);
 
 app.get('/logout',function(req,res){
 	if (req.session.user){

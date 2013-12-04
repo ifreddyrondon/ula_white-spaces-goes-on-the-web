@@ -209,6 +209,10 @@ $(document).ready(function(){
 		if(id=="form-login_inv")	stringHandlerError = "<h3>Datos invalidos!</h3> <br />Puedes entrar con cualquier dirección de correo electrónico. Por favor, asegúrate de escribir los datos correctamente..";
 		if(id=="form-registrar")	stringHandlerError = "¡Vaya! Se ha producido un error, inténtalo de nuevo en unos segundos";
 		
+		if(id=="sync-enviar-1")	stringHandlerError = "Debes cargar los 2 archivos (medidas y track)";
+		if(id=="sync-enviar-3")	stringHandlerError = "Los archivos deben estar en .txt";
+		if(id=="sync-enviar-3")	stringHandlerError = "¡Vaya! Se ha producido un error, inténtalo de nuevo en unos segundos";
+		
 		if(document.getElementById(id+'-error') == null)
 	  		$('.error').append('<div id="'+id+'-error"><font size="5">* </font>'+stringHandlerError+'</div>');
 	}

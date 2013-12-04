@@ -14,7 +14,7 @@ fieldset{border:none;margin:0;padding:0;}
 .top-center-screen {position: absolute; width:420px; height: 100px; margin: auto; left:0; right:0;top:50px;}
 .center-screen{position: absolute; width:420px; height: 200px; margin: auto; left:0; right:0;top:0; bottom:0;}
 .right-side-screen{position: absolute; width: 100px; height: 50px; right: 20px; top:20px;}
-.left-side-screen{position: absolute; width: 100px; left:30px; top:80px;}
+.left-side-screen{position: absolute; width: 100px; left:45px; top:80px;}
 
 .back {position: absolute; top: 25px; left: 25px;}
 
