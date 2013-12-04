@@ -39,7 +39,7 @@ function login(req, res, next){
 
 /*-------------------------------------*/
 app.get('/', function(req,res){ 
-	res.render('index'); 
+	res.render('index',{ sesion: req.session.user } ); 
 });
 
 app.get('/white_spaces', function(req,res){ 

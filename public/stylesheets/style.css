@@ -13,8 +13,8 @@ fieldset{border:none;margin:0;padding:0;}
 }
 .top-center-screen {position: absolute; width:420px; height: 100px; margin: auto; left:0; right:0;top:50px;}
 .center-screen{position: absolute; width:420px; height: 200px; margin: auto; left:0; right:0;top:0; bottom:0;}
-
 .right-side-screen{position: absolute; width: 100px; height: 50px; right: 20px; top:20px;}
+.left-side-screen{position: absolute; width: 100px; left:30px; top:80px;}
 
 .back {position: absolute; top: 25px; left: 25px;}
 
@@ -118,7 +118,6 @@ fieldset{border:none;margin:0;padding:0;}
 		text-shadow: rgba(0,0,0,0.3) -1px 0, rgba(0,0,0,0.2) 0 -1px, rgba(255,255,255,0.3) 0 1px, rgba(0,0,0,0.1) -1px -2px;
 	}
 
-
 /*------BORDERS ---------------------------------------------*/
 	.border_top_6{-webkit-border-top-left-radius: 6px;-webkit-border-top-right-radius: 6px;-moz-border-radius-topleft: 6px;-moz-border-radius-topright: 6px;border-top-left-radius: 6px;border-top-right-radius: 6px}
 	.border_bottom_6{-webkit-border-bottom-right-radius: 6px;-webkit-border-bottom-left-radius: 6px;-moz-border-radius-bottomright: 6px;-moz-border-radius-bottomleft: 6px;border-bottom-right-radius: 6px;border-bottom-left-radius: 6px}
@@ -130,7 +129,7 @@ fieldset{border:none;margin:0;padding:0;}
 /*---BOTON---------------------------*/
 	.button_wrapper {	width: 100%;	float: left	}
 	.button, .button_underneath {	font-weight: bold;	font-family: "Lobster", cursive;	font-size: 15px;}
-	.button {background: black;background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #484545), color-stop(100%, #2c2c2b));background-image: -webkit-linear-gradient(top center, #484545, #2c2c2b);background-image: -moz-linear-gradient(top center, #484545, #2c2c2b);background-image: -o-linear-gradient(top center, #484545, #2c2c2b);background-image: -ms-linear-gradient(top center, #484545, #2c2c2b);background-image: linear-gradient(top center, #484545, #2c2c2b);-moz-border-radius: 4px 4px 6px 6px;-webkit-border-radius: 4px 4px 6px 6px;-o-border-radius: 4px 4px 6px 6px;-ms-border-radius: 4px 4px 6px 6px;-khtml-border-radius: 4px 4px 6px 6px;border-radius: 4px 4px 6px 6px;border: 1px solid #282727;-moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);-o-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);border-bottom: 1px solid #383837;text-align:center;padding: 10px 20px 15px;color: #d6ebe0;text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.55);position: absolute;top: -2px;left: 0px;width: 142px;display: block;z-index:2}
+	.button {background: black;background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #484545), color-stop(100%, #2c2c2b));background-image: -webkit-linear-gradient(top center, #484545, #2c2c2b);background-image: -moz-linear-gradient(top center, #484545, #2c2c2b);background-image: -o-linear-gradient(top center, #484545, #2c2c2b);background-image: -ms-linear-gradient(top center, #484545, #2c2c2b);background-image: linear-gradient(top center, #484545, #2c2c2b);-moz-border-radius: 4px 4px 6px 6px;-webkit-border-radius: 4px 4px 6px 6px;-o-border-radius: 4px 4px 6px 6px;-ms-border-radius: 4px 4px 6px 6px;-khtml-border-radius: 4px 4px 6px 6px;border-radius: 4px 4px 6px 6px;border: 1px solid #282727;-moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);-o-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);box-shadow: 0px 0px 5px rgba(0, 0, 0, 0);border-bottom: 1px solid #383837;text-align:center;padding: 10px 20px 15px;color: #ffffff;text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.55);position: absolute;top: -2px;left: 0px;width: 142px;display: block;z-index:2}
 	.button:hover { cursor: pointer	}.button:active {	top: 0px	}
 	.button.blue {background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0192f7), color-stop(100%, #0165ab));background-image: -webkit-linear-gradient(top center, #0192f7, #0165ab);background-image: -moz-linear-gradient(top center, #0192f7, #0165ab);background-image: -o-linear-gradient(top center, #0192f7, #0165ab);background-image: -ms-linear-gradient(top center, #0192f7, #0165ab);background-image: linear-gradient(top center, #0192f7, #0165ab);border: 1px solid #015691;	}
 	.button.orange {background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f7af01), color-stop(100%, #ab7901));background-image: -webkit-linear-gradient(top center, #f7af01, #ab7901);background-image: -moz-linear-gradient(top center, #f7af01, #ab7901);background-image: -o-linear-gradient(top center, #f7af01, #ab7901);background-image: -ms-linear-gradient(top center, #f7af01, #ab7901);background-image: linear-gradient(top center, #f7af01, #ab7901);border: 1px solid #916701;	}
@@ -139,6 +138,76 @@ fieldset{border:none;margin:0;padding:0;}
 	.button_underneath_2 { padding-top: 10; width: 120px }
 	.button_underneath.blue {	background: #015691 }.button_underneath.orange {	background: #916701	}.button_underneath.grey {	background: #bfbfbf	}
 	
+
+/*---BOTON INPUT FILE---------------------------*/
+
+	.NFI-wrapper {
+	  font-family: "Trebuchet MS", Helvetica, sans-serif;
+		font-size: 12px;
+		-webkit-box-shadow: 0px 1px 0px #fff, 0px -1px 0px rgba(0,0,0,.1);
+		-moz-box-shadow: 0px 1px 0px #fff, 0px -1px 0px rgba(0,0,0,.1);
+		box-shadow: 0px 1px 0px #fff, 0px -1px 0px rgba(0,0,0,.1); 
+		-moz-border-radius: 4px; 
+		-webkit-border-radius: 4px;
+		border-radius: 4px;
+	}
+
+	.NFI-button {
+		-moz-border-radius-topleft: 3px; 
+		-moz-border-radius-bottomleft: 3px;
+		-webkit-border-top-left-radius: 3px;
+		-webkit-border-bottom-left-radius: 3px;
+		border-top-left-radius: 3px; 
+		border-bottom-left-radius: 3px;
+	
+		background-color: #0192f7;
+	
+		background-image: linear-gradient(bottom, #1774A3 0%, #0194DD 56%);
+		background-image: -o-linear-gradient(bottom, #1774A3 0%, #0194DD 56%);
+		background-image: -moz-linear-gradient(bottom, #1774A3 0%, #0194DD 56%);
+		background-image: -webkit-linear-gradient(bottom, #1774A3 0%, #0194DD 56%);
+		background-image: -ms-linear-gradient(bottom, #1774A3 0%, #0194DD 56%);
+		background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #1774A3),color-stop(0.56, #0194DD));
+		text-shadow: 0px -1px 0px #0172bd;
+		border: solid #0172bd 1px;
+		border-bottom: solid #00428d 1px;
+		
+		-webkit-box-shadow: inset 0px 1px 0px rgba(255,255,255,.2);
+		-moz-box-shadow: inset 0px 1px 0px rgba(255,255,255,.2);
+		box-shadow: inset 0px 1px 0px rgba(255,255,255,.2); 	
+		
+		color: #fff;
+		width: 100px;
+		height: 30px;
+		line-height: 30px;
+	}
+	.NFI-button:hover {
+		background: #333;
+		text-shadow: 0px -1px 0px #111;
+		border: solid #000 1px;		
+	}
+	.NFI-filename {
+		-moz-border-radius-topright: 3px; 
+		-moz-border-radius-bottomright: 3px;
+		-webkit-border-top-right-radius: 3px;
+		-webkit-border-bottom-right-radius: 3px;
+		border-top-right-radius: 3px; 
+		border-bottom-right-radius: 3px;
+	
+		width: 305px;
+		border: solid #777 1px;
+		border-left: none;
+		height: 30px;
+		line-height: 30px;
+		
+		background:rgba(255,255,255,0.35);
+		-webkit-box-shadow: inset 0px 2px 0px rgba(0,0,0,.05);
+		-moz-box-shadow: inset 0px 2px 0px rgba(0,0,0,.05);
+		box-shadow: inset 0px 2px 0px rgba(0,0,0,.05); 
+	
+		color: #777;
+		text-shadow: 0px 1px 0px #fff;
+	}
 
 
 /*----LOADER-------------*/

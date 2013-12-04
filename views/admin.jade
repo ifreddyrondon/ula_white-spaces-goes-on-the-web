@@ -1,7 +1,31 @@
 extends layout
 
 block content
-	h1 HOLA MUNDO
-	br
-	br
-	a(href="/logout") Salir
+	.back
+		a(href="/")
+			img(src="images/back.png")
+	.right-side-screen.font-slim
+		a(href="/logout", style="font-size:20px;font-weight:100;")	Salir
+	.left-side-screen
+		.button_wrapper(align="center")
+			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
+				a(href="#", class="button grey", style="width:180;height:18px;padding-top:6px") Editar Frecuencias
+		br
+		br
+		br
+		.button_wrapper(align="center")
+			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
+				a(href="#", class="button grey", style="width:180;height:18px;padding-top:6px") Editar Zonas
+	.center-screen
+		form(id="form-sync", class="font")
+			h3(style="font-size:20px;font-weight:100;")	Subir medidas
+			input(type="file", name="file_measures", id="file_measures")
+			br
+			br
+			h3(style="font-size:20px;font-weight:100;")	Subir track
+			input(type="file", name="file_track", id="file_track")
+			br
+			br
+			.button_wrapper(align="center")
+				.button_underneath.blue(style="width:162px;height:14px")
+					input(id="sync-enviar", type="submit", value="Sincronizar", class="button blue", style="width:200px;height:40px;padding-top:6px")

@@ -61,4 +61,11 @@ $(document).ready(function(){
 		}
 	});
 	
+	// Input file ---------------------------------------------------------------------------
+		$("input[type=file]").nicefileinput({ 
+    	label : 'examinar'
+		});
+
+		
+
 });
