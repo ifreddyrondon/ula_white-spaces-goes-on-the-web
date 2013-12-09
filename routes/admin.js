@@ -49,5 +49,4 @@ exports.syncUpload = function(req, res){
 	else
 		res.send("1");
 
-
 };

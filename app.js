@@ -57,18 +57,30 @@ app.get('/login', function(req,res){
 
 app.post('/loginSend', user.loginSend);
 
-app.get('/admin', login, function(req, res){
-	res.render('admin'); 
-});
-
-app.post('/sync/upload', login, admin.syncUpload);
-
-app.get('/logout',function(req,res){
+app.get('/logout', login, function(req,res){
 	if (req.session.user){
 		delete req.session.user;
 		res.redirect('/');
 	}
 });
+
+/*-------------------------------------*/
+
+app.get('/admin', login, function(req, res){
+	res.render('admin/admin'); 
+});
+
+app.get('/edit_frequencies', login, function(req, res){
+	res.render('admin/edit_frequencies'); 
+});
+
+app.get('/edit_areas', login, function(req, res){
+	res.render('admin/edit_areas'); 
+});
+
+app.post('/sync/upload', login, admin.syncUpload);
+
+/*-------------------------------------*/
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

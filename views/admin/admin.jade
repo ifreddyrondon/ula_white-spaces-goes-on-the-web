@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 block content
 	.back
@@ -9,13 +9,13 @@ block content
 	.left-side-screen
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
-				a(href="#", class="button grey", style="width:180;height:18px;padding-top:6px") Editar Frecuencias
+				a(href="/edit_frequencies", class="button grey", style="width:180;height:18px;padding-top:6px") Editar Frecuencias
 		br
 		br
 		br
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
-				a(href="#", class="button grey", style="width:180;height:18px;padding-top:6px") Editar Zonas
+				a(href="/edit_areas", class="button grey", style="width:180;height:18px;padding-top:6px") Editar Zonas
 	.center-screen
 		form(id="form-sync", class="font", enctype="multipart/form-data")
 			h3(style="font-size:20px;font-weight:100;")	Subir medidas
