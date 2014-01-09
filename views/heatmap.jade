@@ -1,0 +1,44 @@
+extends layout
+
+block content
+	script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization")
+	script(type='text/javascript').
+		var map, pointarray, heatmap;
+		var taxiData = [
+			new google.maps.LatLng(8.575759,-71.190033),
+			new google.maps.LatLng(8.574741,-71.177673),
+			new google.maps.LatLng(8.56218,-71.194496),
+		];		
+		function initialize() {
+			var mapOptions = {
+				zoom: 13,
+				center: new google.maps.LatLng(8.575759,-71.190033),
+				mapTypeId: google.maps.MapTypeId.SATELLITE,
+				
+				mapTypeControl: true,
+				
+				panControl: true,
+				panControlOptions: {
+					position: google.maps.ControlPosition.TOP_RIGHT
+				},
+				zoomControl: true,
+				zoomControlOptions: {
+					style: google.maps.ZoomControlStyle.LARGE,
+					position: google.maps.ControlPosition.RIGHT_CENTER
+				},
+				scaleControl: true,
+				streetViewControl: false,
+			};
+			map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+			var pointArray = new google.maps.MVCArray(taxiData);
+			heatmap = new google.maps.visualization.HeatmapLayer({data: pointArray });
+			heatmap.setMap(map);
+		}
+		google.maps.event.addDomListener(window, 'load', initialize);
+	.back
+		a(href="/")
+			img(src="images/back_white.png")
+	.top-center-screen
+		h2(class="insetType",style="color:#ffffff;")	#{zona}
+		h3(class="insetType",style="color:#ffffff;")	#{frecuencia}
+	#map-canvas

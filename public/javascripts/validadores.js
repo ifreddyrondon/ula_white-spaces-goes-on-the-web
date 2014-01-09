@@ -179,7 +179,7 @@ $(document).ready(function(){
 			}
 		});
 	}
-	function ajaxDatosReload(url,id,error_id){
+	function ajaxDatosReload(url,id,error_id,type_send){
 		$(document.getElementById(id)).ajaxForm({
 	  	type: 'POST',
 			url: url,

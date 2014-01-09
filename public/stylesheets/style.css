@@ -11,12 +11,14 @@ fieldset{border:none;margin:0;padding:0;}
 	box-shadow:inset 0 0 100px black;
 	background:url('../images/bg.png');
 }
-.top-center-screen {position: absolute; width:420px; height: 100px; margin: auto; left:0; right:0;top:50px;}
+.top-center-screen {position: absolute; width:420px; height: 100px; margin: auto; left:0; right:0;top:50px; z-index:100}
 .center-screen{position: absolute; width:420px; height: 200px; margin: auto; left:0; right:0;top:0; bottom:0;}
 .right-side-screen{position: absolute; width: 100px; height: 50px; right: 20px; top:20px;}
 .left-side-screen{position: absolute; width: 100px; left:45px; top:80px;}
 
-.back {position: absolute; top: 25px; left: 25px;}
+.back {position: absolute; top: 25px; left: 25px;z-index:100}
+
+#map-canvas { width:100%; height:100%; margin:0px; padding:0px}
 
 #footer {position:absolute;bottom:0;width:100%;height:20px;}
 #footer_left{position:absolute;left:5px;bottom:2px}

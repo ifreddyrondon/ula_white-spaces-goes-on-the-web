@@ -1,19 +1,5 @@
 $(document).ready(function(){
 	
-	//--Enrutamiento-local-----------------------------------------------------------------
-/*	routie({
-		'': function(){
-			ajaxNormal("/",null,null,"wrapper");
-		},
-		'white_spaces': function(){
-			ajaxNormal("/white_spaces",null,null,"wrapper");
-		},
-		'login': function(){
-			ajaxNormal("/login",null,null,"wrapper");
-		},
-	});
-	*/
-	
 	// Input Select-----------------------------------------------------------------
 	if (Modernizr.touch) {
 		$(".radio-options").bind("click", function(event) {
@@ -55,9 +41,6 @@ $(document).ready(function(){
 				$(".error-center-screen").show();
 				return false;
 			}
-			else {
-				ajaxDatosReload("/choices","form-options","error-center-screen");
-			}	
 		}
 	});
 	

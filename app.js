@@ -31,11 +31,10 @@ app.configure('development', function(){
 });
 
 function login(req, res, next){
-	if(req.session.user){
+	if(req.session.user)
 		next();
-	} else {
+	else 
 		res.redirect('/login');
-	}
 }
 
 /*-------------------------------------*/
@@ -47,7 +46,7 @@ app.get('/white_spaces', function(req,res){
 	res.render('que_son_white_spaces'); 
 });
 
-app.post('/choices', user.choices);
+app.get('/choices', user.choices);
 
 /*-------------------------------------*/
 
