@@ -2,7 +2,7 @@ extends layout
 
 block content
 	script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization")
-	script(type='text/javascript').		
+	script(type='text/javascript').
 		var map, pointarray, heatmap;
 		var taxiData = [
 			new google.maps.LatLng(8.575759,-71.190033),
@@ -33,9 +33,11 @@ block content
 			var pointArray = new google.maps.MVCArray(taxiData);
 			heatmap = new google.maps.visualization.HeatmapLayer({data: pointArray });
 			heatmap.setMap(map);
+			$("#footer_left a").css("color","#ffffff");
+			$("#footer_right a").css("color","#ffffff");
+			$("#footer_right .font").css("color","#ffffff");
 		}
 		google.maps.event.addDomListener(window, 'load', initialize);
-		$(".back").hide();
 	.back
 		a(href="/")
 			img(src="images/back_white.png")

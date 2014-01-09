@@ -20,8 +20,6 @@ fieldset{border:none;margin:0;padding:0;}
 
 #map-canvas { width:100%; height:100%; margin:0px; padding:0px}
 #map-canvas a img { display:none; }
-#map-canvas div.gmnoprint,
-#map-canvas div.gmnoscreen {display: none;}
 
 #footer {position:absolute;bottom:0;width:100%;height:20px;}
 #footer_left{position:absolute;left:5px;bottom:2px}
