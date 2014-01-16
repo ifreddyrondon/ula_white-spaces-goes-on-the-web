@@ -2,10 +2,10 @@ $(document).ready(function(){
 //Ppal Validados-------------------------------------------------------
 	var error;
 	function validator(stringError,funciones,id,min){
-		if(stringError=='name') error="Debe colocar su nombre y apellido. ¿Quieres volver a intentarlo?";
-		if(stringError=='correo') error="Email invalido. ¿Quieres volver a intentarlo?";
-		if(stringError=='ci') error="Formato de Cedula incorrecto. Vuelve a intentarlo tomando como ejemplo: V12345678, E12345678";
-		if(stringError=='pass') error="Las contraseñas cortas son fáciles de adivinar. Vuelve a intentarlo utilizando como mínimo 6 caracteres.";
+		if(stringError=='name') error=" You must put your first name and last name. Do you want to try again?";
+		if(stringError=='correo') error="Invalid Email. Do you want to try again?";
+		if(stringError=='ci') error="Invalid Id format. Try again, take this as an example: V12345678, E12345678";
+		if(stringError=='pass') error="Short password are easy to guess. Try again. Use at least 6 characters.";
 		if (validar(funciones,id,min)){
 			document.getElementById(id).style.backgroundImage="url('images/check.png')";
 	  	document.getElementById(id).style.backgroundRepeat="no-repeat";
@@ -95,7 +95,7 @@ $(document).ready(function(){
 					//$("#btn_update_enviar").attr("disabled", false);
 					if(respuesta_ci == '1'){
 						resCi = false; 
-						error = "Ya existe esa Cedula. ¿Quieres volver a intentarlo?";
+						error = "Id already exist.Try again?";
 					}
 					else if(respuesta_ci == '0')
 						resCi = true;
@@ -127,7 +127,7 @@ $(document).ready(function(){
 					//$("#btn_update_enviar").attr("disabled", false);
 					if(respuesta_email == '1'){
 						resEmail = false; 
-						error = "Ya existe ese Email. ¿Quieres volver a intentarlo?";
+						error = "Email already exist.Try again?";
 					}
 					else if(respuesta_email == '0')
 						resEmail = true;
@@ -205,13 +205,13 @@ $(document).ready(function(){
 	window.focusEmpty=focusEmpty;	
 
 	function errorHandler(id){
-		if(id=="form-login")	stringHandlerError = "Puedes entrar con tu dirección de correo electrónico. Por favor, asegúrate de escribir los datos correctamente..";
-		if(id=="form-login_inv")	stringHandlerError = "<h3>Datos invalidos!</h3> <br />Puedes entrar con cualquier dirección de correo electrónico. Por favor, asegúrate de escribir los datos correctamente..";
-		if(id=="form-registrar")	stringHandlerError = "¡Vaya! Se ha producido un error, inténtalo de nuevo en unos segundos";
+		if(id=="form-login")	stringHandlerError = "You can Log in with your email address. Please be sure to write the correctly data..";
+		if(id=="form-login_inv")	stringHandlerError = "<h3>Invalid Data!</h3> <br />You can Log in with any email address.Please, be sure to write the correctly data..";
+		if(id=="form-registrar")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
 		
-		if(id=="sync-enviar-1")	stringHandlerError = "Debes cargar los 2 archivos (medidas y track)";
-		if(id=="sync-enviar-3")	stringHandlerError = "Los archivos deben estar en .txt";
-		if(id=="sync-enviar-3")	stringHandlerError = "¡Vaya! Se ha producido un error, inténtalo de nuevo en unos segundos";
+		if(id=="sync-enviar-1")	stringHandlerError = "You must upload both files (measure & tracks)";
+		if(id=="sync-enviar-3")	stringHandlerError = "The files must be on .txt";
+		if(id=="sync-enviar-3")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
 		
 		if(document.getElementById(id+'-error') == null)
 	  		$('.error').append('<div id="'+id+'-error"><font size="5">* </font>'+stringHandlerError+'</div>');
@@ -222,12 +222,19 @@ $(document).ready(function(){
 		var monthname=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 		return weekday[d.getDay()]+", "+d.getDate()+" de "+monthname[d.getMonth()];
 	}
+	
+/*	function englishDate(d){
+		var weekday=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+		var monthname=["January","February","March","April","May","June","July","August","September","October","November","December"];
+		return weekday[d.getDay()]+", "+d.getDate()+" de "+monthname[d.getMonth()];
+	}*/
 	function sendDate(){
 		d = $("#datepicker").datepicker("getDate");
 		$('.day_big_view').html(d.getDate());
 		$('.day_completa_view').html(spanishDate(d)+"<br />"+d.getFullYear());
 		window.location = '/#events/'+d;
-	}	
+	}
+	//window.englishDate=englishDate;
 	window.spanishDate=spanishDate;
 	window.sendDate=sendDate;
 	
