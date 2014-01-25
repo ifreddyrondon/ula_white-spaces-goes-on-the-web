@@ -26,12 +26,22 @@ fieldset{border:none;margin:0;padding:0;}
 #footer_right{position: absolute;right:3px}
 
 /*---ERRORES--------------------------*/
-.error-center-screen{ display: none }
-.error{color:rgba(212,49,49,0.91);
+.error{
+		color:rgba(212,49,49,0.91); font-size: 18px;
 		text-shadow:0px 1px 0px rgba(101,101,101,0.6);
 		font-family: monospace;font-weight:100;}
 
-
+/*---UMBRAL---------------------------*/
+#threshold_title{position:absolute;right: 45px;top: -20px}
+.ipt_umbral{
+	position: relative; height:26px; width:150px; text-align: center; top:5px;
+	background:transparent;
+	padding: 12px;
+	border-style:groove; border-width:0px; outline:none;
+	-webkit-box-shadow: inset 0px 1px 2px 2px #111;
+	-moz-box-shadow: inset 0px 1px 2px 2px #111;
+	box-shadow: inset 0px 1px 2px 2px #111;
+	}
 /*-----LOGIN input css ----------------------*/
 	#login_pass{ display:none }
 	#login_user {
@@ -66,9 +76,6 @@ fieldset{border:none;margin:0;padding:0;}
 		width:300px;height:200px;
 		text-align:center;
 	}
-
-
-
 /*------FONT ---------------------------------------------------*/
 	h1.insetType{
 		padding-left:50px;
@@ -116,6 +123,12 @@ fieldset{border:none;margin:0;padding:0;}
 	}
 	.ipt_font{
 		font-size:16px;
+		font-family: Rockwell, Georgia, "Times New Roman", Times, serif;
+		color: #000000;
+		text-shadow: rgba(0,0,0,0.3) -1px 0, rgba(0,0,0,0.2) 0 -1px, rgba(255,255,255,0.3) 0 1px, rgba(0,0,0,0.1) -1px -2px;
+	}
+	.ipt_font_big{
+		font-size:22px;
 		font-family: Rockwell, Georgia, "Times New Roman", Times, serif;
 		color: #000000;
 		text-shadow: rgba(0,0,0,0.3) -1px 0, rgba(0,0,0,0.2) 0 -1px, rgba(255,255,255,0.3) 0 1px, rgba(0,0,0,0.1) -1px -2px;

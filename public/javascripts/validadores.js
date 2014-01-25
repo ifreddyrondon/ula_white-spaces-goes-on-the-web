@@ -2,10 +2,13 @@ $(document).ready(function(){
 //Ppal Validados-------------------------------------------------------
 	var error;
 	function validator(stringError,funciones,id,min){
-		if(stringError=='name') error=" You must put your first name and last name. Do you want to try again?";
+		if(stringError=='name') error=" You must put your first name and last name.<br> Do you want to try again?";
 		if(stringError=='correo') error="Invalid Email. Do you want to try again?";
 		if(stringError=='ci') error="Invalid Id format. Try again, take this as an example: V12345678, E12345678";
 		if(stringError=='pass') error="Short password are easy to guess. Try again. Use at least 6 characters.";
+		if(stringError=='number') error="You must put a number.<br> Do you want to try again?";
+		if(stringError=='numberBetweenMin') error="The number must be greater than " + min + ".<br> Do you want to try again?";
+		if(stringError=='numberBetweenMax') error="The number should be less than " + min + ".<br> Do you want to try again?";
 		if (validar(funciones,id,min)){
 			document.getElementById(id).style.backgroundImage="url('images/check.png')";
 	  	document.getElementById(id).style.backgroundRepeat="no-repeat";
@@ -20,13 +23,15 @@ $(document).ready(function(){
 	  	document.getElementById(id).style.backgroundPosition="right center";
 	  	document.getElementById(id).style.backgroundColor="rgba(253,160,160,0.43)";
 	  	if(document.getElementById(stringError) == null)
-	  		$('.error').append('<div id="'+stringError+'"><font size="5">* </font>'+error+'</div>');
+	  		$('.error').append('<div id="'+stringError+'"><center><font size="5">* </font>'+error+'</center></div>');
 	  	return false;
 		}
 	}
 	function validar(funciones,id,min){
 		empty = true;
 		number = true;
+		numberBetweenMin = true;
+		numberBetweenMax = true;
 		ci = true;
 		formatoImagen = true;
 	  correo = true;
@@ -38,6 +43,10 @@ $(document).ready(function(){
 				empty = IsEmpty(document.getElementById(id));
 			if(funciones[i]=='number')
 				number = IsNumeric(document.getElementById(id));
+			if(funciones[i]=='numberBetweenMin')
+				numberBetweenMin = numberBetweenMIN(document.getElementById(id),min);		
+			if(funciones[i]=='numberBetweenMax')
+				numberBetweenMax = numberBetweenMAX(document.getElementById(id),min);		
 			if(funciones[i]=='formatImage')
 				number = formatImage(document.getElementById(id));
 			if(funciones[i]=='IsCorreo')
@@ -49,7 +58,7 @@ $(document).ready(function(){
 			if(funciones[i]=='ci')
 				ci = IsCi(document.getElementById(id));		
 		}
-		return empty && number && formatoImagen && correo && correo_formato && minimo && ci;	
+		return empty && number && formatoImagen && correo && correo_formato && minimo && ci && numberBetweenMin && numberBetweenMax;	
 	}
   window.validator=validator;
 //Funciones-validadoras--------------------------------------------------------------------
@@ -62,6 +71,18 @@ $(document).ready(function(){
   function IsNumeric(el){
 	  RE = /^-{0,1}\d*\.{0,1}\d+$/;
 	  return RE.test(el.value);
+  }
+  function numberBetweenMIN(el,min){
+		if(el.value < min)
+	  	return false;
+	  else 
+	  	return true;
+  }
+  function numberBetweenMAX(el,min){
+	  if(el.value > min)
+	  	return false;
+	  else 
+	  	return true;
   }
   function formatImage(el){
 	  ext = el.value.split('.').pop().toLowerCase(); 	
@@ -213,8 +234,11 @@ $(document).ready(function(){
 		if(id=="sync-enviar-3")	stringHandlerError = "The files must be on .txt";
 		if(id=="sync-enviar-3")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
 		
+		if(id=="enter-data") stringHandlerError = "You must enter all the data!!";
+		if(id=="number_decimal") stringHandlerError = "Maximum two (2) decimals!!";
+		
 		if(document.getElementById(id+'-error') == null)
-	  		$('.error').append('<div id="'+id+'-error"><font size="5">* </font>'+stringHandlerError+'</div>');
+	  		$('.error').append('<div id="'+id+'-error"><center><font size="5">* </font>'+stringHandlerError+'</center></div>');
 	}
 	window.errorHandler=errorHandler;
 	function spanishDate(d){

@@ -14,10 +14,11 @@ $(document).ready(function(){
 		});  
 	}
 
-	// Form opciones de ubicacion y frecuenca validador de vacios-----------------------------
+	// Form opciones de zona y umbral, validador de vacios-----------------------------
 	$(document).on("click","#options-enviar",function(){
-		var val = $(document.getElementsByName('zona'));
-		var error = true;
+		val = $(document.getElementsByName('zona'));
+		error = true;
+		number_split = $("#ipt_umbral").val().split('.');
 		for (i = 0 ; i < val.length ; i++){
 			if (val[i].checked){
 				error = false;
@@ -25,32 +26,25 @@ $(document).ready(function(){
 			}
 		}
 		if (error == true){
-			$(".error-center-screen").show();
+			errorHandler("enter-data");
+			return false;
+		} else if($("#ipt_umbral").val() == '' || !validator("number","number","ipt_umbral"))
+			return false;
+		else if(!validator("numberBetweenMin","numberBetweenMin","ipt_umbral",-120) || !validator("numberBetweenMax","numberBetweenMax","ipt_umbral",-20))
+			return false;
+		else if(number_split[1] != undefined && number_split[1].length > 2){
+			errorHandler("number_decimal");
 			return false;
 		}
-		else {
-			error = true;
-			var val = $(document.getElementsByName('frecuencia'));
-			for (i = 0 ; i < val.length ; i++){
-				if (val[i].checked){
-					error = false;
-					break;
-				}
-			}
-			if (error == true){
-				$(".error-center-screen").show();
-				return false;
-			}
-		}
 	});
+
 	
 	// Input file ---------------------------------------------------------------------------
 		$("input[type=file]").nicefileinput({ 
     	label : 'browse..'
 		});
 
-		
-		
+			
 	// Form files sync------------------------------------------------------------------------
 	$("#sync-enviar").click(function(){
 		$("#form-sync").ajaxForm({  

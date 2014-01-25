@@ -7,6 +7,8 @@ block content
 	h1(class="insetType")	White Spaces <br> Goes on the Web
 	br
 	.center-screen
+		#threshold_title
+			.ipt_font Threshold [-120,-20]
 		form(id="form-options", class="font", action="choices", method="GET")
 			fieldset(class="radio-container")
 				.radio-options
@@ -15,28 +17,7 @@ block content
 						li
 							input(type="radio", name="zona", id="merida", value="merida")
 							label(for="merida")	Merida
-						li
-							input(type="radio", name="zona", id="vigia", value="vigia")
-							label(for="vigia")	El Vigia
-						li
-							input(type="radio", name="zona", id="ejido", value="ejido")
-							label(for="ejido")	Ejido
-			fieldset(class="radio-container")
-				.radio-options
-					.toggle	Frequency
-					ul
-						li
-							input(type="radio", name="frecuencia", id="470-570", value="470-570")
-							label(for="470-570")	470-570 MHz
-						li
-							input(type="radio", name="frecuencia", id="570-670", value="570-670")
-							label(for="570-670")	570-670 MHz
-						li
-							input(type="radio", name="frecuencia", id="670-770", value="670-770")
-							label(for="670-770")	670-770 MHz
-						li
-							input(type="radio", name="frecuencia", id="770-870", value="770-870")
-							label(for="770-870")	770-870 MHz
+			input(id="ipt_umbral", name="ipt_umbral", autocorrect="off", class="ipt_umbral border_user ipt_font_big", type="text", value="-70", alt="You must enter your threshold")
 			br
 			br
 			.button_wrapper(align="center")
@@ -47,7 +28,4 @@ block content
 		br
 		br
 		br
-		br
-		br
-		.error-center-screen
-			h2(class="font-error")	You must enter all the data!!
+		.error

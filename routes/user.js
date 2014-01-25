@@ -10,17 +10,12 @@ var BD = require('../BD')
 exports.choices = function(req, res){
 	try {
 		check(req.query.zona).notNull();
-		check(req.query.frecuencia).notNull();
 		 	
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
 				
-		frecuencia = sanitize(req.query.frecuencia).trim(); 	
-		frecuencia = sanitize(frecuencia).xss();
-		frecuencia = sanitize(frecuencia).entityDecode();
-	
 		zona = zona.toUpperCase();
-		res.render('heatmap',{ zona:zona, frecuencia:frecuencia }); 
+		res.render('heatmap',{ zona:zona }); 
 								
 	} catch (e) {
 	  res.render('index'); 
