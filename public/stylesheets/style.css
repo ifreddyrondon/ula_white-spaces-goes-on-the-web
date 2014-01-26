@@ -25,14 +25,16 @@ fieldset{border:none;margin:0;padding:0;}
 #footer_left{position:absolute;left:5px;bottom:2px}
 #footer_right{position: absolute;right:3px}
 
+#threshold_title{position:absolute;right: 45px;top: -20px}
+
 /*---ERRORES--------------------------*/
 .error{
 		color:rgba(212,49,49,0.91); font-size: 18px;
 		text-shadow:0px 1px 0px rgba(101,101,101,0.6);
 		font-family: monospace;font-weight:100;}
 
-/*---UMBRAL---------------------------*/
-#threshold_title{position:absolute;right: 45px;top: -20px}
+/*---INPUTS---------------------------*/
+
 .ipt_umbral{
 	position: relative; height:26px; width:150px; text-align: center; top:5px;
 	background:transparent;
@@ -41,7 +43,20 @@ fieldset{border:none;margin:0;padding:0;}
 	-webkit-box-shadow: inset 0px 1px 2px 2px #111;
 	-moz-box-shadow: inset 0px 1px 2px 2px #111;
 	box-shadow: inset 0px 1px 2px 2px #111;
-	}
+}
+
+.ipt_zones{
+	position: relative; height:15px; width:235px; text-align: center; top:5px;
+	background:transparent;
+	padding: 12px;
+	border-style:groove; border-width:0px; outline:none;
+	-webkit-box-shadow: inset 0px 1px 2px 2px #111;
+	-moz-box-shadow: inset 0px 1px 2px 2px #111;
+	box-shadow: inset 0px 1px 2px 2px #111;
+	font-size: 1.3em;
+}
+
+
 /*-----LOGIN input css ----------------------*/
 	#login_pass{ display:none }
 	#login_user {
@@ -249,7 +264,15 @@ fieldset{border:none;margin:0;padding:0;}
 	  color: #d6ebe0; 
 		float: left;
 	}
-	.no-touch .radio-container:hover, .radio-container.active { z-index: 9999 }
+	.radio-container-wide {
+		position: relative;
+		width: 260px;
+	  height: 4em;
+	  font-size: 1.3em;
+	  line-height: 1;
+	  color: #d6ebe0; 
+	}
+	.no-touch .radio-container:hover, .no-touch .radio-container-wide, .radio-container.active, .radio-container-wide.active { z-index: 9999 }
 	.radio-options {
 	  position: absolute;
 	  max-height: 3em;

@@ -10,9 +10,13 @@ var BD = require('../BD')
 exports.choices = function(req, res){
 	try {
 		check(req.query.zona).notNull();
+		check(req.query.ipt_umbral).notNull().isNumeric();
 		 	
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
+		
+		umbral = sanitize(req.query.ipt_umbral).xss();
+		umbral = sanitize(umbral).entityDecode();		
 				
 		zona = zona.toUpperCase();
 		res.render('heatmap',{ zona:zona }); 
@@ -50,7 +54,6 @@ exports.loginSend = function(req, res){
 		function(err, rows, fields) {
 	    if (err){
 	    	console.log(err);
-				objBD.end();
 				res.send('1'); 
 			}							
 	    else {
@@ -60,7 +63,8 @@ exports.loginSend = function(req, res){
 				}
 				else
 					res.send('1');
-			}  
+			}
+			objBD.end();  
 		});	
 								
 	} catch (e) {

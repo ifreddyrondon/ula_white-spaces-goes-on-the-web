@@ -16,18 +16,38 @@ block content
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
 				a(href="/edit_areas", class="button grey", style="width:180;height:18px;padding-top:6px") Edit Zones
+	.top-center-screen
+		h1(class="insetType")	Upload data
 	.center-screen
 		form(id="form-sync", class="font", enctype="multipart/form-data")
-			h3(style="font-size:20px;font-weight:100;")	Upload measures
-			input(type="file", name="file_measures", id="file_measures")
-			br
-			br
-			h3(style="font-size:20px;font-weight:100;")	Upload tracks
-			input(type="file", name="file_track", id="file_track")
+			center
+				- if (typeof(places) !== 'undefined')
+					fieldset(class="radio-container-wide")
+						.radio-options
+							.toggle	Zone
+							ul
+								- if (typeof(places) !== 'undefined')
+									- each place in places
+										li
+											input(type="radio", name="zona_admin", id="#{place.name}", value="#{place.name}")
+											label(for="#{place.name}")	#{place.name}
+					h3(style="font-size:20px;font-weight:100;")	or add a zone
+					br
+					input(id="new_zone", name="new_zone", autocorrect="on", class="ipt_zones border_user ipt_font", type="text", value="", alt="You must enter a zone")
+					br
+					br
+				else
+					h3(style="font-size:20px;font-weight:100;")	No aggregates places, add one
+					br
+					input(id="new_zone", name="new_zone", autocorrect="on", class="ipt_zones border_user ipt_font", type="text", value="", alt="You must enter a zone")
+			br	
+			input(type="file", name="data_measures", id="data_measures")
 			br
 			br
 			.button_wrapper(align="center")
 				.button_underneath.blue(style="width:162px;height:14px")
 					input(id="sync-enviar", type="submit", value="Synchronize", class="button blue", style="width:200px;height:40px;padding-top:6px")
+		br
+		br
 		br
 		.error

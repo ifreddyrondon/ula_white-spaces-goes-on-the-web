@@ -14,9 +14,11 @@ block content
 				.radio-options
 					.toggle	Zone
 					ul
-						li
-							input(type="radio", name="zona", id="merida", value="merida")
-							label(for="merida")	Merida
+						- if (typeof(places) !== 'undefined')
+							- each place in places
+								li
+									input(type="radio", name="zona", id="#{place.name}", value="#{place.name}")
+									label(for="#{place.name}")	#{place.name}
 			input(id="ipt_umbral", name="ipt_umbral", autocorrect="off", class="ipt_umbral border_user ipt_font_big", type="text", value="-70", alt="You must enter your threshold")
 			br
 			br

@@ -8,7 +8,8 @@ var express = require('express')
   , user = require('./routes/user')
   , admin = require('./routes/admin')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , BD = require('./BD');
 
 var app = express();
 
@@ -39,7 +40,17 @@ function login(req, res, next){
 
 /*-------------------------------------*/
 app.get('/', function(req,res){ 
-	res.render('index',{ sesion: req.session.user } ); 
+	objBD = BD.BD();
+	objBD.connect();
+	places = objBD.query("SELECT name FROM places",
+		function(err, rows, fields) {
+			if (err)
+	    	console.log(err);						
+	    else
+	    	places = rows;
+		  res.render('index',{ sesion: req.session.user, places : places } ); 
+			objBD.end();
+		});	
 });
 
 app.get('/white_spaces', function(req,res){ 
@@ -66,7 +77,18 @@ app.get('/logout', login, function(req,res){
 /*-------------------------------------*/
 
 app.get('/admin', login, function(req, res){
-	res.render('admin/admin'); 
+	objBD = BD.BD();
+	objBD.connect();
+	places = objBD.query("SELECT name FROM places",
+		function(err, rows, fields) {
+			if (err)
+	    	console.log(err);						
+	    else
+	    	places = rows;
+		  
+		  res.render('admin/admin', {places : places}); 
+			objBD.end();
+		});
 });
 
 app.get('/edit_frequencies', login, function(req, res){

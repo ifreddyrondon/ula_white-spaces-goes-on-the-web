@@ -1,47 +1,49 @@
 var fs = require('fs')
-	, path = require('path');
+	, path = require('path')
+	, lineReader = require('line-reader')
+	, sanitize = require('validator').sanitize
+	, check = require('validator').check;
 
 exports.syncUpload = function(req, res){
 
-	var tempPathFileMeasures = req.files.file_measures,
-  		tempPathFileTrack = req.files.file_track;
+	console.log(req.query.zona_admin);
+	console.log(req.query.new_zone);
 
-	if(tempPathFileMeasures != null && tempPathFileTrack != null){
+
+	var tempPathDataMeasures = req.files.data_measures;
 	
-		if (path.extname(tempPathFileMeasures.name).toLowerCase() === '.txt' &&
-			path.extname(tempPathFileTrack.name).toLowerCase() === '.txt') {
+
+	if(tempPathDataMeasures != null){
+	
+		if (path.extname(tempPathDataMeasures.name).toLowerCase() === '.txt') {
 			
-			var targetPathFileMeasures = "public/uploads/measures/" + tempPathFileMeasures.name,
-					targetPathFileTrack = "public/uploads/track/" + tempPathFileTrack.name;		
+			var targetPathDataMeasures = "public/uploads/measures/" + tempPathDataMeasures.name;
 					
-			fs.rename(tempPathFileMeasures.path, targetPathFileMeasures, function(err) {
+			fs.rename(tempPathDataMeasures.path, targetPathDataMeasures, function(err) {
 	    	if (err)	
 	        res.send('3'); 
 	      else {
-		    	fs.unlink(tempPathFileMeasures.path, function() {
+		    	fs.unlink(tempPathDataMeasures.path, function() {
 			    	if (err)
 			      	res.send('3'); 
 						else {
-		          fs.chmodSync(targetPathFileMeasures, 0777);
-							fs.rename(tempPathFileTrack.path, targetPathFileTrack, function(err) {
-					    	if (err)	
-					        res.send('3'); 
-					      else {
-						    	fs.unlink(tempPathFileTrack.path, function() {
-							    	if (err)
-							      	res.send('3'); 
-										else {
-						          fs.chmodSync(targetPathFileTrack, 0777);
-											res.send('0');      
-						        }
-						      });
-						    }
-					    });
+		          fs.chmodSync(targetPathDataMeasures, 0777);
+		          //res.send('0');      
+		          
+		          lineReader.eachLine(targetPathDataMeasures, function(line) {
+								res = line.split("\t");
+								if(res.length == 2)
+									console.log(line);
+							 
+							}).then(function () {
+							  console.log("I'm done!!");
+							});
+		          
+		          
 		        }
 		      });
 		    }
 	    });
-
 		}
 		else	
 			res.send("2")

@@ -62,7 +62,7 @@ $(document).ready(function(){
 				else if(res == 3)
 					errorHandler("sync-enviar-3");
 				else if(res == 0){
-					alert("cargados!!");
+					alert("cargado!!");
 				}
 			}	
     }); 
