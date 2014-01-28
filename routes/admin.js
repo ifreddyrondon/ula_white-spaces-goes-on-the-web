@@ -2,53 +2,136 @@ var fs = require('fs')
 	, path = require('path')
 	, lineReader = require('line-reader')
 	, sanitize = require('validator').sanitize
-	, check = require('validator').check;
+	, BD = require('../BD');
 
 exports.syncUpload = function(req, res){
 
-	console.log(req.query.zona_admin);
-	console.log(req.query.new_zone);
-
-
-	var tempPathDataMeasures = req.files.data_measures;
+	if(req.body.zona_admin != '' || req.body.new_zone != ''){
 	
-
-	if(tempPathDataMeasures != null){
-	
-		if (path.extname(tempPathDataMeasures.name).toLowerCase() === '.txt') {
 			
-			var targetPathDataMeasures = "public/uploads/measures/" + tempPathDataMeasures.name;
-					
-			fs.rename(tempPathDataMeasures.path, targetPathDataMeasures, function(err) {
-	    	if (err)	
-	        res.send('3'); 
-	      else {
-		    	fs.unlink(tempPathDataMeasures.path, function() {
-			    	if (err)
-			      	res.send('3'); 
-						else {
-		          fs.chmodSync(targetPathDataMeasures, 0777);
-		          //res.send('0');      
-		          
-		          lineReader.eachLine(targetPathDataMeasures, function(line) {
-								res = line.split("\t");
-								if(res.length == 2)
-									console.log(line);
-							 
-							}).then(function () {
-							  console.log("I'm done!!");
-							});
-		          
-		          
-		        }
-		      });
-		    }
-	    });
-		}
-		else	
-			res.send("2")
-	}
-	else
-		res.send("1");
+			zona_admin = sanitize(req.body.zona_admin).xss();
+			zona_admin = sanitize(zona_admin).entityDecode();
+			
+			new_zone = sanitize(req.body.new_zone).xss();
+			new_zone = sanitize(new_zone).entityDecode();
+			
+			var tempPathDataMeasures = req.files.data_measures;
+			if(tempPathDataMeasures != null){
+			
+				if (path.extname(tempPathDataMeasures.name).toLowerCase() === '.txt') {
+				
+					var targetPathDataMeasures = "public/uploads/measures/" + tempPathDataMeasures.name;
+					fs.rename(tempPathDataMeasures.path, targetPathDataMeasures, function(err) {
+			    	if (err)	
+			        res.send('3'); 
+			      else {
+				    	fs.unlink(tempPathDataMeasures.path, function() {
+					    	if (err)
+					      	res.send('3'); 
+								else {
+								
+				          // PASO TODO --------------------------------------------------------------------------------
+				          objBD = BD.BD();
+				          fs.chmodSync(targetPathDataMeasures, 0777);
+				          
+				          // Si existe una nueva zona la agregamos --------------------------------------------------------------------------------
+				          if(new_zone != ""){
+										objBD.connect();
+										objBD.query("INSERT INTO places (name) VALUES ("+ objBD.escape(new_zone) +")",
+										function(err, rows, fields) {
+									    if (err){
+									    	console.log(err);
+												res.send('3');
+												objBD.end();   
+											}
+											console.log(rows);
+										}); 
+										zona_admin = new_zone;
+				          }
+				          
+				          // Buscamos el id de la zona --------------------------------------------------------------------------------
+									objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona_admin) +"",
+										function(err, rows, fields) {
+									    if (err){
+									    	console.log(err);
+												res.send('3'); 
+												objBD.end();  
+											}
+											else {
+												id_place = rows[0].id_place;		
+												// Arrays dinamicos que me guardan frecuencia_potencia y coordenadas --------------------------------------------------------------------------------									
+												var frequency_potency = new Array();												
+												var coordinate = new Array();
+												// Leemos las lineas del archivo --------------------------------------------------------------------------------
+												lineReader.eachLine(targetPathDataMeasures, function(line, last) {
+												  line_split = line.split("\t");	
+													
+													if(line_split.length == 2)
+														frequency_potency.push(line_split);
+														
+													else if(line_split.length == 1)
+														coordinate.push(line_split);
+												
+												  if (last) {
+														// Guardamos coordenadas en la DB --------------------------------------------------------------------------------
+														objBD.query("INSERT INTO coordinates (latitude, longitude, id_place, date) VALUES ("+ objBD.escape(coordinate[0]) +","+ objBD.escape(coordinate[1]) +","+ objBD.escape(id_place) +","+ objBD.escape(coordinate[2]) +")",
+															function(err, rows, fields) {
+														    if (err){
+														    	console.log(err);
+																	res.send('3'); 
+																	objBD.end();  
+																} else {
+																	// Guardamos potencia y frecuencia en la DB --------------------------------------------------------------------------------
+																	id_coordinates = rows.insertId;
+																	
+																	for(i = 0; i < frequency_potency.length; i++){
+																		objBD.query("INSERT INTO potency_frequency (frequency, potency) VALUES ("+ objBD.escape(frequency_potency[i][0]) +","+ objBD.escape(frequency_potency[i][1]) +")",
+																			function(err, rows, fields) {
+																		    if (err){
+																		    	console.log(err);
+																					res.send('3'); 
+																					objBD.end();  
+																				} else {
+																					// Guardamos id de potencia y frecuencia y de coordenadas en la tabla compartida de la DB ---------------------------------------------------------------
+																					id_potency_frequency = rows.insertId;
+																					
+																					objBD.query("INSERT INTO coordinates_vs_potency_frequency (id_potency_frequency, id_coordinate) VALUES ("+ id_potency_frequency +","+ id_coordinates +")",
+																						function(err, rows, fields) {
+																					    if (err){
+																					    	console.log(err);
+																								res.send('3'); 
+																								objBD.end();  
+																							} else {
+																								// Guardado todo, recargamos la pagina
+																								res.send('/admin');
+																							}
+																					});
+																				}
+																		});
+																	}
+																}
+														});
+														// Salimos de la lectura del archivos --------------------------------------------------------------------------------
+												    return false; 
+												  }
+												});												
+														
+											}
+									});         
+				        }
+				      });
+				    }
+			    });
+				
+				}
+				else 
+					res.send("2");
+
+			}
+			else		
+				res.send("1");
+		
+	} else
+	  res.send("1");	
 
 };

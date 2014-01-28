@@ -230,8 +230,9 @@ $(document).ready(function(){
 		if(id=="form-login_inv")	stringHandlerError = "<h3>Invalid Data!</h3> <br />You can Log in with any email address.Please, be sure to write the correctly data..";
 		if(id=="form-registrar")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
 		
-		if(id=="sync-enviar-1")	stringHandlerError = "You must upload data file (measure & tracks)";
-		if(id=="sync-enviar-3")	stringHandlerError = "The files must be on .txt";
+		if(id=="sync-enviar-0")	stringHandlerError = "You must enter just! the zone or new zone not both";
+		if(id=="sync-enviar-1")	stringHandlerError = "You must enter the zone or new zone and upload data file (measure & tracks)";
+		if(id=="sync-enviar-2")	stringHandlerError = "The files must be on .txt";
 		if(id=="sync-enviar-3")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
 		
 		if(id=="enter-data") stringHandlerError = "You must enter all the data!!";

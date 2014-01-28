@@ -47,25 +47,45 @@ $(document).ready(function(){
 			
 	// Form files sync------------------------------------------------------------------------
 	$("#sync-enviar").click(function(){
-		$("#form-sync").ajaxForm({  
-			url: "/sync/upload", 
-			type: "post",    
-			beforeSubmit: function(){
-    		$("#bowlG").show();
-      },
-			success: function(res){	
-				$("#bowlG").hide();
-				if(res == 1)
-					errorHandler("sync-enviar-1");
-				else if(res == 2)
-					errorHandler("sync-enviar-2");
-				else if(res == 3)
-					errorHandler("sync-enviar-3");
-				else if(res == 0){
-					alert("cargado!!");
-				}
-			}	
-    }); 
+		val = $(document.getElementsByName('zona_admin'));
+		var error = true;
+		for (i = 0 ; i < val.length ; i++){
+			if (val[i].checked){
+				error = false;
+				break;
+			}
+		}	
+		if( (!error || $("#new_zone").val() != '') && $("#data_measures").val().length != 0){
+			if( !error && $("#new_zone").val() != ''){	
+				errorHandler("sync-enviar-0");
+				return false;
+			} else {
+				$("#form-sync").ajaxForm({  
+					url: "/sync/upload", 
+					type: "post",    
+					beforeSubmit: function(){
+		    		$("#bowlG").show();
+		      },
+					success: function(res){	
+						$("#bowlG").hide();
+						if (res == 0)
+							errorHandler("sync-enviar-0");
+						else if(res == 1)
+							errorHandler("sync-enviar-1");
+						else if(res == 2)
+							errorHandler("sync-enviar-2");
+						else if(res == 3)
+							errorHandler("sync-enviar-3");
+					}	
+		    }); 
+			}
+		} else {
+			errorHandler("sync-enviar-1");	
+			return false;
+		}
 	});
-
+	
+	
+	
+	
 });
