@@ -49,8 +49,8 @@ app.get('/', function(req,res){
 	    else
 	    	places = rows;
 		  res.render('index',{ sesion: req.session.user, places : places } ); 
-			objBD.end();
-		});	
+		});
+	objBD.end();	
 });
 
 app.get('/white_spaces', function(req,res){ 
@@ -87,8 +87,8 @@ app.get('/admin', login, function(req, res){
 	    	places = rows;
 		  
 		  res.render('admin/admin', {places : places}); 
-			objBD.end();
 		});
+	objBD.end();
 });
 
 app.get('/edit_frequencies', login, function(req, res){

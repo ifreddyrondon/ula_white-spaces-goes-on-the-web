@@ -64,8 +64,8 @@ exports.loginSend = function(req, res){
 				else
 					res.send('1');
 			}
-			objBD.end();  
-		});	
+		});
+		objBD.end();  	
 								
 	} catch (e) {
 	  res.send('1'); 
