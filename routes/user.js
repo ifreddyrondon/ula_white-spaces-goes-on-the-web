@@ -7,7 +7,7 @@ var BD = require('../BD')
  * GET users listing.
  */
 
-exports.choices = function(req, res){
+exports.ocupation = function(req, res){
 	try {
 		check(req.query.zona).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
@@ -18,8 +18,53 @@ exports.choices = function(req, res){
 		umbral = sanitize(req.query.ipt_umbral).xss();
 		umbral = sanitize(umbral).entityDecode();		
 				
-		zona = zona.toUpperCase();
-		res.render('heatmap',{ zona:zona }); 
+		// Buscamos el identificador de la zona
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("SELECT frequency, COUNT(*) AS total FROM potency_frequency GROUP BY frequency",
+		function(err, rows, fields) {
+	    if (err){
+	    	console.log(err);
+				res.render('index'); 
+			}							
+	    else {
+	    	var resultado = new Array();
+	    	var totales = rows;
+				objBD = BD.BD();
+				objBD.connect();
+				objBD.query("SELECT frequency, COUNT(*) AS pasaron_umbral FROM potency_frequency WHERE potency > "+ objBD.escape(umbral) +" GROUP BY frequency ",
+				function(err, rows, fields) {
+			    if (err){
+			    	console.log(err);
+						res.render('index'); 
+					}							
+			    else {
+
+			    	var pasaron = rows;
+			    	var tablaFinal = new Array();
+			    	
+						for(i=0; i < totales.length; i++){
+							
+							for(j=0; j < pasaron.length; j++){
+								
+								if(totales[i].frequency == pasaron[j].frequency){
+									tablaFinal.push([totales[i].frequency, pasaron[j].pasaron_umbral / totales[i].total]);
+									break;
+								} 
+								else if(totales[i].frequency < pasaron[j].frequency){
+									tablaFinal.push([totales[i].frequency, 0]);
+									break;
+								}
+							}	
+						}
+						console.log(tablaFinal);
+						res.render('ocupation',{ data:tablaFinal }); 
+				  }
+				});
+				objBD.end();  	
+		  }
+		});
+		objBD.end();  	
 								
 	} catch (e) {
 	  res.render('index'); 

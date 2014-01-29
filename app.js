@@ -57,7 +57,7 @@ app.get('/white_spaces', function(req,res){
 	res.render('que_son_white_spaces'); 
 });
 
-app.get('/choices', user.choices);
+app.get('/ocupation', user.ocupation);
 
 /*-------------------------------------*/
 
