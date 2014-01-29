@@ -5,20 +5,65 @@ block content
 		a(href="/")
 			img(src="images/back.png")
 	.top-center-screen
-		h1(class="insetType")	Ocupation
-	#chart_div(style="width: 900px; height: 500px;")
-	script(src="https://www.google.com/jsapi")
+		h1(class="insetType")	Occupation
+	#chart1
 	script(type='text/javascript').
-		google.load("visualization", "1", {packages:["corechart"]});
-		google.setOnLoadCallback(drawChart);
-		function drawChart() {
-			var data = google.visualization.arrayToDataTable(#{data});
-			var options = {
-					title: 'Ocupation',
-					'width':1000,
-					'height':400
-			};
-			var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-				chart.draw(data, options);
-			}
-			alert(#{data});
+		
+		window.onload = function(){
+		var d2 = #{data};
+			var plot1 = $.jqplot('chart1', [d2], {
+				grid: {
+					drawBorder: false,
+					shadow: false,
+					background: 'rgba(0,0,0,0)'
+				},
+				
+				highlighter: { show: true },
+				seriesDefaults: { 
+					shadowAlpha: 0.1,
+					shadowDepth: 2,
+					fillToZero: true
+				},
+				series: [
+					{
+						color: 'rgba(198,88,88,.6)',
+						negativeColor: 'rgba(100,50,50,.6)',
+						showMarker: true,
+						showLine: true,
+						fill: true,
+						fillAndStroke: true,
+						markerOptions: {
+							style: 'filledCircle',
+							size: 8
+						},
+						rendererOptions: {
+							smooth: true
+						}
+					},
+					{
+						color: 'rgba(44, 190, 160, 0.7)',
+						showMarker: true,
+						rendererOptions: {
+							smooth: true,
+						},
+						markerOptions: {
+							style: 'filledSquare',
+							size: 8
+						},
+					}
+				],
+				axes: {
+					xaxis: {
+						// padding of 0 or of 1 produce same results, range 
+						// is multiplied by 1x, so it is not padded.
+						pad: 1.0,
+						tickOptions: {
+							showGridline: false
+						}
+					},
+					yaxis: {
+						pad: 1.05
+					}
+				}
+			});
+		}

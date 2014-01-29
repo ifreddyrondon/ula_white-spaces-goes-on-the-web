@@ -57,7 +57,6 @@ exports.ocupation = function(req, res){
 								}
 							}	
 						}
-						console.log(tablaFinal);
 						res.render('ocupation',{ data:tablaFinal }); 
 				  }
 				});
