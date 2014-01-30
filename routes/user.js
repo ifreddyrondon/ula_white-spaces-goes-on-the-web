@@ -48,16 +48,16 @@ exports.ocupation = function(req, res){
 							for(j=0; j < pasaron.length; j++){
 								
 								if(totales[i].frequency == pasaron[j].frequency){
-									tablaFinal.push([totales[i].frequency, pasaron[j].pasaron_umbral / totales[i].total]);
+									tablaFinal.push([totales[i].frequency / 1000, pasaron[j].pasaron_umbral / totales[i].total]);
 									break;
 								} 
 								else if(totales[i].frequency < pasaron[j].frequency){
-									tablaFinal.push([totales[i].frequency, 0]);
+									tablaFinal.push([totales[i].frequency / 1000, 0]);
 									break;
 								}
 							}	
 						}
-						res.render('ocupation',{ data:tablaFinal }); 
+						res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona }); 
 				  }
 				});
 				objBD.end();  	
