@@ -5,7 +5,8 @@ block content
 		a(href="/")
 			img(src="images/back.png")
 	#chart-title
-		h1(class="insetType")	Occupation with threshold #{umbral}
+		h1(class="insetType")	Occupation with threshold 
+			span(style="background-color:#A8C9F2")	#{umbral}
 	#chart-left-side-screen
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
@@ -20,7 +21,7 @@ block content
 		br
 		br
 		br
-		.ipt_font_med
+		.ipt_font_med(style="padding-left:30px;")
 			center Please select a frequency or channel to display a heatmap of zone #{zona}
 	#chart-canvas
 	script(type='text/javascript').
@@ -88,7 +89,7 @@ block content
 							fontFamily:'Helvetica',
 							fontSize: '14pt'
 						},
-						label:'Percentage of occupancy'
+						label:'<center>Percentage of occupancy</center>'
 					}
 				}
 			});
