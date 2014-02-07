@@ -120,14 +120,17 @@ exports.formFrequency = function(req, res){
 				res.render('index'); 
 			}							
 	    else {
-				if(rows.size > 0){
+				if(rows[0]!= undefined){
 		    	max = rows[0].count;
 					from = from / 1000;
 					to = to / 1000;
 					res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max}); 	    		
 				}
 				else
-					res.render('index'); 	    		
+					res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
+					//console.log("tranquilo");
+//					res.render('index');
+	//				res.redirect('/select_frequency?zona='+zona+'&ipt_umbral='+umbral+'');
 		  }
 		});
 		objBD.end();  	
