@@ -13,3 +13,6 @@ block content
 		.font(style="font-size:15px;font-weight:100") Threshold: #{umbral}
 		.font(style="font-size:15px;font-weight:100") Zone: #{zona}
 	.center-screen
+		form(class="font", action="form_select_channel", method="GET")
+			center
+				input(name="ipt_umbral", type="hidden", value="#{umbral}")

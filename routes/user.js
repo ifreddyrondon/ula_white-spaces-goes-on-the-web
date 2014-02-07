@@ -97,6 +97,10 @@ exports.formFrequency = function(req, res){
 		check(req.query.ipt_umbral).notNull().isNumeric();
 		check(req.query.from_frequency).notNull().isNumeric();
 		check(req.query.to_frequency).notNull().isNumeric();
+		check(req.query.zona).notNull();
+		 	
+		zona = sanitize(req.query.zona).xss();
+		zona = sanitize(zona).entityDecode();
 		
 		umbral = sanitize(req.query.ipt_umbral).xss();
 		umbral = sanitize(umbral).entityDecode();		
@@ -109,7 +113,7 @@ exports.formFrequency = function(req, res){
 		
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query("SELECT coordinates.latitude as lat, coordinates.longitude as lng, COUNT(*) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.potency > "+ objBD.escape(umbral) +" AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate GROUP BY latitude, longitude",
+		objBD.query("SELECT coordinates.latitude as lat, coordinates.longitude as lng, COUNT(*) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.potency > "+ objBD.escape(umbral) +" AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate GROUP BY latitude, longitude ORDER BY count DESC",
 		function(err, rows, fields) {
 	    if (err){
 	    	console.log(err);
@@ -117,9 +121,11 @@ exports.formFrequency = function(req, res){
 			}							
 	    else {
 
-				console.log(rows);
-				res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , data: rows}); 
-	    	
+				console.log();
+				max = rows[0].count;
+				from = from / 1000;
+				to = to / 1000;
+				res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max}); 	    	
 		  }
 		});
 		objBD.end();  	

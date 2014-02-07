@@ -5,7 +5,7 @@ block content
 		a(href="/")
 			img(src="images/back_white.png")
 	.top-center-screen
-		h2(class="insetType",style="color:#ffffff;")	Threshold #{umbral}, #{type} [#{from},#{to}]
+		.font(style="font-size:20px;font-weight:100;color:#ffffff")	Threshold #{umbral}, #{type} [#{from},#{to}]Mhz, zone: #{zona}
 	#map-canvas
 	script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization")
 	script(type='text/javascript').
@@ -42,7 +42,7 @@ block content
 			});
 			// dataset
 			var dataSet= {
-				max: 50,
+				max: #{max},
 				data: !{JSON.stringify(data)}
 			};
 			google.maps.event.addListenerOnce(map, "idle", function(){
