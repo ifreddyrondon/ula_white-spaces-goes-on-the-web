@@ -113,24 +113,34 @@ exports.formFrequency = function(req, res){
 		
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query("SELECT coordinates.latitude as lat, coordinates.longitude as lng, COUNT(*) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.potency > "+ objBD.escape(umbral) +" AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate GROUP BY latitude, longitude ORDER BY count DESC",
+		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +"",
 		function(err, rows, fields) {
 	    if (err){
 	    	console.log(err);
 				res.render('index'); 
 			}							
 	    else {
-				if(rows[0]!= undefined){
-		    	max = rows[0].count;
-					from = from / 1000;
-					to = to / 1000;
-					res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max}); 	    		
-				}
-				else
-					res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
-					//console.log("tranquilo");
-//					res.render('index');
-	//				res.redirect('/select_frequency?zona='+zona+'&ipt_umbral='+umbral+'');
+	    	id_place = rows[0].id_place;
+	    	objBD = BD.BD();
+				objBD.connect();
+				objBD.query("SELECT coordinates.latitude as lat, coordinates.longitude as lng, COUNT(*) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.potency > "+ objBD.escape(umbral) +" AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" GROUP BY latitude, longitude ORDER BY count DESC",
+				function(err, rows, fields) {
+			    if (err){
+			    	console.log(err);
+						res.render('index'); 
+					}							
+			    else {
+						if(rows[0]!= undefined){
+				    	max = rows[0].count;
+							from = from / 1000;
+							to = to / 1000;
+							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max}); 	    		
+						}
+						else
+							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
+				  }
+				});
+				objBD.end();
 		  }
 		});
 		objBD.end();  	
