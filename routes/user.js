@@ -21,7 +21,7 @@ exports.ocupation = function(req, res){
 		// Buscamos el identificador de la zona
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query("SELECT frequency, COUNT(*) AS total FROM potency_frequency GROUP BY frequency",
+		objBD.query("SELECT frequency, COUNT(*) AS total FROM (SELECT coordinates_vs_potency_frequency.id_potency_frequency as id_potency_frequency FROM (SELECT coordinates.id_coordinate as id_coordinate FROM coordinates, places WHERE places.id_place = coordinates.id_place) as aux, coordinates_vs_potency_frequency WHERE aux.id_coordinate = coordinates_vs_potency_frequency.id_coordinate) as aux2, potency_frequency WHERE aux2.id_potency_frequency = potency_frequency.id_potency_frequency GROUP BY frequency",
 		function(err, rows, fields) {
 	    if (err){
 	    	console.log(err);
@@ -32,7 +32,7 @@ exports.ocupation = function(req, res){
 	    	var totales = rows;
 				objBD = BD.BD();
 				objBD.connect();
-				objBD.query("SELECT frequency, COUNT(*) AS pasaron_umbral FROM potency_frequency WHERE potency > "+ objBD.escape(umbral) +" GROUP BY frequency ",
+				objBD.query("SELECT frequency, COUNT(*) AS pasaron_umbral FROM (SELECT coordinates_vs_potency_frequency.id_potency_frequency as id_potency_frequency FROM (SELECT coordinates.id_coordinate as id_coordinate FROM coordinates, places WHERE places.id_place = coordinates.id_place) as aux, coordinates_vs_potency_frequency WHERE aux.id_coordinate = coordinates_vs_potency_frequency.id_coordinate) as aux2, potency_frequency WHERE aux2.id_potency_frequency = potency_frequency.id_potency_frequency AND potency > "+ objBD.escape(umbral) +" GROUP BY frequency",
 				function(err, rows, fields) {
 			    if (err){
 			    	console.log(err);
@@ -150,6 +150,8 @@ exports.formFrequency = function(req, res){
 	  console.log(e.message);
 	}
 }
+
+
 
 exports.selectChannel = function(req, res){
 	try {
