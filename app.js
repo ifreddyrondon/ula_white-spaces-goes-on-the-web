@@ -58,7 +58,10 @@ app.get('/white_spaces', function(req,res){
 });
 
 app.get('/ocupation', user.ocupation);
+app.get('/select_frequency', user.selectFrequency);
+app.get('/select_channel', user.selectChannel);
 
+app.get('/form_select_frequency', user.formFrequency);
 /*-------------------------------------*/
 
 app.get('/login', function(req,res){ 

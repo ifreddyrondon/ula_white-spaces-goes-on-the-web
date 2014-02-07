@@ -7,27 +7,28 @@ block content
 	h1(class="insetType")	White Spaces <br> Goes on the Web
 	br
 	.center-screen
-		#threshold_title
-			.ipt_font Threshold [-120,-20]
-		form(id="form-options", class="font", action="ocupation", method="GET")
-			fieldset(class="radio-container")
-				.radio-options
-					.toggle	Zone
-					ul
-						- if (typeof(places) !== 'undefined')
-							- each place in places
-								li
-									input(type="radio", name="zona", id="#{place.name}", value="#{place.name}")
-									label(for="#{place.name}")	#{place.name}
-			input(id="ipt_umbral", name="ipt_umbral", autocorrect="off", class="ipt_umbral border_user ipt_font_big", type="text", value="-70", alt="You must enter your threshold")
+		center
+			#threshold_title
+				.ipt_font Threshold [-120,-20]
+			form(id="form-options", class="font", action="ocupation", method="GET")
+				fieldset(class="radio-container")
+					.radio-options
+						.toggle	Zone
+						ul
+							- if (typeof(places) !== 'undefined')
+								- each place in places
+									li
+										input(type="radio", name="zona", id="#{place.name}", value="#{place.name}")
+										label(for="#{place.name}")	#{place.name}
+				input(id="ipt_umbral", name="ipt_umbral", autocorrect="off", class="ipt_umbral border_user ipt_font_big", type="text", value="-70", alt="You must enter your threshold")
+				br
+				br
+				.button_wrapper(align="center")
+					.button_underneath.blue(style="width:162px;height:14px")
+						input(id="options-enviar", type="submit", value="Consult", class="button blue", style="width:200px;height:40px;padding-top:6px")
 			br
 			br
-			.button_wrapper(align="center")
-				.button_underneath.blue(style="width:162px;height:14px")
-					input(id="options-enviar", type="submit", value="Consult", class="button blue", style="width:200px;height:40px;padding-top:6px")
-		br
-		br
-		br
-		br
-		br
-		.error
+			br
+			br
+			br
+			.error

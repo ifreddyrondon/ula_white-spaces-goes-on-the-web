@@ -72,7 +72,82 @@ exports.ocupation = function(req, res){
 };
 
 
+exports.selectFrequency = function(req, res){
+	try {
+		check(req.query.zona).notNull();
+		check(req.query.ipt_umbral).notNull().isNumeric();
+		
+		umbral = sanitize(req.query.ipt_umbral).xss();
+		umbral = sanitize(umbral).entityDecode();		
+		
+		zona = sanitize(req.query.zona).xss();
+		zona = sanitize(zona).entityDecode();
+		
+		res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona }); 
+	
+	} catch (e) {
+	  res.render('index'); 
+	  console.log(e.message);
+	}
+}
 
+exports.formFrequency = function(req, res){
+	try {
+		
+		check(req.query.ipt_umbral).notNull().isNumeric();
+		check(req.query.from_frequency).notNull().isNumeric();
+		check(req.query.to_frequency).notNull().isNumeric();
+		
+		umbral = sanitize(req.query.ipt_umbral).xss();
+		umbral = sanitize(umbral).entityDecode();		
+		
+		from = sanitize(req.query.from_frequency).xss();
+		from = sanitize(from).entityDecode()*1000;		
+
+		to = sanitize(req.query.to_frequency).xss();
+		to = sanitize(to).entityDecode()*1000;	
+		
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("SELECT coordinates.latitude as lat, coordinates.longitude as lng, COUNT(*) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.potency > "+ objBD.escape(umbral) +" AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate GROUP BY latitude, longitude",
+		function(err, rows, fields) {
+	    if (err){
+	    	console.log(err);
+				res.render('index'); 
+			}							
+	    else {
+
+				console.log(rows);
+				res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , data: rows}); 
+	    	
+		  }
+		});
+		objBD.end();  	
+			
+	} catch (e) {
+	  res.render('index'); 
+	  console.log(e.message);
+	}
+}
+
+exports.selectChannel = function(req, res){
+	try {
+		check(req.query.zona).notNull();
+		check(req.query.ipt_umbral).notNull().isNumeric();
+		
+		umbral = sanitize(req.query.ipt_umbral).xss();
+		umbral = sanitize(umbral).entityDecode();		
+		
+		zona = sanitize(req.query.zona).xss();
+		zona = sanitize(zona).entityDecode();
+		
+		res.render('heatmap/select_channel',{ umbral:umbral, zona:zona }); 
+	
+	} catch (e) {
+	  res.render('index'); 
+	  console.log(e.message);
+	}
+}
 
 exports.loginSend = function(req, res){
 
