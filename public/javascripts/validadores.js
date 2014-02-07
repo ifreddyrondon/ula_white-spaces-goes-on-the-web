@@ -237,6 +237,8 @@ $(document).ready(function(){
 		
 		if(id=="enter-data") stringHandlerError = "You must enter all the data!!";
 		if(id=="number_decimal") stringHandlerError = "Maximum two (2) decimals!!";
+		if(id=="number_from_greater_than_to") stringHandlerError = "'From' value should not be greater than 'To' value!!";
+		
 		
 		if(document.getElementById(id+'-error') == null)
 	  		$('.error').append('<div id="'+id+'-error"><center><font size="5">* </font>'+stringHandlerError+'</center></div>');

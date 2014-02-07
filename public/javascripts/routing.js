@@ -85,7 +85,16 @@ $(document).ready(function(){
 		}
 	});
 	
-	
+	// Select-frequency-enviar------------------------------------------------------------------------
+	$("#select-frequency-enviar").click(function(){
+		if(!validator("number","number","from_frequency") || !validator("number","number","to_frequency")){
+			return false;
+		}
+		else if($("#from_frequency").val() > $("#to_frequency").val()){
+			errorHandler("number_from_greater_than_to");	
+			return false;
+		}
+	});
 	
 	
 });

@@ -120,12 +120,14 @@ exports.formFrequency = function(req, res){
 				res.render('index'); 
 			}							
 	    else {
-
-				console.log();
-				max = rows[0].count;
-				from = from / 1000;
-				to = to / 1000;
-				res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max}); 	    	
+				if(rows.size > 0){
+		    	max = rows[0].count;
+					from = from / 1000;
+					to = to / 1000;
+					res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max}); 	    		
+				}
+				else
+					res.render('index'); 	    		
 		  }
 		});
 		objBD.end();  	
