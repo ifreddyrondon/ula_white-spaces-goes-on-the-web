@@ -85,14 +85,20 @@ block content
 							fontSize: '14pt'
 						},
 					},
-					yaxis: {
+					yaxis:{
 						pad: 0,
-						tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+						renderer:$.jqplot.LogAxisRenderer,
+						tickOptions:{
+							labelPosition: 'middle', 
+							angle:-30
+						},
+						tickRenderer:$.jqplot.CanvasAxisTickRenderer,
+						labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
 						labelOptions:{
 							fontFamily:'Helvetica',
 							fontSize: '14pt'
 						},
-						label:'<center>Occupancy (ratio)</center>'
+						label:'Occupancy (ratio)'
 					}
 				}
 			});
