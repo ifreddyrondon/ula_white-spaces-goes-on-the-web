@@ -18,7 +18,8 @@ fieldset{border:none;margin:0;padding:0;}
 
 .back {position: absolute; top: 25px; left: 25px;z-index:100}
 
-#chart-title {position: absolute; width:775px; height: 100px; margin: auto; left:0; right:0;top:30px; z-index:100}
+#chart-title-container {position: absolute; width:80%; height:70%; margin:0px; padding:0px; right: 20px; top:0px}
+#chart-title {position: relative; width:370px; margin: auto; right:0;top:30px; z-index:100}
 #chart-canvas{position: absolute; width:80%; height:70%; margin:0px; padding:0px; right: 20px; top:140px}
 #chart-left-side-screen{position: absolute; width: 150px; left:45px; top:80px;}
 
@@ -29,7 +30,7 @@ fieldset{border:none;margin:0;padding:0;}
 #footer_left{position:absolute;left:5px;bottom:2px}
 #footer_right{position: absolute;right:3px}
 
-#threshold_title{position:absolute;right: 45px;top: -20px}
+#threshold_title{position:absolute;right: 26px;top: -35px}
 
 /*---ERRORES--------------------------*/
 .error{

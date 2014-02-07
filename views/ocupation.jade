@@ -4,9 +4,11 @@ block content
 	.back
 		a(href="/")
 			img(src="images/back.png")
-	#chart-title
-		h1(class="insetType")	Occupation with threshold 
-			span(style="background-color:#A8C9F2")	#{umbral}
+	#chart-title-container
+		#chart-title
+			h2(class="insetType", align="center")	Occupation with threshold 
+				br
+				span(style="background-color:#A8C9F2")	#{umbral} dBm (#{zona})
 	#chart-left-side-screen
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
@@ -77,7 +79,7 @@ block content
 							showGridline: false
 						},
 						tickRenderer:$.jqplot.CanvasAxisTickRenderer,
-						label:'Frequency in MHz', 
+						label:'Frequency (MHz)', 
 						labelOptions:{
 							fontFamily:'Helvetica',
 							fontSize: '14pt'
@@ -85,11 +87,12 @@ block content
 					},
 					yaxis: {
 						pad: 0,
+						tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
 						labelOptions:{
 							fontFamily:'Helvetica',
 							fontSize: '14pt'
 						},
-						label:'<center>Percentage of occupancy</center>'
+						label:'<center>Occupancy (ratio)</center>'
 					}
 				}
 			});
