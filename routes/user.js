@@ -28,7 +28,6 @@ exports.ocupation = function(req, res){
 				res.render('index'); 
 			}							
 	    else {
-	    	var resultado = new Array();
 	    	var totales = rows;
 				objBD = BD.BD();
 				objBD.connect();

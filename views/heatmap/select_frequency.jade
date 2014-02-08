@@ -6,11 +6,16 @@ block content
 			img(src="images/back.png")
 	.top-center-screen(style="text-align: center")
 		h1(class="insetType", style="font-size:44px;")	Select <br>Frequency
-	#chart-left-side-screen
+	.parameters-left-side-screen
 		.font(style="font-size:25px;font-weight:100") Parameters
 		br
-		.font(style="font-size:15px;font-weight:100") Threshold: #{umbral}
-		.font(style="font-size:15px;font-weight:100") Zone: #{zona}
+		table(cellspacing="8",style="font-size:15px;font-weight:100;", class="font")
+			tr
+				td	Threshold:
+				td	#{umbral}
+			tr
+				td	Zone: 
+				td	#{zona}					
 	.center-screen
 		form(class="font", action="form_select_frequency", method="GET")
 			center
@@ -21,7 +26,7 @@ block content
 						td
 							pre(style="font-size:25px;font-weight:100") From 
 						td
-							input(id="from_frequency", name="from_frequency", autocorrect="on", class="ipt_frequency border_user ipt_font_big", type="text", value="", alt="You must enter a frequency")
+							input(id="from_frequency", name="from_frequency", autocorrect="on", class="ipt_frequency border_top_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
 						td
 							pre(style="font-size:25px;font-weight:100")  Mhz
 					tr
@@ -29,12 +34,12 @@ block content
 							pre
 								pre(style="font-size:25px;font-weight:100") To
 						td
-							input(id="to_frequency", name="to_frequency", autocorrect="on", class="ipt_frequency border_user ipt_font_big", type="text", value="", alt="You must enter a frequency")
+							input(id="to_frequency", name="to_frequency", autocorrect="on", class="ipt_frequency border_bottom_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
 						td
 							pre(style="font-size:25px;font-weight:100")  Mhz
 				br
 				br
-				table(style="background:#fafafa; color:#222; padding:10px;",cellpadding="10")
+				table(cellspacing="15")
 					tr
 						td
 							input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="max")
