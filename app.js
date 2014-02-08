@@ -63,8 +63,13 @@ app.get('/select_channel', user.selectChannel);
 
 app.get('/form_select_frequency', user.formFrequency);
 
+app.post('/download-csv-to-heatmap', user.downloadCsvToHeatmap);
+
+app.get('/downloadALL', function(req, res){
+  res.download('public/downloads/csv/myheatmap/myheatmapALL.csv'); 
+});
 app.get('/download', function(req, res){
-  res.download('public/downloads/myheatmap/myheatmap.csv'); 
+  res.download('public/downloads/csv/data/data.csv'); 
 });
 /*-------------------------------------*/
 

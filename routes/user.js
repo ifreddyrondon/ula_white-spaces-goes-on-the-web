@@ -3,8 +3,7 @@ var BD = require('../BD')
 	, check = require('validator').check
 	, crypto = require('crypto')
 	, json2csv = require('json2csv')
-	, fs = require('fs')
-	,	lineReader = require('line-reader');
+	, fs = require('fs');
 
 /*
  * GET users listing.
@@ -93,6 +92,78 @@ exports.selectFrequency = function(req, res){
 	}
 }
 
+exports.downloadCsvToHeatmap = function(req, res){
+	try {
+		check(req.body.from).notNull().isNumeric();
+	  check(req.body.to).notNull().isNumeric();
+	  check(req.body.zona).notNull();
+	  check(req.body.umbral).notNull();
+		
+		zona = sanitize(req.body.zona).trim(); 	
+		zona = sanitize(zona).xss();
+		zona = sanitize(zona).entityDecode();
+		
+		from = sanitize(req.body.from).trim(); 	
+		from = sanitize(from).xss();
+		from = sanitize(from).entityDecode()*1000;
+				
+		to = sanitize(req.body.to).trim(); 	
+		to = sanitize(to).xss();
+		to = sanitize(to).entityDecode()*1000;
+		
+		umbral = sanitize(req.body.umbral).trim(); 	
+		umbral = sanitize(umbral).xss();
+		umbral = sanitize(umbral).entityDecode();
+		
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +"",
+		function(err, rows, fields) {
+	    if (err){
+	    	console.log(err);
+				res.render('index'); 
+			}							
+	    else {
+	    	id_place = rows[0].id_place;
+	    	query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, potency as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" ORDER BY lat, lng DESC";
+		
+			  objBD = BD.BD();
+				objBD.connect();
+				objBD.query(query,
+				function(err, rows, fields) {
+			    if (err){
+			    	console.log(err);
+						res.render('index'); 
+					}							
+			    else {
+
+						if(rows[0]!= undefined){
+														
+							json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, function(err, csv) {
+							  if (err) console.log(err);
+								fs.writeFile('public/downloads/csv/myheatmap/myheatmapALL.csv', csv, function(err) {
+							    if (err) throw err;
+							    console.log('file saved');
+							    res.send('0');
+							  });							  
+							});	
+						}
+						else
+							res.send('1');
+				  }
+				});
+				objBD.end();
+	    	
+	    }
+	  });
+		objBD.end();
+
+	} catch (e) {
+	  res.render('index'); 
+	  console.log(e.message);
+	}
+}
+
 exports.formFrequency = function(req, res){
 	try {
 		
@@ -147,27 +218,13 @@ exports.formFrequency = function(req, res){
 			    else {
 						if(rows[0]!= undefined){
 														
-												
-							json2csv({data: rows, fields: ['lat', 'lng', 'count']}, function(err, csv) {
+							json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, function(err, csv) {
 							  if (err) console.log(err);
-								fs.writeFile('public/downloads/myheatmap/myheatmap.csv', csv, function(err) {
+								fs.writeFile('public/downloads/csv/data/data.csv', csv, function(err) {
 							    if (err) throw err;
 							    console.log('file saved');
 							  });							  
-							});
-							
-							var newCsv = new Array();	
-							newCsv.push("latitude,longitude,count");											
-							lineReader.eachLine('public/downloads/myheatmap/myheatmap.csv', function(line, last) {
-							  newCsv.push(line);											
-							  if (last) {
-							    console.log(newCsv);
-							  }
-							});
-							
-							console.log(newCsv);
-							
-							
+							});	
 
 				    	max = rows[0].count;
 							from = from / 1000;

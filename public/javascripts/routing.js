@@ -96,5 +96,35 @@ $(document).ready(function(){
 		}
 	});
 	
+	$("#download-csv-to-heatmap").click(function(){
+		if(!validator("number","number","from_frequency") || !validator("number","number","to_frequency")){
+			return false;
+		}
+		else if($("#from_frequency").val() > $("#to_frequency").val()){
+			errorHandler("number_from_greater_than_to");	
+			return false;
+		} else {
+		
+			$.ajax({
+		  	type: 'POST',
+				url: 'download-csv-to-heatmap',
+				data: {from:$("#from_frequency").val(), to:$("#to_frequency").val(), zona:$("#zona_ipt_hidden").val(), umbral:$("#umbral_ipt_hidden").val()},
+		    beforeSend: function(){
+				 	$("#bowlG").show();
+				},
+		    success: function(res){
+		    	$("#bowlG").hide();
+		    	if(res == '1'){
+			    	errorHandler("frequency_not_recorded");	
+		    	}
+		    	else if(res == '0'){
+			    	$("#download-csv-to-heatmap").hide();
+						$("#downloadALL").show();	
+		    	}
+				}
+			});
+		
+		}
+	});
 	
 });
