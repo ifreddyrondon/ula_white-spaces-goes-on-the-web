@@ -2,10 +2,12 @@ extends ../layout
 
 block content
 	.back
-		a(href="/")
+		a(href="javascript:history.back()")
 			img(src="images/back_white.png")
 	.top-center-screen
 		.font(style="font-size:20px;font-weight:100;color:#ffffff")	Threshold #{umbral}, #{type} [#{from},#{to}]Mhz, zone: #{zona}
+	.left-side-screen
+		a(href="/download")	Download
 	#map-canvas
 	script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization")
 	script(type='text/javascript').

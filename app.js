@@ -62,6 +62,10 @@ app.get('/select_frequency', user.selectFrequency);
 app.get('/select_channel', user.selectChannel);
 
 app.get('/form_select_frequency', user.formFrequency);
+
+app.get('/download', function(req, res){
+  res.download('public/downloads/myheatmap/myheatmap.csv'); 
+});
 /*-------------------------------------*/
 
 app.get('/login', function(req,res){ 

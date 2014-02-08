@@ -1,7 +1,10 @@
 var BD = require('../BD')
 	, sanitize = require('validator').sanitize
 	, check = require('validator').check
-	, crypto = require('crypto');
+	, crypto = require('crypto')
+	, json2csv = require('json2csv')
+	, fs = require('fs')
+	,	lineReader = require('line-reader');
 
 /*
  * GET users listing.
@@ -142,8 +145,30 @@ exports.formFrequency = function(req, res){
 						res.render('index'); 
 					}							
 			    else {
-			    	console.log(rows);
 						if(rows[0]!= undefined){
+														
+												
+							json2csv({data: rows, fields: ['lat', 'lng', 'count']}, function(err, csv) {
+							  if (err) console.log(err);
+								fs.writeFile('public/downloads/myheatmap/myheatmap.csv', csv, function(err) {
+							    if (err) throw err;
+							    console.log('file saved');
+							  });							  
+							});
+							
+							var newCsv = new Array();	
+							newCsv.push("latitude,longitude,count");											
+							lineReader.eachLine('public/downloads/myheatmap/myheatmap.csv', function(line, last) {
+							  newCsv.push(line);											
+							  if (last) {
+							    console.log(newCsv);
+							  }
+							});
+							
+							console.log(newCsv);
+							
+							
+
 				    	max = rows[0].count;
 							from = from / 1000;
 							to = to / 1000;
