@@ -95,8 +95,8 @@ $(document).ready(function(){
 			return false;
 		}
 	});
-	
-	$("#download-csv-to-heatmap").click(function(){
+	// Download CSV all files------------------------------------------------------------------------
+	$("#generate-csv-to-heatmap").click(function(){
 		if(!validator("number","number","from_frequency") || !validator("number","number","to_frequency")){
 			return false;
 		}
@@ -107,7 +107,7 @@ $(document).ready(function(){
 		
 			$.ajax({
 		  	type: 'POST',
-				url: 'download-csv-to-heatmap',
+				url: 'generate-csv-to-myheatmap',
 				data: {from:$("#from_frequency").val(), to:$("#to_frequency").val(), zona:$("#zona_ipt_hidden").val(), umbral:$("#umbral_ipt_hidden").val()},
 		    beforeSend: function(){
 				 	$("#bowlG").show();
@@ -118,13 +118,33 @@ $(document).ready(function(){
 			    	errorHandler("frequency_not_recorded");	
 		    	}
 		    	else if(res == '0'){
-			    	$("#download-csv-to-heatmap").hide();
-						$("#downloadALL").show();	
+			    	$("#generate-csv-to-heatmap").hide();
+						$("#dowload-csv-to-myheatmap").show();	
 		    	}
 				}
 			});
 		
 		}
+	});
+	// Download PDF chart------------------------------------------------------------------------
+	$("#generate_pdf_chart").click(function(){
+		$.ajax({
+	  	type: 'POST',
+	  	traditional: true,
+			url: 'generate-pdf-of-chart',
+			data: {zona:$("#zona_ipt_hidden").val(), umbral:$("#umbral_ipt_hidden").val(), img:$("#img_chart_ipt_hidden").val()},
+	    beforeSend: function(){
+			 	$("#bowlG").show();
+			},
+	    success: function(res){
+	    	$("#bowlG").hide();
+	    	if(res == '0'){
+		    	$("#generate_pdf_chart").hide();
+					$("#download_pdf_chart").show();	
+	    	}
+			}
+		});
+		
 	});
 	
 });

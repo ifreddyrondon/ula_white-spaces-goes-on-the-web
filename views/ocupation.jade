@@ -25,6 +25,19 @@ block content
 		br
 		.ipt_font_med(style="padding-left:30px;")
 			center Please select a frequency or channel to display a heatmap of zone #{zona}
+		br
+		br
+		br
+		br
+		br
+		br
+		a(href="#", id="generate_pdf_chart")
+			img(src="images/generate_pdf_file.png")
+		a(href="/download-pdf-of-chart", id="download_pdf_chart", style="display:none")
+			img(src="images/download_pdf_file.png")
+		input(id="umbral_ipt_hidden", name="ipt_umbral", type="hidden", value="#{umbral}")
+		input(id="zona_ipt_hidden", name="zona", type="hidden", value="#{zona}")
+		input(id="img_chart_ipt_hidden", name="zona", type="hidden", value="")
 	#chart-canvas
 	script(type='text/javascript').
 		
@@ -102,4 +115,8 @@ block content
 					}
 				}
 			});
+			
+			var imgData = $('#chart-canvas').jqplotToImageStr({});
+			$('#img_chart_ipt_hidden').val(imgData);
+			
 		}

@@ -3,7 +3,8 @@ var BD = require('../BD')
 	, check = require('validator').check
 	, crypto = require('crypto')
 	, json2csv = require('json2csv')
-	, fs = require('fs');
+	, fs = require('fs')
+	, PDFDocument = require('pdfkit');
 
 /*
  * GET users listing.
@@ -71,6 +72,46 @@ exports.ocupation = function(req, res){
 	  console.log(e.message);
 	}
 };
+
+exports.downloadPdfOfChart = function(req, res){
+	try {
+		check(req.body.zona).notNull();
+		check(req.body.umbral).notNull().isNumeric();
+		check(req.body.img).notNull();
+		
+		zona = sanitize(req.body.zona).xss();
+		zona = sanitize(zona).entityDecode();
+		
+		umbral = sanitize(req.body.umbral).xss();
+		umbral = sanitize(umbral).entityDecode();		
+		
+		img = sanitize(req.body.img).xss();
+		img = sanitize(img).entityDecode();		
+		
+		var data = img.replace(/^data:image\/\w+;base64,/, "");
+		var buf = new Buffer(data, 'base64');
+		
+		fs.writeFile('public/downloads/pdf/chart.png', buf, function(err) {
+	    if (err) throw err;
+	    
+	    doc = new PDFDocument({size: 'LEGAL',layout: 'landscape'});
+	    doc.fontSize(25);
+	    doc.text('Occupation with threshold ' + umbral + ' dBm (' + zona + ')', {align: 'center'});
+			doc.image('public/downloads/pdf/chart.png', { width: 850});
+			doc.write('public/downloads/pdf/occupation.pdf');
+			
+			fs.unlink('public/downloads/pdf/chart.png', function(){
+				if (err) throw err;
+				res.send('0');
+			});
+			
+	  });
+		
+	} catch (e) {
+	  res.render('index'); 
+	  console.log(e.message);
+	}
+}
 
 
 exports.selectFrequency = function(req, res){
@@ -225,7 +266,6 @@ exports.formFrequency = function(req, res){
 							    console.log('file saved');
 							  });							  
 							});	
-
 				    	max = rows[0].count;
 							from = from / 1000;
 							to = to / 1000;

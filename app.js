@@ -63,12 +63,17 @@ app.get('/select_channel', user.selectChannel);
 
 app.get('/form_select_frequency', user.formFrequency);
 
-app.post('/download-csv-to-heatmap', user.downloadCsvToHeatmap);
-
-app.get('/downloadALL', function(req, res){
+app.post('/generate-csv-to-myheatmap', user.downloadCsvToHeatmap);
+app.get('/dowload-csv-to-myheatmap', function(req, res){
   res.download('public/downloads/csv/myheatmap/myheatmapALL.csv'); 
 });
-app.get('/download', function(req, res){
+
+app.post('/generate-pdf-of-chart', user.downloadPdfOfChart);
+app.get('/download-pdf-of-chart', function(req, res){
+  res.download('public/downloads/pdf/occupation.pdf'); 
+});
+
+app.get('/download-csv-data', function(req, res){
   res.download('public/downloads/csv/data/data.csv'); 
 });
 /*-------------------------------------*/
