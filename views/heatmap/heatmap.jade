@@ -5,12 +5,16 @@ block content
 		a(href="javascript:history.back()")
 			img(src="images/back_white.png")
 	.top-center-screen
-		.font(style="font-size:20px;font-weight:100;color:#ffffff")	Threshold #{umbral}, #{type} [#{from},#{to}]Mhz, zone: #{zona}
+		.font(style="font-size:20px;font-weight:100;color:#ffffff")	#{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max}
 	.left-side-screen-csv-download
 		a(href="/download-csv-data")
 			img(src="images/download_csv_file.png")
-		a(href="#")
+		a(href="#", id="generate_pdf_heatmap")
+			img(src="images/generate_pdf_file.png")
+		a(href="/download-pdf-of-heatmap", id="download_pdf_heatmap", style="display:none")
 			img(src="images/download_pdf_file.png")
+		input(id="heatmap_title_pdf", name="ipt_umbral", type="hidden", value="")
+		input(id="img_heatmap_ipt_hidden", name="ipt_heatmap", type="hidden", value="")
 	#map-canvas
 	script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization")
 	script(type='text/javascript').
@@ -54,8 +58,39 @@ block content
 				// asignamos la data
 				heatmap.setDataSet(dataSet);
 			});
+	
 			// propiedades de los enlaces para que se vean
 			$("#footer_left a").css("color","#ffffff");
 			$("#footer_right a").css("color","#ffffff");
 			$("#footer_right .font").css("color","#ffffff");
+			
+			$("#generate_pdf_heatmap").click(function(){
+
+				html2canvas(document.getElementById('map-canvas'), {
+					onrendered: function(canvas) {
+						$('#img_heatmap_ipt_hidden').val(canvas.toDataURL());
+					}
+				});
+				
+				stringTitle = "#{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max}";
+				$('#heatmap_title_pdf').val(stringTitle);
+				
+				$.ajax({
+					type: 'POST',
+					url: 'generate-pdf-of-heatmap',
+					data: {title:$("#heatmap_title_pdf").val(), img:$("#img_heatmap_ipt_hidden").val()},
+					beforeSend: function(){
+						$("#bowlG").show();
+					},
+					success: function(res){
+						$("#bowlG").hide();
+						if(res == '0'){
+							$("#generate_pdf_heatmap").hide();
+							$("#download_pdf_heatmap").show();	
+						}
+					}
+				});
+			});
+
+				
 		}

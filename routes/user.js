@@ -11,7 +11,7 @@ var BD = require('../BD')
  */
 
 exports.ocupation = function(req, res){
-	try {
+	try { 
 		check(req.query.zona).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
 		 	
@@ -101,6 +101,44 @@ exports.downloadPdfOfChart = function(req, res){
 			doc.write('public/downloads/pdf/occupation.pdf');
 			
 			fs.unlink('public/downloads/pdf/chart.png', function(){
+				if (err) throw err;
+				res.send('0');
+			});
+			
+	  });
+		
+	} catch (e) {
+	  res.render('index'); 
+	  console.log(e.message);
+	}
+}
+
+exports.downloadPdfOfHeatmap = function(req, res){
+	try {
+		check(req.body.title).notNull();
+		check(req.body.img).notNull();
+		
+		title = req.body.title;
+		title = sanitize(zona).entityDecode();		
+		
+		console.log(title);
+		
+		img = sanitize(req.body.img).xss();
+		img = sanitize(img).entityDecode();		
+		
+		var data = img.replace(/^data:image\/\w+;base64,/, "");
+		var buf = new Buffer(data, 'base64');
+		
+		fs.writeFile('public/downloads/pdf/heatmap.png', buf, function(err) {
+	    if (err) throw err;
+	    
+	    doc = new PDFDocument({size: 'LEGAL',layout: 'landscape'});
+	    doc.fontSize(25);
+	    doc.text(title, {align: 'center'});
+			doc.image('public/downloads/pdf/heatmap.png', { width: 850});
+			doc.write('public/downloads/pdf/heatmap.pdf');
+			
+			fs.unlink('public/downloads/pdf/heatmap.png', function(){
 				if (err) throw err;
 				res.send('0');
 			});

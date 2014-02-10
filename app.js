@@ -73,6 +73,11 @@ app.get('/download-pdf-of-chart', function(req, res){
   res.download('public/downloads/pdf/occupation.pdf'); 
 });
 
+app.post('/generate-pdf-of-heatmap', user.downloadPdfOfHeatmap);
+app.get('/download-pdf-of-heatmap', function(req, res){
+  res.download('public/downloads/pdf/heatmap.pdf'); 
+});
+
 app.get('/download-csv-data', function(req, res){
   res.download('public/downloads/csv/data/data.csv'); 
 });
