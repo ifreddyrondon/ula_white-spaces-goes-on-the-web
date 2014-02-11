@@ -194,19 +194,25 @@ fieldset{border:none;margin:0;padding:0;}
 	
 /*---RADIO BUTTON----------------------------------*/
 
-input[type=radio].css-checkbox { display:none }
+input[type=radio].css-checkbox {
+	display:none;
+}
+
 input[type=radio].css-checkbox + label.css-label {
-	padding-left:53px;
-	height:48px; 
+	padding-left:39px;
+	height:34px; 
 	display:inline-block;
-	line-height:48px;
+	line-height:34px;
 	background-repeat:no-repeat;
 	background-position: 0 0;
-	font-size:35px;
+	font-size:20px;
 	vertical-align:middle;
 	cursor:pointer;
 }
-input[type=radio].css-checkbox:checked + label.css-label {background-position: 0 -48px }
+
+input[type=radio].css-checkbox:checked + label.css-label {
+	background-position: 0 -34px;
+}
 label.css-label {
 	background-image:url(../images/checkbox.png);
 	-webkit-touch-callout: none;
