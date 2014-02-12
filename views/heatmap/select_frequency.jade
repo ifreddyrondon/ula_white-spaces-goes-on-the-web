@@ -4,13 +4,17 @@ block content
 	.back 
 		a(href="ocupation?zona=#{zona}&ipt_umbral=#{umbral}")
 			img(src="images/back.png")
-	.top-center-screen(style="text-align: center")
-		h1(class="insetType", style="font-size:44px;")	Select <br>Frequency
+	
 	.right-side-screen-csv-download
 		a(href="#", id="generate-csv-to-heatmap")
 			img(src="images/myheatmap_generate.png")
-		a(href="/dowload-csv-to-myheatmap", id="dowload-csv-to-myheatmap", style="display:none")
+		a(href="/dowload-csv-to-myheatmap", id="dowload-csv-to-myheatmap",)
+			
 			img(src="images/myheatmap_download.png")
+
+	.top-center-screen(style="text-align: center")
+		h1(class="insetType", style="font-size:44px;")	Select <br>Frequency
+	
 	.parameters-left-side-screen
 		.font(style="font-size:25px;font-weight:100") Parameters
 		br
@@ -20,7 +24,8 @@ block content
 				td	#{umbral}
 			tr
 				td	Zone: 
-				td	#{zona}					
+				td	#{zona}		
+		br			
 	.center-screen
 		form(class="font", action="form_select_frequency", method="GET")
 			center
@@ -34,28 +39,35 @@ block content
 							input(id="from_frequency", name="from_frequency", autocorrect="on", class="ipt_frequency border_top_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
 						td
 							pre(style="font-size:25px;font-weight:100")  Mhz
+
 					tr
 						td
-							pre
-								pre(style="font-size:25px;font-weight:100") To
+							pre(style="font-size:25px;font-weight:100") To
 						td
 							input(id="to_frequency", name="to_frequency", autocorrect="on", class="ipt_frequency border_bottom_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
 						td
 							pre(style="font-size:25px;font-weight:100")  Mhz
+
+				
+				br	
 				br
+
+				table	
+					pre(style="font-size:16px;font-weight:100") please select the function <br>to operate on the data
+
 				br
 				table(cellspacing="15")
 					tr
 						td
 							input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="max")
-							label(for="radio4", class="css-label")	Max
+							label(for="radio4", class="css-label")	Max Value
 						td
 							input(type="radio", name="type_heatmap", id="radio5", class="css-checkbox", value="prom")
-							label(for="radio5", class="css-label")	X&#772
+							label(for="radio5", class="css-label")	Average(X&#772)
 				br
 				.button_wrapper(align="center")
 					.button_underneath(style="width:162px;height:14px")
-						input(id="select-frequency-enviar", type="submit", value="HeatMap", class="button", style="width:200px;height:40px;padding-top:6px")
+						input(id="select-frequency-enviar", type="submit", value="Show Heatmap", class="button", style="width:200px;height:40px;padding-top:6px")
 		br
 		br
 		br
