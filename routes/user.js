@@ -59,7 +59,48 @@ exports.ocupation = function(req, res){
 								}
 							}	
 						}
-						res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona }); 
+						
+						allocation = "North American";
+						objBD = BD.BD();
+						objBD.connect();
+						places = objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE allocation = "+ objBD.escape(allocation) +"",
+							function(err, rows, fields) {
+								if (err)
+						    	console.log(err);						
+						    else{
+						    	var channels = new Array();
+						    	
+						    	for(i = 0; i <  rows.length; i++){
+						    	
+						    		temp = {};
+						    	
+							    	rectangle = {};
+										rectangle.xmin = rows[i].from;
+										rectangle.xmax  = rows[i].to;
+										rectangle.ymin = 0.0;
+										rectangle.ymax = 1;
+										rectangle.xminOffset = '0px';
+										rectangle.xmaxOffset = '0px';
+										rectangle.yminOffset = '0px';
+										rectangle.ymaxOffset = '0px';
+										
+										if(i%2==0)
+											rectangle.color = 'rgba(0, 017, 255, 0.25)';
+										else
+											rectangle.color = 'rgba(100,50,50,.25)';
+											
+										rectangle.showTooltip = true;
+										rectangle.tooltipFormatString = '-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-';
+										
+										temp.rectangle = rectangle;
+										channels.push(temp);
+						    	}
+
+									res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona, channels:channels });  
+						    }
+							});
+						objBD.end();
+																		
 				  }
 				});
 				objBD.end();  	

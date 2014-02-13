@@ -43,15 +43,18 @@ block content
 		
 		window.onload = function(){
 		
-			var local_data =!{JSON.stringify(data)}
-			var plot1 = $.jqplot('chart-canvas', [local_data], {
+			var data =!{JSON.stringify(data)};
+			var channels =!{JSON.stringify(channels)};
+
+			var plot1 = $.jqplot('chart-canvas', [data], {
 				grid: {
 					drawBorder: false,
 					shadow: false,
 					background: 'rgba(0,0,0,0)'
 				},
-				
-				highlighter: { show: true },
+				highlighter: { 
+					show: true 
+				},
 				seriesDefaults: { 
 					shadowAlpha: 0.1,
 					shadowDepth: 2,
@@ -67,7 +70,7 @@ block content
 						fillAndStroke: true,
 						markerOptions: {
 							style: 'filledCircle',
-							size: 5
+							size: 3
 						},
 						rendererOptions: {
 							smooth: true
@@ -113,9 +116,13 @@ block content
 						},
 						label:'Occupancy (ratio)'
 					}
-				}
+				},
+				canvasOverlay: { 
+					show: true,
+					objects: channels
+				},
 			});
-			
+						
 			var imgData = $('#chart-canvas').jqplotToImageStr({});
 			$('#img_chart_ipt_hidden').val(imgData);
 			
