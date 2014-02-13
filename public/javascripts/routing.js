@@ -104,7 +104,6 @@ $(document).ready(function(){
 			errorHandler("number_from_greater_than_to");	
 			return false;
 		} else {
-		
 			$.ajax({
 		  	type: 'POST',
 				url: 'generate-csv-to-myheatmap',
@@ -119,7 +118,9 @@ $(document).ready(function(){
 		    	}
 		    	else if(res == '0'){
 			    	$("#generate-csv-to-heatmap").hide();
-						$("#dowload-csv-to-myheatmap").show();	
+			    	$("#generate-csv-to-heatmap2").show();
+						$("#dowload-csv-to-myheatmap").hide();	
+						$("#dowload-csv-to-myheatmap2").show();	
 		    	}
 				}
 			});

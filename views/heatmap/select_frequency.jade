@@ -4,17 +4,8 @@ block content
 	.back 
 		a(href="ocupation?zona=#{zona}&ipt_umbral=#{umbral}")
 			img(src="images/back.png")
-	
-	.right-side-screen-csv-download
-		a(href="#", id="generate-csv-to-heatmap")
-			img(src="images/myheatmap_generate.png")
-		a(href="/dowload-csv-to-myheatmap", id="dowload-csv-to-myheatmap",)
-			
-			img(src="images/myheatmap_download.png")
-
 	.top-center-screen(style="text-align: center")
 		h1(class="insetType", style="font-size:44px;")	Select <br>Frequency
-	
 	.parameters-left-side-screen
 		.font(style="font-size:25px;font-weight:100") Parameters
 		br
@@ -26,49 +17,58 @@ block content
 				td	Zone: 
 				td	#{zona}		
 		br			
-	.center-screen
+	.center-screen-cvs-download
 		form(class="font", action="form_select_frequency", method="GET")
 			center
-				input(id="umbral_ipt_hidden", name="ipt_umbral", type="hidden", value="#{umbral}")
-				input(id="zona_ipt_hidden", name="zona", type="hidden", value="#{zona}")
 				table
 					tr
-						td
-							pre(style="font-size:25px;font-weight:100") From 
-						td
-							input(id="from_frequency", name="from_frequency", autocorrect="on", class="ipt_frequency border_top_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
-						td
-							pre(style="font-size:25px;font-weight:100")  Mhz
-
+						td(align="center", colspan="2")
+							input(id="umbral_ipt_hidden", name="ipt_umbral", type="hidden", value="#{umbral}")
+							input(id="zona_ipt_hidden", name="zona", type="hidden", value="#{zona}")
+							table
+								tr
+									td
+										pre(style="font-size:25px;font-weight:100") From 
+									td
+										input(id="from_frequency", name="from_frequency", autocorrect="on", class="ipt_frequency border_top_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
+									td
+										pre(style="font-size:25px;font-weight:100")  Mhz
+			
+								tr
+									td
+										pre(style="font-size:25px;font-weight:100") To
+									td
+										input(id="to_frequency", name="to_frequency", autocorrect="on", class="ipt_frequency border_bottom_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
+									td
+										pre(style="font-size:25px;font-weight:100")  Mhz
 					tr
-						td
-							pre(style="font-size:25px;font-weight:100") To
-						td
-							input(id="to_frequency", name="to_frequency", autocorrect="on", class="ipt_frequency border_bottom_6 ipt_font_big", type="text", value="", alt="You must enter a frequency")
-						td
-							pre(style="font-size:25px;font-weight:100")  Mhz
-
-				
-				br	
+						td(align="center",style="padding-right:20px")		
+							br	
+							br
+							pre(style="font-size:16px;font-weight:100") please select the function <br>to operate on the data
+							br
+							table(cellspacing="15", width="348")
+								tr
+									td
+										input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="max")
+										label(for="radio4", class="css-label")	Max Value
+									td
+										input(type="radio", name="type_heatmap", id="radio5", class="css-checkbox", value="prom")
+										label(for="radio5", class="css-label")	Average(X&#772)
+							br
+							.button_wrapper(align="center")
+								.button_underneath(style="width:162px;height:14px")
+									input(id="select-frequency-enviar", type="submit", value="Show Heatmap", class="button", style="width:200px;height:40px;padding-top:6px")
+						td(align="center", valign="middle")
+							a(href="#", id="generate-csv-to-heatmap")
+								img(src="images/myheatmap_generate.png")
+							a(href="#", id="generate-csv-to-heatmap2", style="display:none")
+								img(src="images/myheatmap_generate2.png")
+							a(href="javascript:void(0)", id="dowload-csv-to-myheatmap",)	
+								img(src="images/myheatmap_download2.png")				
+							a(href="/dowload-csv-to-myheatmap", id="dowload-csv-to-myheatmap2",style="display:none")	
+								img(src="images/myheatmap_download.png")				
 				br
-
-				table	
-					pre(style="font-size:16px;font-weight:100") please select the function <br>to operate on the data
-
 				br
-				table(cellspacing="15")
-					tr
-						td
-							input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="max")
-							label(for="radio4", class="css-label")	Max Value
-						td
-							input(type="radio", name="type_heatmap", id="radio5", class="css-checkbox", value="prom")
-							label(for="radio5", class="css-label")	Average(X&#772)
 				br
-				.button_wrapper(align="center")
-					.button_underneath(style="width:162px;height:14px")
-						input(id="select-frequency-enviar", type="submit", value="Show Heatmap", class="button", style="width:200px;height:40px;padding-top:6px")
-		br
-		br
-		br
-		.error	#{error}
+				.error	#{error}
