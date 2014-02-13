@@ -308,11 +308,10 @@ label.css-label {
 		position: relative;
 		width: 200px;
 		margin: 5px;
-	  height: 4em;
+	  height: 62px;
 	  font-size: 1.5em;
 	  line-height: 1;
-	  color: #d6ebe0; 
-		float: left;
+	  color: #d6ebe0; 	
 	}
 	.radio-container-wide {
 		position: relative;

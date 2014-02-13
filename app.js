@@ -42,13 +42,25 @@ function login(req, res, next){
 app.get('/', function(req,res){ 
 	objBD = BD.BD();
 	objBD.connect();
-	places = objBD.query("SELECT name FROM places",
+	objBD.query("SELECT name FROM places",
 		function(err, rows, fields) {
 			if (err)
 	    	console.log(err);						
-	    else
-	    	places = rows;
-		  res.render('index',{ sesion: req.session.user, places : places } ); 
+	    else{
+		    places = rows;
+		    objBD = BD.BD();
+				objBD.connect();
+				objBD.query("SELECT name FROM allocation_channels",
+					function(err, rows, fields) {
+						if (err)
+				    	console.log(err);						
+				    else{
+					  	allocations = rows;
+							res.render('index',{ sesion: req.session.user, places : places, allocations:allocations } );  
+				    }
+					});
+				objBD.end();	
+	    }
 		});
 	objBD.end();	
 });
@@ -101,7 +113,7 @@ app.get('/logout', login, function(req,res){
 app.get('/admin', login, function(req, res){
 	objBD = BD.BD();
 	objBD.connect();
-	places = objBD.query("SELECT name FROM places",
+	objBD.query("SELECT name FROM places",
 		function(err, rows, fields) {
 			if (err)
 	    	console.log(err);						

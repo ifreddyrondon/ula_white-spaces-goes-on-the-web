@@ -17,7 +17,9 @@ $(document).ready(function(){
 	// Form opciones de zona y umbral, validador de vacios-----------------------------
 	$(document).on("click","#options-enviar",function(){
 		val = $(document.getElementsByName('zona'));
+		allocation = $(document.getElementsByName('allocation'));
 		error = true;
+		error2 = true;
 		number_split = $("#ipt_umbral").val().split('.');
 		for (i = 0 ; i < val.length ; i++){
 			if (val[i].checked){
@@ -25,7 +27,13 @@ $(document).ready(function(){
 				break;
 			}
 		}
-		if (error == true){
+		for (j = 0 ; j < allocation.length ; j++){
+			if (allocation[j].checked){
+				error2 = false;
+				break;
+			}
+		}
+		if (error == true || error2 == true){
 			errorHandler("enter-data");
 			return false;
 		} else if($("#ipt_umbral").val() == '' || !validator("number","number","ipt_umbral"))

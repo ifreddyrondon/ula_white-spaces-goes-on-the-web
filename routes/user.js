@@ -14,12 +14,16 @@ exports.ocupation = function(req, res){
 	try { 
 		check(req.query.zona).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
+		check(req.query.allocation).notNull();
 		 	
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
 		
 		umbral = sanitize(req.query.ipt_umbral).xss();
 		umbral = sanitize(umbral).entityDecode();		
+		
+		allocation = sanitize(req.query.allocation).xss();
+		allocation = sanitize(allocation).entityDecode();		
 				
 		// Buscamos el identificador de la zona
 		objBD = BD.BD();
@@ -60,47 +64,57 @@ exports.ocupation = function(req, res){
 							}	
 						}
 						
-						allocation = "North American";
 						objBD = BD.BD();
 						objBD.connect();
-						places = objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE allocation = "+ objBD.escape(allocation) +"",
+						objBD.query("SELECT id_allocation FROM allocation_channels WHERE name = "+ objBD.escape(allocation) +"",
 							function(err, rows, fields) {
 								if (err)
 						    	console.log(err);						
 						    else{
-						    	var channels = new Array();
-						    	
-						    	for(i = 0; i <  rows.length; i++){
-						    	
-						    		temp = {};
-						    	
-							    	rectangle = {};
-										rectangle.xmin = rows[i].from;
-										rectangle.xmax  = rows[i].to;
-										rectangle.ymin = 0.0;
-										rectangle.ymax = 1;
-										rectangle.xminOffset = '0px';
-										rectangle.xmaxOffset = '0px';
-										rectangle.yminOffset = '0px';
-										rectangle.ymaxOffset = '0px';
-										
-										if(i%2==0)
-											rectangle.color = 'rgba(0, 017, 255, 0.25)';
-										else
-											rectangle.color = 'rgba(100,50,50,.25)';
-											
-										rectangle.showTooltip = true;
-										rectangle.tooltipFormatString = '-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-';
-										
-										temp.rectangle = rectangle;
-										channels.push(temp);
-						    	}
-
-									res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona, channels:channels });  
+							  	id_allocation = rows[0].id_allocation;
+							  	objBD = BD.BD();
+									objBD.connect();
+									objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+ objBD.escape(id_allocation) +"",
+										function(err, rows, fields) {
+											if (err)
+									    	console.log(err);						
+									    else{
+									    	var channels = new Array();
+									    	
+									    	for(i = 0; i <  rows.length; i++){
+									    	
+									    		temp = {};
+									    	
+										    	rectangle = {};
+													rectangle.xmin = rows[i].from;
+													rectangle.xmax  = rows[i].to;
+													rectangle.ymin = 0.0;
+													rectangle.ymax = 1;
+													rectangle.xminOffset = '0px';
+													rectangle.xmaxOffset = '0px';
+													rectangle.yminOffset = '0px';
+													rectangle.ymaxOffset = '0px';
+													
+													if(i%2==0)
+														rectangle.color = 'rgba(0, 017, 255, 0.25)';
+													else
+														rectangle.color = 'rgba(100,50,50,.25)';
+														
+													rectangle.showTooltip = true;
+													rectangle.tooltipFormatString = '-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-';
+													
+													temp.rectangle = rectangle;
+													channels.push(temp);
+									    	}
+			
+												res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona, channels:channels });  
+									    }
+										});
+									objBD.end();
 						    }
 							});
-						objBD.end();
-																		
+						objBD.end();							
+												
 				  }
 				});
 				objBD.end();  	

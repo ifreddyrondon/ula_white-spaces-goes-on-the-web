@@ -11,24 +11,38 @@ block content
 			#threshold_title
 				.ipt_font Ocupation threshold <br> [-120,-20]
 			form(id="form-options", class="font", action="ocupation", method="GET")
-				fieldset(class="radio-container")
-					.radio-options
-						.toggle	Zone
-						ul
-							- if (typeof(places) !== 'undefined')
-								- each place in places
-									li
-										input(type="radio", name="zona", id="#{place.name}", value="#{place.name}")
-										label(for="#{place.name}")	#{place.name}
-				input(id="ipt_umbral", name="ipt_umbral", autocorrect="off", class="ipt_umbral border_user ipt_font_big", type="text", value="-70", alt="You must enter your threshold")
-				br
-				br
-				.button_wrapper(align="center")
-					.button_underneath.blue(style="width:162px;height:14px")
-						input(id="options-enviar", type="submit", value="Calculate occupation", class="button blue", style="width:200px;height:40px;padding-top:6px")
-			br
-			br
-			br
-			br
+				table
+					tr	
+						td
+							fieldset(class="radio-container")
+								.radio-options
+									.toggle	Zone
+									ul
+										- if (typeof(places) !== 'undefined')
+											- each place in places
+												li
+													input(type="radio", name="zona", id="#{place.name}", value="#{place.name}")
+													label(for="#{place.name}")	#{place.name}
+						td(align="center",valign="top")
+							input(id="ipt_umbral", name="ipt_umbral", autocorrect="off", class="ipt_umbral border_user ipt_font_big", type="text", value="-70", alt="You must enter your threshold")
+					tr
+						td(colspan="2",align="center")
+							pre(style="font-size:16px;font-weight:100") please select allocation <br>of channel frequency
+					tr
+						td(colspan="2",align="center")
+							fieldset(class="radio-container")
+								.radio-options
+									.toggle	Allocation
+									ul
+										- if (typeof(allocations) !== 'undefined')
+											- each allocation in allocations
+												li
+													input(type="radio", name="allocation", id="#{allocation.name}", value="#{allocation.name}")
+													label(for="#{allocation.name}")	#{allocation.name}
+					tr
+						td(colspan="2",align="center")
+							.button_wrapper(align="center")
+								.button_underneath.blue(style="width:162px;height:14px")
+									input(id="options-enviar", type="submit", value="Calculate occupation", class="button blue", style="width:200px;height:40px;padding-top:6px")
 			br
 			.error
