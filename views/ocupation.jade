@@ -12,13 +12,13 @@ block content
 	#chart-left-side-screen
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
-				a(href="/select_frequency?zona=#{zona}&ipt_umbral=#{umbral}", class="button grey", style="width:180;height:18px;padding-top:6px") Select Frequency
+				a(href="/select_frequency?zona=#{zona}&ipt_umbral=#{umbral}&allocation=#{allocation}", class="button grey", style="width:180;height:18px;padding-top:6px") Select Frequency
 		br
 		br
 		br
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
-				a(href="/select_channel?zona=#{zona}&ipt_umbral=#{umbral}", class="button grey", style="width:180;height:18px;padding-top:6px") Select Channel
+				a(href="/select_channel?zona=#{zona}&ipt_umbral=#{umbral}&allocation=#{allocation}", class="button grey", style="width:180;height:18px;padding-top:6px") Select Channel
 		br
 		br
 		br
@@ -39,6 +39,11 @@ block content
 		input(id="zona_ipt_hidden", name="zona", type="hidden", value="#{zona}")
 		input(id="img_chart_ipt_hidden", name="zona", type="hidden", value="")
 	#chart-canvas
+		if error
+			center
+				br
+				br
+				.error_big	#{error}
 	script(type='text/javascript').
 		
 		window.onload = function(){

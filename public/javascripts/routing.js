@@ -84,6 +84,8 @@ $(document).ready(function(){
 							errorHandler("sync-enviar-2");
 						else if(res == 3)
 							errorHandler("sync-enviar-3");
+						else if(res == 4)
+							errorHandler("sync-enviar-3");
 					}	
 		    }); 
 			}

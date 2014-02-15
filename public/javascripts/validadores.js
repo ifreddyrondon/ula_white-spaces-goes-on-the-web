@@ -234,6 +234,7 @@ $(document).ready(function(){
 		if(id=="sync-enviar-1")	stringHandlerError = "You must enter the zone or new zone and upload data file (measure & tracks)";
 		if(id=="sync-enviar-2")	stringHandlerError = "The files must be on .txt";
 		if(id=="sync-enviar-3")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
+		if(id=="sync-enviar-4")	stringHandlerError = "Wow! An error has occurred, uploading files";
 		
 		if(id=="enter-data") stringHandlerError = "You must enter all the data!!";
 		if(id=="enter-number") stringHandlerError = "You must put a number.<br> Do you want to try again?";

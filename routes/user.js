@@ -55,6 +55,11 @@ exports.ocupation = function(req, res){
 								res.render('index'); 
 							}							
 					    else {
+					    	if(rows == ""){
+						    	res.render('ocupation',{ error:"No items to area '"+zona+"' that pass the threshold " + umbral });  
+						    	return null;
+					    	}
+					    
 					    	var pasaron = rows;
 					    	var tablaFinal = new Array();
 					    	
@@ -116,7 +121,7 @@ exports.ocupation = function(req, res){
 															channels.push(temp);
 											    	}
 					
-														res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona, channels:channels });  
+														res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona, channels:channels, allocation:allocation });  
 											    }
 												});
 											objBD.end();
@@ -222,15 +227,19 @@ exports.downloadPdfOfHeatmap = function(req, res){
 exports.selectFrequency = function(req, res){
 	try {
 		check(req.query.zona).notNull();
+		check(req.query.allocation).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
 		
 		umbral = sanitize(req.query.ipt_umbral).xss();
 		umbral = sanitize(umbral).entityDecode();		
 		
+		allocation = sanitize(req.query.allocation).xss();
+		allocation = sanitize(allocation).entityDecode();		
+		
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
 		
-		res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona }); 
+		res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, allocation:allocation }); 
 	
 	} catch (e) {
 	  res.render('index'); 
@@ -396,15 +405,19 @@ exports.formFrequency = function(req, res){
 exports.selectChannel = function(req, res){
 	try {
 		check(req.query.zona).notNull();
+		check(req.query.allocation).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
 		
 		umbral = sanitize(req.query.ipt_umbral).xss();
 		umbral = sanitize(umbral).entityDecode();		
 		
+		allocation = sanitize(req.query.allocation).xss();
+		allocation = sanitize(allocation).entityDecode();		
+		
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
 		
-		res.render('heatmap/select_channel',{ umbral:umbral, zona:zona }); 
+		res.render('heatmap/select_channel',{ umbral:umbral, zona:zona ,allocation:allocation }); 
 	
 	} catch (e) {
 	  res.render('index'); 

@@ -93,44 +93,48 @@ readFiles = function(files,idPlace,res){
 			res.send('2');
 	
 	} else if(files.length > 1){		 
-		
-		frequency_potency = new Array();
-		coordinate = new Array();
-		
-		for(i = 0; i < files.length; i++){
+		try {
+	
+			frequency_potency = new Array();
+			coordinate = new Array();
 			
-			var rd = readline.createInterface({
-		    input: fs.createReadStream(files[i].path),
-		    output: process.stdout,
-		    terminal: false,
-		    autoclose: true
-			});
-
-			rd.on('line', function(line) {
-				lineSplit = line.split("\t");	
+			for(i = 0; i < files.length; i++){
 				
-				if(lineSplit.length == 2)
-					frequency_potency.push(lineSplit);
-				else if(lineSplit.length == 1)
-					coordinate.push(lineSplit);
-				
-				if(coordinate.length % 3 == 0 && coordinate.length > 0){					
-					saveArraysIntoDb(frequency_potency,coordinate,idPlace,res);
-					frequency_potency = [];
-					coordinate = [];
-				}	
-			});
-	    /*
-			fs.unlink(files[i].path, function(err) {
-			  if (err){
-			  	console.log(err);
-				  res.send('3'); 
-			  }	
-			});
-			*/
+				var rd = readline.createInterface({
+			    input: fs.createReadStream(files[i].path),
+			    output: process.stdout,
+			    terminal: false,
+			    autoclose: true
+				});
+	
+				rd.on('line', function(line) {
+					lineSplit = line.split("\t");	
+					
+					if(lineSplit.length == 2)
+						frequency_potency.push(lineSplit);
+					else if(lineSplit.length == 1)
+						coordinate.push(lineSplit);
+					
+					if(coordinate.length % 3 == 0 && coordinate.length > 0){					
+						saveArraysIntoDb(frequency_potency,coordinate,idPlace,res);
+						frequency_potency = [];
+						coordinate = [];
+					}	
+				});
+		    /*
+				fs.unlink(files[i].path, function(err) {
+				  if (err){
+				  	console.log(err);
+					  res.send('3'); 
+				  }	
+				});
+				*/
+			}
+		} catch (e) {
+			res.send('4'); 
+			console.log(e.message);
 		}
 	}
-	
 }
 
 
