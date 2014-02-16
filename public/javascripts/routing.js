@@ -1,4 +1,11 @@
 $(document).ready(function(){
+	// loader GIF------------------------------------------------------------------------
+	$("a").click(function(){
+		$("#bowlG").show();
+	});
+	$( ":submit" ).click(function(){
+		$("#bowlG").show();
+	});
 	
 	// Input Select-----------------------------------------------------------------
 	if (Modernizr.touch) {
@@ -14,7 +21,7 @@ $(document).ready(function(){
 		});  
 	}
 
-	// Form opciones de zona y umbral, validador de vacios-----------------------------
+	// Form opciones de zona, umbral y channels lugar validador de vacios-----------------------------
 	$(document).on("click","#options-enviar",function(){
 		val = $(document.getElementsByName('zona'));
 		allocation = $(document.getElementsByName('allocation'));
@@ -35,13 +42,19 @@ $(document).ready(function(){
 		}
 		if (error == true || error2 == true){
 			errorHandler("enter-data");
+			$("#bowlG").hide();
 			return false;
-		} else if($("#ipt_umbral").val() == '' || !validator("number","number","ipt_umbral"))
+		} else if($("#ipt_umbral").val() == '' || !validator("number","number","ipt_umbral")){
+			$("#bowlG").hide();
 			return false;
-		else if(!validator("numberBetweenMin","numberBetweenMin","ipt_umbral",-120) || !validator("numberBetweenMax","numberBetweenMax","ipt_umbral",-20))
+		}
+		else if(!validator("numberBetweenMin","numberBetweenMin","ipt_umbral",-120) || !validator("numberBetweenMax","numberBetweenMax","ipt_umbral",-20)){
+			$("#bowlG").hide();
 			return false;
+		}
 		else if(number_split[1] != undefined && number_split[1].length > 2){
 			errorHandler("number_decimal");
+			$("#bowlG").hide();
 			return false;
 		}
 	});
@@ -91,6 +104,7 @@ $(document).ready(function(){
 			}
 		} else {
 			errorHandler("sync-enviar-1");	
+			$("#bowlG").hide();
 			return false;
 		}
 	});
@@ -98,9 +112,11 @@ $(document).ready(function(){
 	// Select-frequency-enviar------------------------------------------------------------------------
 	$("#select-frequency-enviar").click(function(){
 		if(!validator("number","number","from_frequency") || !validator("number","number","to_frequency")){
+			$("#bowlG").hide();
 			return false;
 		}
 		else if($("#from_frequency").val() > $("#to_frequency").val()){
+			$("#bowlG").hide();
 			errorHandler("number_from_greater_than_to");	
 			return false;
 		}
@@ -108,10 +124,12 @@ $(document).ready(function(){
 	// Download CSV all files------------------------------------------------------------------------
 	$("#generate-csv-to-heatmap").click(function(){
 		if(!validator("number","number","from_frequency") || !validator("number","number","to_frequency")){
+			$("#bowlG").hide();
 			return false;
 		}
 		else if($("#from_frequency").val() > $("#to_frequency").val()){
 			errorHandler("number_from_greater_than_to");	
+			$("#bowlG").hide();
 			return false;
 		} else {
 			$.ajax({
