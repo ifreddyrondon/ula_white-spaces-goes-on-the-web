@@ -16,6 +16,11 @@ block content
 			tr
 				td	Zone: 
 				td	#{zona}		
+			tr
+				td(colspan="2")	Frequency:
+			tr
+				td	min: #{min}
+				td	max: #{max}
 		br			
 	.center-screen-cvs-download
 		form(class="font", action="form_select_frequency", method="GET")
@@ -25,7 +30,12 @@ block content
 						td(align="center", colspan="2")
 							input(id="umbral_ipt_hidden", name="ipt_umbral", type="hidden", value="#{umbral}")
 							input(id="zona_ipt_hidden", name="zona", type="hidden", value="#{zona}")
+							input(id="min_ipt_hidden", name="min", type="hidden", value="#{min}")
+							input(id="max_ipt_hidden", name="max", type="hidden", value="#{max}")
 							table
+								tr
+									td(align="center", colspan="2")
+										pre(style="font-size:16px;font-weight:100")	between [#{min},#{max}]
 								tr
 									td
 										pre(style="font-size:25px;font-weight:100") From 

@@ -120,6 +120,16 @@ $(document).ready(function(){
 			errorHandler("number_from_greater_than_to");	
 			return false;
 		}
+		else if($("#from_frequency").val() < $("#min_ipt_hidden").val()){
+			$("#bowlG").hide();
+			errorHandler("values_within_range");	
+			return false;
+		}
+		else if($("#to_frequency").val() > $("#max_ipt_hidden").val()){
+			$("#bowlG").hide();
+			errorHandler("values_within_range");	
+			return false;
+		}
 	});
 	// Download CSV all files------------------------------------------------------------------------
 	$("#generate-csv-to-heatmap").click(function(){

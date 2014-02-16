@@ -240,6 +240,7 @@ $(document).ready(function(){
 		if(id=="enter-number") stringHandlerError = "You must put a number.<br> Do you want to try again?";
 		if(id=="number_decimal") stringHandlerError = "Maximum two (2) decimals!!";
 		if(id=="number_from_greater_than_to") stringHandlerError = "'From' value should not be greater than 'To' value!!";
+		if(id=="values_within_range") stringHandlerError = 'values ​​must be within the range!!';
 		if(id=="frequency_not_recorded") stringHandlerError = "Frequency values ​​are not recorded. Do you want to try again?";
 		
 		if(document.getElementById(id+'-error') == null)

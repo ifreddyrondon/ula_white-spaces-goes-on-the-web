@@ -77,7 +77,7 @@ exports.ocupation = function(req, res){
 										}
 									}	
 								}
-								
+
 								objBD = BD.BD();
 								objBD.connect();
 								objBD.query("SELECT id_allocation FROM allocation_channels WHERE name = "+ objBD.escape(allocation) +"",
@@ -120,8 +120,16 @@ exports.ocupation = function(req, res){
 															temp.rectangle = rectangle;
 															channels.push(temp);
 											    	}
-					
-														res.render('ocupation',{ data:tablaFinal, umbral: umbral, zona:zona, channels:channels, allocation:allocation });  
+														res.render('ocupation',
+																{ 
+																	data:tablaFinal, 
+																	umbral: umbral, 
+																	zona:zona, 
+																	channels:channels, 
+																	allocation:allocation, 
+																	min:Math.floor(tablaFinal[0][0]), 
+																	max:Math.floor(tablaFinal[tablaFinal.length - 1][0])
+																});  
 											    }
 												});
 											objBD.end();
@@ -227,6 +235,8 @@ exports.selectFrequency = function(req, res){
 		check(req.query.zona).notNull();
 		check(req.query.allocation).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
+		check(req.query.min).notNull().isNumeric();
+		check(req.query.max).notNull().isNumeric();
 		
 		umbral = sanitize(req.query.ipt_umbral).xss();
 		umbral = sanitize(umbral).entityDecode();		
@@ -237,7 +247,13 @@ exports.selectFrequency = function(req, res){
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
 		
-		res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, allocation:allocation }); 
+		min = sanitize(req.query.min).xss();
+		min = sanitize(min).entityDecode();
+		
+		max = sanitize(req.query.max).xss();
+		max = sanitize(max).entityDecode();
+		
+		res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, allocation:allocation, min:min, max:max }); 
 	
 	} catch (e) {
 	  res.render('index'); 
@@ -325,6 +341,8 @@ exports.formFrequency = function(req, res){
 		check(req.query.to_frequency).notNull().isNumeric();
 		check(req.query.zona).notNull();
 		check(req.query.type_heatmap).notNull();		 	
+		check(req.query.min).notNull().isNumeric();
+		check(req.query.max).notNull().isNumeric();
 		 	
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
@@ -340,6 +358,12 @@ exports.formFrequency = function(req, res){
 		
 		typeHeatmap = sanitize(req.query.type_heatmap).xss();
 		typeHeatmap = sanitize(typeHeatmap).entityDecode();	
+		
+		min_frequency = sanitize(req.query.min).xss();
+		min_frequency = sanitize(min_frequency).entityDecode();
+		
+		max_frequency = sanitize(req.query.max).xss();
+		max_frequency = sanitize(max_frequency).entityDecode();
 		
 		objBD = BD.BD();
 		objBD.connect();
@@ -385,7 +409,7 @@ exports.formFrequency = function(req, res){
 							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max, lat:rows[0].lat, lng:rows[0].lng}); 	    		
 						}
 						else
-							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
+							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
 				  }
 				});
 				objBD.end();
