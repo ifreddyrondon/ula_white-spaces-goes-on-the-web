@@ -169,7 +169,7 @@ exports.downloadPdfOfChart = function(req, res){
 	    doc = new PDFDocument({size: 'LEGAL',layout: 'landscape'});
 	    doc.fontSize(25);
 	    doc.text('Occupation with threshold ' + umbral + ' dBm (' + zona + ')', {align: 'center'});
-			doc.image('public/downloads/pdf/chart.png', { width: 850, height: 200});
+			doc.image('public/downloads/pdf/chart.png', { width: 850, height: 460});
 			doc.write('public/downloads/pdf/occupation.pdf');
 			
 			fs.unlink('public/downloads/pdf/chart.png', function(){
@@ -192,8 +192,6 @@ exports.downloadPdfOfHeatmap = function(req, res){
 		
 		title = req.body.title;
 		title = sanitize(zona).entityDecode();		
-		
-		console.log(title);
 		
 		img = sanitize(req.body.img).xss();
 		img = sanitize(img).entityDecode();		

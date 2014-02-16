@@ -142,6 +142,8 @@ readFiles = function(files,idPlace,res){
 // Insertar vectores en DB -----------------------------------------------------------------------------------
 saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
 	if(frequency_potency[0] != undefined){
+		
+		id_coordinates = new Array();
 	
 		objBD = BD.BD();
 		objBD.connect();
@@ -152,7 +154,7 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
 					res.send('3'); 
 				} else {
 					// Guardamos potencia y frecuencia en la DB --------------------------------------------------------------------------------
-					id_coordinates = rows.insertId;
+					id_coordinates.push(rows.insertId);
 					
 					query = "INSERT INTO potency_frequency (frequency, potency) VALUES ("+ objBD.escape(frequency_potency[1][0]) +","+ objBD.escape(frequency_potency[1][1]) +")";
 					for(i = 1; i < frequency_potency.length; i++){
@@ -163,18 +165,19 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
 					objBD = BD.BD();
 					objBD.connect();
 					objBD.query(query,
-						function(err, rows, fields) {
+						function(err, rows2, fields) {
 					    if (err){
 					    	console.log(err);
 								res.send('3'); 
 							} else {
-								id_potency_frequency = rows.insertId;
-								
-								query = "INSERT INTO coordinates_vs_potency_frequency (id_potency_frequency, id_coordinate) VALUES ("+ id_potency_frequency +","+ id_coordinates +")";
+							
+								id_potency_frequency = rows2.insertId;
+								query = "INSERT INTO coordinates_vs_potency_frequency (id_potency_frequency, id_coordinate) VALUES ("+ id_potency_frequency +","+ id_coordinates[0] +")";
 								for(j = id_potency_frequency+1; j < id_potency_frequency+frequency_potency.length; j++){
-									query =  query + ", ("+ j +","+ id_coordinates +")";
+									query =  query + ", ("+ j +","+ id_coordinates[0] +")";
 								}
 								query = query + ";";
+								id_coordinates.splice(0, 1);
 								
 								objBD = BD.BD();
 								objBD.connect();
@@ -189,6 +192,7 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
 							}
 					});
 					objBD.end();
+					
 				}
 		});
 		objBD.end();

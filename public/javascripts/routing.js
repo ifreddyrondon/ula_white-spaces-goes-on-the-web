@@ -155,6 +155,16 @@ $(document).ready(function(){
 		
 		}
 	});
+	$("#dowload-csv-to-myheatmap").click(function(){
+		$("#bowlG").hide();
+	});
+	$("#dowload-csv-to-myheatmap2").click(function(){
+		$("#bowlG").hide();
+	});
+	// Download CSV data------------------------------------------------------------------------
+	$("#download-csv-data").click(function(){
+		$("#bowlG").hide();
+	});
 	// Download PDF chart------------------------------------------------------------------------
 	$("#generate_pdf_chart").click(function(){
 		$.ajax({
@@ -173,7 +183,14 @@ $(document).ready(function(){
 	    	}
 			}
 		});
-		
+	});
+	$("#download_pdf_chart").click(function(){
+		$("#bowlG").hide();
+	});
+	
+	// Download PDF heatmap------------------------------------------------------------------------
+	$("#download_pdf_heatmap").click(function(){
+		$("#bowlG").hide();
 	});
 	
 });

@@ -7,8 +7,8 @@ block content
 	.top-center-screen
 		.font(style="font-size:20px;font-weight:100;color:#ffffff")	#{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max}
 	.left-side-screen-csv-download
-		a(href="/download-csv-data")
-			img(src="images/download_csv_file.png")
+		a(href="/download-csv-data", id="download-csv-data")
+			img(src="images/download_csv_file.png",id="download_csv_heatmap")
 		a(href="#", id="generate_pdf_heatmap")
 			img(src="images/generate_pdf_file.png")
 		a(href="/download-pdf-of-heatmap", id="download_pdf_heatmap", style="display:none")
@@ -57,6 +57,12 @@ block content
 			google.maps.event.addListenerOnce(map, "idle", function(){
 				// asignamos la data
 				heatmap.setDataSet(dataSet);
+				html2canvas(document.getElementById('map-canvas'), {
+					useCORS: true,
+					onrendered: function(canvas) {
+						$('#img_heatmap_ipt_hidden').val(canvas.toDataURL());
+					}
+				});				
 			});
 	
 			// propiedades de los enlaces para que se vean
@@ -66,18 +72,12 @@ block content
 			
 			$("#generate_pdf_heatmap").click(function(){
 
-				html2canvas(document.getElementById('map-canvas'), {
-					onrendered: function(canvas) {
-						$('#img_heatmap_ipt_hidden').val(canvas.toDataURL());
-					}
-				});
-				
 				stringTitle = "#{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max}";
 				$('#heatmap_title_pdf').val(stringTitle);
 				
 				$.ajax({
 					type: 'POST',
-					url: 'generate-pdf-of-heatmap',
+					url: '/generate-pdf-of-heatmap',
 					data: {title:$("#heatmap_title_pdf").val(), img:$("#img_heatmap_ipt_hidden").val()},
 					beforeSend: function(){
 						$("#bowlG").show();
