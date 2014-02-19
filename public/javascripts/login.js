@@ -12,6 +12,7 @@ $(document).ready(function(){
 			ajaxDatosReload("/loginSend","form-login","form-login_inv");
 		}
 		else{
+			$("#bowlG").hide();
 			errorHandler('form-login');
 			return false;
 		}

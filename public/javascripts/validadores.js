@@ -2,13 +2,13 @@ $(document).ready(function(){
 //Ppal Validados-------------------------------------------------------
 	var error;
 	function validator(stringError,funciones,id,min){
-		if(stringError=='name') error=" You must put your first name and last name.<br> Do you want to try again?";
-		if(stringError=='correo') error="Invalid Email. Do you want to try again?";
-		if(stringError=='ci') error="Invalid Id format. Try again, take this as an example: V12345678, E12345678";
-		if(stringError=='pass') error="Short password are easy to guess. Try again. Use at least 6 characters.";
-		if(stringError=='number') error="You must put a number.<br> Do you want to try again?";
-		if(stringError=='numberBetweenMin') error="The number must be greater than " + min + ".<br> Do you want to try again?";
-		if(stringError=='numberBetweenMax') error="The number should be less than " + min + ".<br> Do you want to try again?";
+		if(stringError=='name') error="ERROR:  You must put your first name and last name.<br> Do you want to try again?";
+		if(stringError=='correo') error="ERROR: Invalid Email. Do you want to try again?";
+		if(stringError=='ci') error="ERROR: Invalid Id format. Try again, take this as an example: V12345678, E12345678";
+		if(stringError=='pass') error="ERROR: Short password are easy to guess. Try again. Use at least 6 characters.";
+		if(stringError=='number') error="ERROR: You must put a number.<br> Do you want to try again?";
+		if(stringError=='numberBetweenMin') error="ERROR: The number must be greater than " + min + ".<br> Do you want to try again?";
+		if(stringError=='numberBetweenMax') error="ERROR: The number should be less than " + min + ".<br> Do you want to try again?";
 		if (validar(funciones,id,min)){
 			document.getElementById(id).style.backgroundImage="url('images/check.png')";
 	  	document.getElementById(id).style.backgroundRepeat="no-repeat";
@@ -23,7 +23,7 @@ $(document).ready(function(){
 	  	document.getElementById(id).style.backgroundPosition="right center";
 	  	document.getElementById(id).style.backgroundColor="rgba(253,160,160,0.43)";
 	  	if(document.getElementById(stringError) == null)
-	  		$('.error').append('<div id="'+stringError+'"><center><font size="5">* </font>'+error+'</center></div>');
+	  		$('.error').append('<div id="'+stringError+'"><center>'+error+'</center></div>');
 	  	return false;
 		}
 	}
@@ -226,26 +226,34 @@ $(document).ready(function(){
 	window.focusEmpty=focusEmpty;	
 
 	function errorHandler(id){
-		if(id=="form-login")	stringHandlerError = "You can Log in with your email address. Please be sure to write the correctly data..";
-		if(id=="form-login_inv")	stringHandlerError = "<h3>Invalid Data!</h3> <br />You can Log in with any email address.Please, be sure to write the correctly data..";
-		if(id=="form-registrar")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
+		if(id=="form-login")	stringHandlerError = "ERROR: You can Log in with your email address. Please be sure to write the correctly data..";
+		if(id=="form-login_inv")	stringHandlerError = "ERROR: <h3>Invalid Data!</h3> <br />You can Log in with any email address.Please, be sure to write the correctly data..";
+		if(id=="form-registrar")	stringHandlerError = "ERROR: Wow! An error has occurred, try again in a few seconds";
 		
-		if(id=="sync-enviar-0")	stringHandlerError = "You must enter just! the zone or new zone not both";
-		if(id=="sync-enviar-1")	stringHandlerError = "You must enter the zone or new zone and upload data file (measure & tracks)";
-		if(id=="sync-enviar-2")	stringHandlerError = "The files must be on .txt";
-		if(id=="sync-enviar-3")	stringHandlerError = "Wow! An error has occurred, try again in a few seconds";
-		if(id=="sync-enviar-4")	stringHandlerError = "Wow! An error has occurred, uploading files";
+		if(id=="sync-enviar-0")	stringHandlerError = "ERROR: You must enter just! the zone or new zone not both";
+		if(id=="sync-enviar-1")	stringHandlerError = "ERROR: You must enter the zone or new zone and upload data file (measure & tracks)";
+		if(id=="sync-enviar-2")	stringHandlerError = "ERROR: The files must be on .txt";
+		if(id=="sync-enviar-3")	stringHandlerError = "ERROR: Wow! An error has occurred, try again in a few seconds";
+		if(id=="sync-enviar-4")	stringHandlerError = "ERROR: Wow! An error has occurred, uploading files";
+		if(id=="sync-enviar-5")	stringHandlerError = "ERROR: Entered zone was added before, please change the zone or choose it from the list of zones already added";
 		
-		if(id=="enter-data") stringHandlerError = "You must enter all the data!!";
-		if(id=="enter-number") stringHandlerError = "You must put a number.<br> Do you want to try again?";
-		if(id=="number_decimal") stringHandlerError = "Maximum two (2) decimals!!";
-		if(id=="number_from_greater_than_to") stringHandlerError = "'From' value should not be greater than 'To' value!!";
-		if(id=="values_within_range") stringHandlerError = 'values ​​must be within the range!!';
-		if(id=="frequency_not_recorded") stringHandlerError = "Frequency values ​​are not recorded. Do you want to try again?";
+		if(id=="enter-data") stringHandlerError = "ERROR: You must enter all the data!!";
+		if(id=="enter-number") stringHandlerError = "ERROR: You must put a number.<br> Do you want to try again?";
+		if(id=="number_decimal") stringHandlerError = "ERROR: Maximum two (2) decimals!!";
+		if(id=="number_from_greater_than_to") stringHandlerError = "ERROR: 'From' value should not be greater than 'To' value!!";
+		if(id=="values_within_range") stringHandlerError = 'ERROR: values ​​must be within the range!!';
+		if(id=="frequency_not_recorded") stringHandlerError = "ERROR: Frequency values ​​are not recorded. Do you want to try again?";
 		
-		if(document.getElementById(id+'-error') == null)
-	  		$('.error').append('<div id="'+id+'-error"><center><font size="5">* </font>'+stringHandlerError+'</center></div>');
+		if(document.getElementById(id+'-error') == null){
+	  	$('.error').append('<div id="'+id+'-error"><center>'+stringHandlerError+'</center></div>');
+	  	$('.error').append('<br><a id="error-got-it" href="#" class="button-error">Got it</a>');
+	  }
 	}
+	// Ocultar error cuando le da got it
+	$(document).on("click","#error-got-it",function(){
+		$('.error').empty();
+	});
+	
 	window.errorHandler=errorHandler;
 	function spanishDate(d){
 		var weekday=["domingo","lunes","martes","miercoles","jueves","viernes","sabado"];

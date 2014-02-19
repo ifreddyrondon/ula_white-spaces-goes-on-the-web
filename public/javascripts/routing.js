@@ -98,7 +98,9 @@ $(document).ready(function(){
 						else if(res == 3)
 							errorHandler("sync-enviar-3");
 						else if(res == 4)
-							errorHandler("sync-enviar-3");
+							errorHandler("sync-enviar-4");
+						else if(res == 5)
+							errorHandler("sync-enviar-5");
 					}	
 		    }); 
 			}

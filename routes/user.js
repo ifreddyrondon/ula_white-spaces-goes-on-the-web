@@ -118,17 +118,16 @@ exports.ocupation = function(req, res){
 															rectangle.tooltipFormatString = '-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-';
 															
 															temp.rectangle = rectangle;
-															channels.push(temp);
+															channels.push(temp);	
 											    	}
+											    	
 														res.render('ocupation',
 																{ 
 																	data:tablaFinal, 
 																	umbral: umbral, 
 																	zona:zona, 
 																	channels:channels, 
-																	allocation:allocation, 
-																	min:Math.floor(tablaFinal[0][0]), 
-																	max:Math.floor(tablaFinal[tablaFinal.length - 1][0])
+																	allocation:allocation
 																});  
 											    }
 												});
@@ -402,10 +401,13 @@ exports.formFrequency = function(req, res){
 							    console.log('file saved');
 							  });							  
 							});	
+				    	
 				    	max = rows[0].count;
-							from = from / 1000;
-							to = to / 1000;
+							for(i = 0; i < rows.length; i++)
+								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
 							
+							from = (from / 1000);
+							to = (to / 1000);
 							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max, lat:rows[0].lat, lng:rows[0].lng}); 	    		
 						}
 						else

@@ -45,13 +45,13 @@ block content
 			var map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
 			// heatmap propiedades y asignacion
 			var heatmap = new HeatmapOverlay(map, {
-				"radius":20,
+				"radius":5,
 				"visible":true, 
 				"opacity":60
 			});
 			// dataset
 			var dataSet= {
-				max: #{max},
+				max: 17,
 				data: !{JSON.stringify(data)}
 			};
 			google.maps.event.addListenerOnce(map, "idle", function(){

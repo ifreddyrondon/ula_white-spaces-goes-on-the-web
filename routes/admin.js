@@ -17,9 +17,15 @@ exports.syncUpload = function(req, res){
 		newZone = sanitize(newZone).entityDecode();
 		
 		if(req.files.data_measures.length > 0){
-			findPlaceId(zonaAdmin,newZone,req.files.data_measures,res);
-			res.send('/admin');
-		
+			findPlaceId(zonaAdmin,newZone,req.files.data_measures,
+				function(a){
+					if(a == undefined)
+						res.send('/admin');
+					else{
+						res.send(a);	
+					}
+			});
+			
 		} else 
 		  res.send('1');
 		  
@@ -30,41 +36,50 @@ exports.syncUpload = function(req, res){
 
 
 // Guarda y/o busca id lugar -------------------------------------------------------------------
-findPlaceId = function(zonaAdmin,newZone,files,res){
-
+findPlaceId = function(zonaAdmin,newZone,files,callback){
 	if(zonaAdmin == '' && newZone != ''){
 		objBD = BD.BD();
 		objBD.connect();
 		objBD.query("INSERT INTO places (name) VALUES ("+ objBD.escape(newZone) +")",
 			id = function(err, rows, fields) {
 			if (err){
-	    	console.log(err);
-				res.send('3');
+				if(err.code = 'ER_DUP_ENTRY'){
+					callback('5');
+					return;
+				}
+				else{
+					console.log(err);
+					callback('3');
+					return;
+				}
+			}
+			else {
+				readFiles(files,rows.insertId,callback);	
 			}
 		});
 		objBD.end(); 
-		zonaAdmin = newZone;
 	}
-	
-	objBD = BD.BD();
-	objBD.connect();
-	objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
-		function(err, rows, fields) {
-			if (err){
-	    	console.log(err);
-				res.send('3'); 
-			}
-			else 
-				readFiles(files,rows[0].id_place,res);
-	});
-	objBD.end(); 
-	
+	else if(zonaAdmin != '' && newZone == ''){
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
+			function(err, rows, fields) {
+				if (err){
+		    	console.log(err);
+					callback('3'); 
+					return;
+				}
+				else 
+					readFiles(files,rows[0].id_place,callback);
+		});
+		objBD.end(); 	
+	}
 };
 
 
 
 // Leer archivos -------------------------------------------------------------------------------
-readFiles = function(files,idPlace,res){
+readFiles = function(files,idPlace,callback){
 
 	if(files[0] == undefined){
 		if(path.extname(files.name).toLowerCase() === '.txt'){
@@ -81,16 +96,16 @@ readFiles = function(files,idPlace,res){
 					coordinate.push(line_split);
 			
 			  if (last){
-			  	saveArraysIntoDb(frequency_potency,coordinate,idPlace,res);
+			  	saveArraysIntoDb(frequency_potency,coordinate,idPlace,callback);
 			  	fs.unlink(files.path, function(err) {
-			    	if (err)	res.send('3'); 
+			    	if (err)	callback('3'); 
 					});
 				  return false; 
 			  }
 			});	
 		}
 		else
-			res.send('2');
+			callback('2');
 	
 	} else if(files.length > 1){		 
 		try {
@@ -101,10 +116,9 @@ readFiles = function(files,idPlace,res){
 			for(i = 0; i < files.length; i++){
 				
 				var rd = readline.createInterface({
-			    input: fs.createReadStream(files[i].path),
+			    input: fs.createReadStream(files[i].path, {autoClose: true}),
 			    output: process.stdout,
 			    terminal: false,
-			    autoclose: true
 				});
 	
 				rd.on('line', function(line) {
@@ -116,7 +130,7 @@ readFiles = function(files,idPlace,res){
 						coordinate.push(lineSplit);
 					
 					if(coordinate.length % 3 == 0 && coordinate.length > 0){					
-						saveArraysIntoDb(frequency_potency,coordinate,idPlace,res);
+						saveArraysIntoDb(frequency_potency,coordinate,idPlace,callback);
 						frequency_potency = [];
 						coordinate = [];
 					}	
@@ -131,7 +145,7 @@ readFiles = function(files,idPlace,res){
 				*/
 			}
 		} catch (e) {
-			res.send('4'); 
+			callback('4'); 
 			console.log(e.message);
 		}
 	}
@@ -140,7 +154,8 @@ readFiles = function(files,idPlace,res){
 
 
 // Insertar vectores en DB -----------------------------------------------------------------------------------
-saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
+saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,callback){
+
 	if(frequency_potency[0] != undefined){
 		
 		id_coordinates = new Array();
@@ -151,7 +166,7 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
 			function(err, rows, fields) {
 		    if (err){
 		    	console.log(err);
-					res.send('3'); 
+					callback('3'); 
 				} else {
 					// Guardamos potencia y frecuencia en la DB --------------------------------------------------------------------------------
 					id_coordinates.push(rows.insertId);
@@ -168,7 +183,7 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
 						function(err, rows2, fields) {
 					    if (err){
 					    	console.log(err);
-								res.send('3'); 
+								callback('3'); 
 							} else {
 							
 								id_potency_frequency = rows2.insertId;
@@ -185,7 +200,10 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,res){
 									function(err, rows, fields) {
 								    if (err){
 								    	console.log(err);
-									    res.send('3'); 
+									    callback('3'); 
+								    }
+								    else {
+									    callback();
 								    }
 								});
 								objBD.end();
