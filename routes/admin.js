@@ -126,10 +126,11 @@ readFiles = function(files,idPlace,callback){
 					
 					if(lineSplit.length == 2)
 						frequency_potency.push(lineSplit);
+
 					else if(lineSplit.length == 1)
 						coordinate.push(lineSplit);
 					
-					if(coordinate.length % 3 == 0 && coordinate.length > 0){					
+					if(coordinate.length % 3 == 0 && coordinate.length > 0){
 						saveArraysIntoDb(frequency_potency,coordinate,idPlace,callback);
 						frequency_potency = [];
 						coordinate = [];
@@ -156,7 +157,7 @@ readFiles = function(files,idPlace,callback){
 // Insertar vectores en DB -----------------------------------------------------------------------------------
 saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,callback){
 
-	if(frequency_potency[0] != undefined){
+	if(frequency_potency[0] != undefined && frequency_potency[1] != undefined){
 		
 		id_coordinates = new Array();
 	
@@ -215,4 +216,5 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,callback){
 		});
 		objBD.end();
 	}
+	
 }
