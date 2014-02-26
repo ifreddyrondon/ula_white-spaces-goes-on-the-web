@@ -189,6 +189,10 @@ $(document).ready(function(){
 						$("#bowlG").hide();
 						if(res == '0')
 				    	errorHandler("enter-data");
+				    else if(res == '1')
+							errorHandler("sync-enviar-3");
+						else if(res == '10')
+							window.location.href ="/admin";
 					}	
 		    });
 			}

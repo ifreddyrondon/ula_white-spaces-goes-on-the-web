@@ -42,7 +42,46 @@ exports.deleteZone = function(req, res){
 		zonaAdmin = sanitize(req.body.zona_admin).xss();
 		zonaAdmin = sanitize(zonaAdmin).entityDecode();
 		
-		console.log(zonaAdmin);
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
+		function(err, rows, fields) {
+			if (err){
+				console.log(err);
+				res.send('1');
+			}
+			else {
+				id_place = rows[0].id_place;
+				query = "DELETE potency_frequency FROM (SELECT id_potency_frequency FROM (SELECT id_coordinate FROM coordinates WHERE id_place = "+id_place+") as aux, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux.id_coordinate) as aux2, potency_frequency WHERE potency_frequency.id_potency_frequency = aux2.id_potency_frequency";
+				
+				objBD = BD.BD();
+				objBD.connect();
+				objBD.query(query,
+				function(err, rows, fields) {
+					if (err){
+						console.log(err);
+						res.send('1');
+					}
+					else {
+						objBD = BD.BD();
+						objBD.connect();
+						objBD.query("DELETE places FROM places WHERE id_place = "+ id_place +"",
+						function(err, rows, fields) {
+							if (err){
+								console.log(err);
+								res.send('1');
+							}
+							else {
+								res.send('10');
+							}
+						});
+						objBD.end();
+					}
+				});
+				objBD.end();
+			}
+		});
+		objBD.end();
 		
 	} else
 		res.send('0');
