@@ -125,13 +125,24 @@ app.get('/admin', login, function(req, res){
 	objBD.end();
 });
 
-app.get('/edit_frequencies', login, function(req, res){
-	res.render('admin/edit_frequencies'); 
+app.get('/edit_zones', login, function(req, res){
+	objBD = BD.BD();
+	objBD.connect();
+	objBD.query("SELECT name FROM places",
+		function(err, rows, fields) {
+			if (err)
+	    	console.log(err);						
+	    else
+	    	places = rows;
+		  
+		  res.render('admin/edit_zones', {places : places}); 
+		});
+	objBD.end();
 });
 
-app.get('/edit_areas', login, function(req, res){
-	res.render('admin/edit_areas'); 
-});
+app.post('/edit_zone_name', login, admin.editZoneName);
+
+app.post('/delete_zone', login, admin.deleteZone);
 
 app.post('/sync/upload', login, admin.syncUpload);
 

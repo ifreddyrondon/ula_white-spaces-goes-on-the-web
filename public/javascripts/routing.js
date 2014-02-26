@@ -101,6 +101,8 @@ $(document).ready(function(){
 							errorHandler("sync-enviar-4");
 						else if(res == 5)
 							errorHandler("sync-enviar-5");
+						else if(res == 10)
+							$('.success').show();
 					}	
 		    }); 
 			}
@@ -111,6 +113,87 @@ $(document).ready(function(){
 		}
 	});
 	
+	// EDIT ZONES------------------------------------------------------------------------
+		$("#form-edit-zone-edit-name").click(function(){
+			val = $(document.getElementsByName('zona_admin'));
+			var error = true;
+			for (i = 0 ; i < val.length ; i++){
+				if (val[i].checked){
+					error = false;
+					break;
+				}
+			}
+			if(error){	
+				$("#bowlG").hide();
+				errorHandler("edit-zone-enviar-0");
+				return false;
+			}	
+			else {
+				$("#div-form-edit-zone-edit-name-enviar").hide();
+				$("#div-form-edit-zone-delete-enviar").hide();
+				$("#div-edit-name-zone-field").show();
+				$("#div-edit-name-zone-button").show();
+				$("#new_name_zone").focus();
+				$("#bowlG").hide();
+				return false;
+			}
+		});
+		$("#form-edit-zone-edit-name-enviar").click(function(){
+			if($("#new_name_zone").val() == ''){
+				$("#bowlG").hide();
+				errorHandler("edit-zone-enviar-1");
+				return false;
+			}
+			else {
+				$("#form-edit-zone").ajaxForm({  
+					url: "/edit_zone_name", 
+					type: "post",    
+					beforeSubmit: function(){
+		    		$("#bowlG").show();
+		      },
+					success: function(res){	
+						$("#bowlG").hide();
+						if(res == '0')
+				    	errorHandler("enter-data");
+						else if(res == '1')
+							errorHandler("sync-enviar-3");
+						else if(res == '10')
+							window.location.href ="/admin";
+					}	
+		    });
+			}
+		});
+		
+		// --------------------------------------------------------
+		$("#form-edit-zone-delete-enviar").click(function(){
+			val = $(document.getElementsByName('zona_admin'));
+			var error = true;
+			for (i = 0 ; i < val.length ; i++){
+				if (val[i].checked){
+					error = false;
+					break;
+				}
+			}
+			if(error){	
+				$("#bowlG").hide();
+				errorHandler("edit-zone-enviar-0");
+				return false;
+			}	else {
+				$("#form-edit-zone").ajaxForm({  
+					url: "/delete_zone", 
+					type: "post",    
+					beforeSubmit: function(){
+		    		$("#bowlG").show();
+		      },
+					success: function(res){	
+						$("#bowlG").hide();
+						if(res == '0')
+				    	errorHandler("enter-data");
+					}	
+		    });
+			}
+		});
+		
 	// Select-frequency-enviar------------------------------------------------------------------------
 	$("#select-frequency-enviar").click(function(){
 		if(!validator("number","number","from_frequency") || !validator("number","number","to_frequency")){

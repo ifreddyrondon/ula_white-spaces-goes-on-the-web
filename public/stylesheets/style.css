@@ -37,30 +37,53 @@ fieldset{border:none;margin:0;padding:0;}
 
 #threshold_title{position:absolute;right: 26px;top: -35px}
 
-/*---ERRORES--------------------------*/
+/*---ERRORES-SUCCESS-------------------------*/
+.success{
+	display: none;
+	background-color: rgba(98,190,59,0.5);
+	font-size: 16px;
+	text-shadow:0px 1px 0px rgba(101,101,101,0.6);
+	font-family: monospace;font-weight:100;
+	color: #000000;	
+}
+.button-success {
+  padding: 10px 15px;
+  background: rgba(65,156,46,0.8);
+  color: #000000;
+}
 .error{
-		background-color: rgba(212,49,49,0.5);
-		font-size: 16px;
-		text-shadow:0px 1px 0px rgba(101,101,101,0.6);
-		font-family: monospace;font-weight:100;
-		color: #000000;
-		}
-
+	background-color: rgba(212,49,49,0.5);
+	font-size: 16px;
+	text-shadow:0px 1px 0px rgba(101,101,101,0.6);
+	font-family: monospace;font-weight:100;
+	color: #000000;
+}
 .button-error {
-    padding: 10px 15px;
-    background: rgba(212,49,49,0.8);
-    color: #000000;
+  padding: 10px 15px;
+  background: rgba(212,49,49,0.8);
+  color: #000000;
 }
 
 .error_big{
-		color:rgba(212,49,49,0.91); font-size: 25px;
-		text-shadow:0px 1px 0px rgba(101,101,101,0.6);
-		font-family: monospace;font-weight:100;}
+	color:rgba(212,49,49,0.91); font-size: 25px;
+	text-shadow:0px 1px 0px rgba(101,101,101,0.6);
+	font-family: monospace;font-weight:100;
+}
 
 /*---INPUTS---------------------------*/
 
 .ipt_umbral{
 	position: relative; height:26px; width:150px; text-align: center; top:5px;
+	background:transparent;
+	padding: 12px;
+	border-style:groove; border-width:0px; outline:none;
+	-webkit-box-shadow: inset 0px 1px 2px 2px #111;
+	-moz-box-shadow: inset 0px 1px 2px 2px #111;
+	box-shadow: inset 0px 1px 2px 2px #111;
+}
+
+.ipt_edit_name_zone{
+	position: relative; height:20px; width:178px; text-align: center; top:5px;
 	background:transparent;
 	padding: 12px;
 	border-style:groove; border-width:0px; outline:none;

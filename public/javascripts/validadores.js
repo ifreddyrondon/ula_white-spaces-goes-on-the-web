@@ -239,6 +239,9 @@ $(document).ready(function(){
 		if(id=="sync-enviar-4")	stringHandlerError = "ERROR: Wow! An error has occurred, uploading files";
 		if(id=="sync-enviar-5")	stringHandlerError = "ERROR: Entered zone was added before, please change the zone or choose it from the list of zones already added";
 		
+		if(id=="edit-zone-enviar-0")	stringHandlerError = "ERROR: You must enter the zone";
+		if(id=="edit-zone-enviar-1")	stringHandlerError = "ERROR: You must enter the zone name";
+		
 		if(id=="enter-data") stringHandlerError = "ERROR: You must enter all the data!!";
 		if(id=="enter-number") stringHandlerError = "ERROR: You must put a number.<br> Do you want to try again?";
 		if(id=="number_decimal") stringHandlerError = "ERROR: Maximum two (2) decimals!!";
@@ -255,6 +258,12 @@ $(document).ready(function(){
 	$(document).on("click","#error-got-it",function(){
 		$('.error').empty();
 	});
+	
+	$(document).on("click","#success-got-it",function(){
+		$('.success').hide();
+		$("#bowlG").hide();
+	});
+	
 	
 	window.errorHandler=errorHandler;
 	function spanishDate(d){

@@ -9,13 +9,7 @@ block content
 	.left-side-screen
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
-				a(href="/edit_frequencies", class="button grey", style="width:180;height:18px;padding-top:6px") Edit Frequency
-		br
-		br
-		br
-		.button_wrapper(align="center")
-			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
-				a(href="/edit_areas", class="button grey", style="width:180;height:18px;padding-top:6px") Edit Zones
+				a(href="/edit_zones", class="button grey", style="width:180;height:18px;padding-top:6px") Edit Zones
 	.top-center-screen
 		h1(class="insetType")	Upload data
 	.center-screen
@@ -51,3 +45,8 @@ block content
 		br
 		br
 		.error
+		.success
+			center	Successful synchronization
+			br
+			center
+				a(id="success-got-it", href="#", class="button-success")	Got it

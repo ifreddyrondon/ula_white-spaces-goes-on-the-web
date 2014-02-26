@@ -6,6 +6,49 @@ var fs = require('graceful-fs')
 	, BD = require('../BD')
 	, async = require('async');
 
+
+exports.editZoneName = function(req, res){
+
+	if(req.body.zona_admin != undefined || req.body.new_name_zone != undefined){
+		zonaAdmin = sanitize(req.body.zona_admin).xss();
+		zonaAdmin = sanitize(zonaAdmin).entityDecode();
+	
+		newZoneName = sanitize(req.body.new_name_zone).xss();
+		newZoneName = sanitize(newZoneName).entityDecode();
+		
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("UPDATE places SET name = "+ objBD.escape(newZoneName) +" WHERE name = "+ objBD.escape(zonaAdmin) +"",
+		function(err, rows, fields) {
+			if (err){
+				console.log(err);
+				res.send('1');
+			}
+			else 
+				res.send('10');
+		});
+		objBD.end(); 
+	
+	} else
+		res.send('0');
+};
+
+
+
+exports.deleteZone = function(req, res){
+	
+	if(req.body.zona_admin != undefined){
+	
+		zonaAdmin = sanitize(req.body.zona_admin).xss();
+		zonaAdmin = sanitize(zonaAdmin).entityDecode();
+		
+		console.log(zonaAdmin);
+		
+	} else
+		res.send('0');
+};
+
+
 exports.syncUpload = function(req, res){
 	
 	if(req.body.zona_admin != undefined || req.body.new_zone != undefined){
@@ -20,7 +63,7 @@ exports.syncUpload = function(req, res){
 			findPlaceId(zonaAdmin,newZone,req.files.data_measures,
 				function(a){
 					if(a == undefined)
-						res.send('/admin');
+						res.send('10');
 					else{
 						res.send(a);	
 					}
@@ -41,7 +84,7 @@ findPlaceId = function(zonaAdmin,newZone,files,callback){
 		objBD = BD.BD();
 		objBD.connect();
 		objBD.query("INSERT INTO places (name) VALUES ("+ objBD.escape(newZone) +")",
-			id = function(err, rows, fields) {
+		function(err, rows, fields) {
 			if (err){
 				if(err.code = 'ER_DUP_ENTRY'){
 					callback('5');

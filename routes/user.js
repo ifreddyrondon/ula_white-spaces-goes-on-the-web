@@ -405,6 +405,8 @@ exports.formFrequency = function(req, res){
 				    	max = rows[0].count;
 							for(i = 0; i < rows.length; i++)
 								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
+								
+							console.log(rows);
 							
 							from = (from / 1000);
 							to = (to / 1000);

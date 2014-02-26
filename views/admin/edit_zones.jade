@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+	.back
+		a(href="/admin")
+			img(src="images/back.png")
+	.top-center-screen
+		h1(class="insetType")	
+			center	Edit zone
+	.center-screen-cvs-download
+		- if (typeof(places) !== 'undefined')
+			form(id="form-edit-zone", class="font")
+				center
+					table(cellspacing="20")
+						tr
+							td(rowspan="2")
+								br
+								br
+								fieldset(class="radio-container-wide")
+									.radio-options
+										.toggle	Zone
+										ul
+											- if (typeof(places) !== 'undefined')
+												- each place in places
+													li
+														input(type="radio", name="zona_admin", id="#{place.name}", value="#{place.name}")
+														label(for="#{place.name}")	#{place.name}
+								td	
+									#div-form-edit-zone-edit-name-enviar
+										.button_wrapper(align="center")
+											.button_underneath.blue(style="width:162px;height:14px")
+												input(id="form-edit-zone-edit-name", type="submit", value="Edit name", class="button blue", style="width:200px;height:40px;padding-top:6px")
+									#div-edit-name-zone-field(style="display:none")
+										input(id="new_name_zone", name="new_name_zone", autocorrect="on", class="ipt_edit_name_zone border_user ipt_font", type="text", value="", alt="You must enter a name")
+							tr
+								td	
+									#div-form-edit-zone-delete-enviar
+										.button_wrapper(align="center")
+											.button_underneath.blue(style="width:162px;height:14px")
+												input(id="form-edit-zone-delete-enviar", type="submit", value="Delete zone", class="button blue", style="width:200px;height:40px;padding-top:6px")
+									#div-edit-name-zone-button(style="display:none")
+										.button_wrapper(align="center")
+											.button_underneath.blue(style="width:162px;height:14px")
+												input(id="form-edit-zone-edit-name-enviar", type="submit", value="Send name", class="button blue", style="width:200px;height:40px;padding-top:6px")
+		.error
