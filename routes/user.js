@@ -115,7 +115,7 @@ exports.ocupation = function(req, res){
 																rectangle.color = 'rgba(100,50,50,.25)';
 																
 															rectangle.showTooltip = true;
-															rectangle.tooltipFormatString = '-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-';
+															rectangle.tooltipFormatString = '<h2>-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-</h1>';
 															
 															temp.rectangle = rectangle;
 															channels.push(temp);	
@@ -402,13 +402,19 @@ exports.formFrequency = function(req, res){
 							  });							  
 							});	
 				    	
-				    	max = rows[0].count;
-							for(i = 0; i < rows.length; i++)
+				    	max_to_show = rows[0].count;
+				    	
+							for(i = 0; i < rows.length; i++){
 								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
+								if(rows[i].count == 0)
+									rows[i].count = 1;
+							}
+							
+							max = rows[0].count;
 							
 							from = (from / 1000);
 							to = (to / 1000);
-							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max, lat:rows[0].lat, lng:rows[0].lng}); 	    		
+							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng});
 						}
 						else
 							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
