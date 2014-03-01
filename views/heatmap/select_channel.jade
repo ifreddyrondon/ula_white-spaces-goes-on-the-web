@@ -7,13 +7,61 @@ block content
 	.top-center-screen
 		center
 			h1(class="insetType", style="font-size:16px, aling-text:center")	Select Channel
-	#chart-left-side-screen
+	.parameters-left-side-screen
 		.font(style="font-size:25px;font-weight:100") Parameters
 		br
-		.font(style="font-size:15px;font-weight:100") Threshold: #{umbral}
-		.font(style="font-size:15px;font-weight:100") Zone: #{zona}
-	.center-screen
+		table(cellspacing="8",style="font-size:15px;font-weight:100;", class="font")
+			tr
+				td	
+					b	Threshold:
+				td	#{umbral}
+			tr
+				td	
+					b	Zone: 
+				td	#{zona}		
+			tr
+				td(colspan="2")	
+					b	Frequency:
+			tr
+				td	min: #{min}
+				td	max: #{max}
+			tr
+				td(colspan = "2",align="center") 
+					br
+					b	#{allocation}
+		br
+	.center-screen-check-buttons
 		form(class="font", action="form_select_channel", method="GET")
 			center
 				input(name="ipt_umbral", type="hidden", value="#{umbral}")
 				input(name="zona", type="hidden", value="#{zona}")
+				input(id="min_ipt_hidden", name="min", type="hidden", value="#{min}")
+				input(id="max_ipt_hidden", name="max", type="hidden", value="#{max}")
+				div(style="width: 100%; height: 400px; overflow-y:scroll; border-style: dashed;")
+					- if (typeof(channels) !== 'undefined')
+						- each channel in channels
+							table(style="float:left", cellspacing="5px")
+								tr
+									td
+										.squaredTwo
+											input(type="checkbox", value="(#{channel.from},#{channel.to})", id="#{channel.channel}", name="channel")
+											label(for="#{channel.channel}")
+									td	#{channel.channel} [#{channel.from},#{channel.to}] Mhz
+				table(cellspacing="15", width="348")
+					tr
+						td(colspan="2", align="center")
+							pre(style="font-size:16px;font-weight:100") please select the function <br>to operate on the data
+					tr
+						td
+							input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="Max Value")
+							label(for="radio4", class="css-label")	Max Value
+						td
+							input(type="radio", name="type_heatmap", id="radio5", class="css-checkbox", value="Average")
+							label(for="radio5", class="css-label")	Average(X&#772)
+				.button_wrapper(align="center")
+					.button_underneath(style="width:162px;height:14px")
+						input(id="select-channels-enviar", type="submit", value="Show Heatmap", class="button", style="width:200px;height:40px;padding-top:6px")
+		br
+		br
+		br
+		.error				

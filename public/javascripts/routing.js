@@ -220,6 +220,22 @@ $(document).ready(function(){
 			return false;
 		}
 	});
+	// Select-channels-enviar------------------------------------------------------------------------
+	$("#select-channels-enviar").click(function(){
+		val = $(document.getElementsByName('channel'));
+		error = true;
+		for (i = 0 ; i < val.length ; i++){
+			if (val[i].checked){
+				error = false;
+				break;
+			}
+		}
+		if(error){	
+			$("#bowlG").hide();
+			errorHandler("select-one-channel");
+			return false;
+		}
+	});
 	// Download CSV all files------------------------------------------------------------------------
 	$("#generate-csv-to-heatmap").click(function(){
 		if(!validator("number","number","from_frequency") || !validator("number","number","to_frequency")){

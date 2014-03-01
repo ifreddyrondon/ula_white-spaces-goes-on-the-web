@@ -5,7 +5,8 @@ block content
 		a(href="javascript:history.back()")
 			img(src="images/back.png")
 	.top-center-screen
-		.font(style="font-size:20px;font-weight:100;color:#ffffff")	#{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max_to_show}
+		- if (typeof(from) !== 'undefined')
+			.font(style="font-size:20px;font-weight:100;color:#ffffff")	#{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max_to_show}, Function #{typeHeatmap}
 	.left-side-screen-csv-download
 		a(href="/download-csv-data", id="download-csv-data")
 			img(src="images/download_csv_file.png",id="download_csv_heatmap")

@@ -88,7 +88,7 @@ exports.ocupation = function(req, res){
 									  	id_allocation = rows[0].id_allocation;
 									  	objBD = BD.BD();
 											objBD.connect();
-											objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+ objBD.escape(id_allocation) +"",
+											objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+ id_allocation +"",
 												function(err, rows, fields) {
 													if (err)
 											    	console.log(err);						
@@ -376,10 +376,10 @@ exports.formFrequency = function(req, res){
 	    	id_place = rows[0].id_place;
 	    	
 	    	var query = null;
-	    	if(typeHeatmap == "max"){
+	    	if(typeHeatmap == "Max Value"){
 		    	query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, MAX(potency) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" GROUP BY latitude, longitude ORDER BY count DESC";
 	    	
-	    	} else if(typeHeatmap == "prom"){
+	    	} else if(typeHeatmap == "Average"){
 	    		query = "SELECT coordinates.latitude as lat,coordinates.longitude as lng, AVG(potency)as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" GROUP BY latitude, longitude ORDER BY count DESC";
 	    	}
 	    	
@@ -414,7 +414,7 @@ exports.formFrequency = function(req, res){
 							
 							from = (from / 1000);
 							to = (to / 1000);
-							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng});
+							res.render('heatmap/heatmap', {umbral:umbral, type:"Frequency" ,from:from, to:to , zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng, typeHeatmap:typeHeatmap});
 						}
 						else
 							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
@@ -438,6 +438,8 @@ exports.selectChannel = function(req, res){
 		check(req.query.zona).notNull();
 		check(req.query.allocation).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
+		check(req.query.min).notNull().isNumeric();
+		check(req.query.max).notNull().isNumeric();
 		
 		umbral = sanitize(req.query.ipt_umbral).xss();
 		umbral = sanitize(umbral).entityDecode();		
@@ -448,13 +450,154 @@ exports.selectChannel = function(req, res){
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
 		
-		res.render('heatmap/select_channel',{ umbral:umbral, zona:zona ,allocation:allocation }); 
+		min = sanitize(req.query.min).xss();
+		min = sanitize(min).entityDecode();
+		
+		max = sanitize(req.query.max).xss();
+		max = sanitize(max).entityDecode();
+		
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("SELECT id_allocation FROM allocation_channels WHERE name = "+ objBD.escape(allocation) +"",
+			function(err, rows, fields) {
+				if (err)
+		    	console.log(err);						
+		    else{
+			    id_allocation = rows[0].id_allocation;
+
+			    objBD = BD.BD();
+					objBD.connect();
+					objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+id_allocation+" AND channels.from >= "+ objBD.escape(min) +" AND channels.to <= "+ objBD.escape(max) +"",
+						function(err, rows, fields) {
+							if (err){
+								console.log(err);							
+							}
+					    else{
+						  	res.render('heatmap/select_channel',{ umbral:umbral, zona:zona ,allocation:allocation, channels:rows }); 	
+					    }
+						});
+					objBD.end();	
+
+		    }
+			});
+		objBD.end();	
 	
 	} catch (e) {
 	  res.render('index'); 
 	  console.log(e.message);
 	}
 }
+
+
+
+exports.formChannel = function(req, res){
+	try {
+		
+		check(req.query.ipt_umbral).notNull().isNumeric();
+		check(req.query.zona).notNull();
+		check(req.query.type_heatmap).notNull();		 	
+		check(req.query.channel).notNull();		 	
+		check(req.query.min).notNull().isNumeric();
+		check(req.query.max).notNull().isNumeric();
+		 	
+		zona = sanitize(req.query.zona).xss();
+		zona = sanitize(zona).entityDecode();
+		
+		umbral = sanitize(req.query.ipt_umbral).xss();
+		umbral = sanitize(umbral).entityDecode();		
+		
+		channel = sanitize(req.query.channel).xss();
+		channel = sanitize(channel).entityDecode();		
+
+		typeHeatmap = sanitize(req.query.type_heatmap).xss();
+		typeHeatmap = sanitize(typeHeatmap).entityDecode();	
+		
+		min_frequency = sanitize(req.query.min).xss();
+		min_frequency = sanitize(min_frequency).entityDecode();
+		
+		max_frequency = sanitize(req.query.max).xss();
+		max_frequency = sanitize(max_frequency).entityDecode();
+		
+		channel = channel.substring(1, channel.length);
+		channel = channel.substring(0, channel.length -1);
+		channel = channel.split("),(");
+		
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +"",
+		function(err, rows, fields) {
+	    if (err){
+	    	console.log(err);
+				res.render('index'); 
+			}							
+	    else {
+	    	id_place = rows[0].id_place;
+	    	
+	    	channel1 = channel[0].split(",");
+	    	var query = null;
+	    	if(typeHeatmap == "Max Value"){
+		    	query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, MAX(potency) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM (";
+	    	
+	    	} else if(typeHeatmap == "Average"){
+	    		query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, AVG(potency) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM (";
+	    	}
+	    	
+	    	query = query + "SELECT * FROM potency_frequency WHERE frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +""
+	    			
+				for(i = 1; i < channel.length; i++){
+					channelAux = channel[i].split(",");
+					query = query + " UNION SELECT * FROM potency_frequency WHERE frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +""
+				}
+				
+				query = query + ") as potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency) as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" GROUP BY latitude, longitude ORDER BY count DESC";
+				
+	    	objBD = BD.BD();
+				objBD.connect();
+				objBD.query(query,
+				function(err, rows, fields) {
+			    if (err){
+			    	console.log(err);
+						res.render('index'); 
+					}							
+			    else {
+						if(rows[0]!= undefined){
+														
+							json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, function(err, csv) {
+							  if (err) console.log(err);
+								fs.writeFile('public/downloads/csv/data/data.csv', csv, function(err) {
+							    if (err) throw err;
+							    console.log('file saved');
+							  });							  
+							});	
+				    	
+				    	max_to_show = rows[0].count;
+				    	
+							for(i = 0; i < rows.length; i++){
+								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
+								if(rows[i].count == 0)
+									rows[i].count = 1;
+							}
+							
+							max = rows[0].count;
+							res.render('heatmap/heatmap', {umbral:umbral, type:"channel", zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng, typeHeatmap:typeHeatmap});
+						}
+						else
+							res.render('heatmap/select_channel',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
+				  }
+				});
+				objBD.end();
+		  }
+		});
+		objBD.end();	
+			
+	} catch (e) {
+	  res.render('index'); 
+	  console.log(e.message);
+	}
+}
+
+
+
 
 exports.loginSend = function(req, res){
 

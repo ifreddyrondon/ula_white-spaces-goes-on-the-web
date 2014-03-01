@@ -249,6 +249,8 @@ $(document).ready(function(){
 		if(id=="values_within_range") stringHandlerError = 'ERROR: values ​​must be within the range!!';
 		if(id=="frequency_not_recorded") stringHandlerError = "ERROR: Frequency values ​​are not recorded. Do you want to try again?";
 		
+		if(id=="select-one-channel") stringHandlerError = "ERROR: You must select at least one channel";
+		
 		if(document.getElementById(id+'-error') == null){
 	  	$('.error').append('<div id="'+id+'-error"><center>'+stringHandlerError+'</center></div>');
 	  	$('.error').append('<br><center><a id="error-got-it" href="#" class="button-error">Got it</a></center>');

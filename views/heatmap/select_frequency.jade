@@ -11,16 +11,23 @@ block content
 		br
 		table(cellspacing="8",style="font-size:15px;font-weight:100;", class="font")
 			tr
-				td	Threshold:
+				td	
+					b	Threshold:
 				td	#{umbral}
 			tr
-				td	Zone: 
+				td	
+					b	Zone: 
 				td	#{zona}		
 			tr
-				td(colspan="2")	Frequency:
+				td(colspan="2")	
+					b	Frequency:
 			tr
 				td	min: #{min}
 				td	max: #{max}
+			tr
+				td(colspan = "2",align="center") 
+					br
+					b	#{allocation}
 		br			
 	.center-screen-cvs-download
 		form(class="font", action="form_select_frequency", method="GET")
@@ -60,10 +67,10 @@ block content
 							table(cellspacing="15", width="348")
 								tr
 									td
-										input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="max")
+										input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="Max Value")
 										label(for="radio4", class="css-label")	Max Value
 									td
-										input(type="radio", name="type_heatmap", id="radio5", class="css-checkbox", value="prom")
+										input(type="radio", name="type_heatmap", id="radio5", class="css-checkbox", value="Average")
 										label(for="radio5", class="css-label")	Average(X&#772)
 							br
 							.button_wrapper(align="center")

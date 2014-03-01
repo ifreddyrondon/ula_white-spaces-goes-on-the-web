@@ -74,6 +74,7 @@ app.get('/select_frequency', user.selectFrequency);
 app.get('/select_channel', user.selectChannel);
 
 app.get('/form_select_frequency', user.formFrequency);
+app.get('/form_select_channel', user.formChannel);
 
 app.post('/generate-csv-to-myheatmap', user.downloadCsvToHeatmap);
 app.get('/dowload-csv-to-myheatmap', function(req, res){
