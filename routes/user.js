@@ -198,7 +198,7 @@ exports.downloadPdfOfHeatmap = function(req, res){
 		check(req.body.img).notNull();
 		
 		title = req.body.title;
-		title = sanitize(zona).entityDecode();		
+		title = sanitize(title).entityDecode();		
 		
 		img = sanitize(req.body.img).xss();
 		img = sanitize(img).entityDecode();		
@@ -210,7 +210,7 @@ exports.downloadPdfOfHeatmap = function(req, res){
 	    if (err) throw err;
 	    
 	    doc = new PDFDocument({size: 'LEGAL',layout: 'landscape'});
-	    doc.fontSize(25);
+	    doc.fontSize(15);
 	    doc.text(title, {align: 'center'});
 			doc.image('public/downloads/pdf/heatmap.png', { width: 850});
 			doc.write('public/downloads/pdf/heatmap.pdf');

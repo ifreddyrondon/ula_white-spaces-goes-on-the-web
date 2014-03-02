@@ -5,7 +5,7 @@ exports.BD = function() {
 		socketPath : '/Applications/MAMP/tmp/mysql/mysql.sock',
 		user : 'root',
 		password : 'yourpassword',
-		database : 'white_spaces_goes_on_the_web',
+		database : 'webws.monitor',
 		});
 	return connection;
 }
