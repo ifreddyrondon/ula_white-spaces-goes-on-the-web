@@ -234,6 +234,8 @@ $(document).ready(function(){
 		
 		if(id=="form-account-error-email")	stringHandlerError = "ERROR: Invalid Email";
 		if(id=="form-account-error-email-empty")	stringHandlerError = "ERROR: You must enter the email";
+		if(id=="form-account-error-password-different")	stringHandlerError = "ERROR: The 'New password' and 'Repeat password' fields must be equal";
+		if(id=="form-account-error-password-old")	stringHandlerError = "ERROR: The old password does not match with the password entered";
 		
 		if(id=="sync-enviar-0")	stringHandlerError = "ERROR: You must enter just! the zone or new zone not both";
 		if(id=="sync-enviar-1")	stringHandlerError = "ERROR: You must enter the zone or new zone and upload data file (measure & tracks)";

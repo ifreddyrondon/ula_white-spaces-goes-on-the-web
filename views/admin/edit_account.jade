@@ -28,9 +28,32 @@ block content
 						td(colspan="3")
 							pre(style="font-size:24px;font-weight:100") Password
 							br
-							.button_wrapper(align="center")
+							.button_wrapper(align="center", id="button-change-password-div")
 								.button_underneath.blue(style="width:162px;height:14px")
-									input(id="button-change-password-div", type="submit", value="Change password", class="button blue", style="width:200px;height:40px;padding-top:6px")
+									input(id="button-show-password", type="submit", value="Change password", class="button blue", style="width:200px;height:40px;padding-top:6px")
+							center
+								table(style="display:none",id="div-password", cellspacing="5")
+									tr
+										td
+											pre(style="font-size:16px;font-weight:100") Old password
+										td
+											input(id="old_pass_ipt", name="old_pass_ipt", autocorrect="on", class="ipt_email border_user ipt_font", type="password", value="")
+									tr
+										td
+											pre(style="font-size:16px;font-weight:100") New password
+										td
+											input(id="new_pass_ipt", name="new_pass_ipt", autocorrect="on", class="ipt_email border_user ipt_font", type="password", value="")
+									tr
+										td
+											pre(style="font-size:16px;font-weight:100") Repeat password
+										td
+											input(id="repeat_new_pass_ipt", name="repeat_new_pass_ipt", autocorrect="on", class="ipt_email border_user ipt_font", type="password", value="")
+									tr
+										td(colspan="2")
+											br
+											.button_wrapper(align="center")
+												.button_underneath.blue(style="width:162px;height:14px")
+													input(id="button-change-password", type="submit", value="Sent password", class="button blue", style="width:200px;height:40px;padding-top:6px")
 			.error
 			.success
 				center	Changes saved correctly

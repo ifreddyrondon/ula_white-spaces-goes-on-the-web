@@ -131,7 +131,7 @@ app.get('/edit_account', login, function(req, res){
 });
 
 app.post('/edit_account_email', admin.editEmail);
-
+app.post('/edit_account_password', admin.editPassword);
 
 app.get('/edit_zones', login, function(req, res){
 	objBD = BD.BD();

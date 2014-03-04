@@ -141,6 +141,48 @@ $(document).ready(function(){
 	    });
 		}
 	});
+	// --------------------------------------------------------
+	$("#button-show-password").click(function(){
+		$("#button-change-password-div").hide();
+		$("#bowlG").hide();
+		$("#div-password").show();
+		return false;
+	});
+		$("#button-change-password").click(function(){
+		if($("#old_pass_ipt").val() == '' || $("#new_pass_ipt").val() == '' || $("#repeat_new_pass_ipt").val() == ''){
+			errorHandler("enter-data");	
+			$("#bowlG").hide();
+			return false;
+		
+		} else if($("#new_pass_ipt").val() != $("#repeat_new_pass_ipt").val()){
+			errorHandler("form-account-error-password-different");	
+			$("#bowlG").hide();
+			return false;
+		
+		} else {
+			$("#old_pass_ipt").val(CryptoJS.SHA512($('#old_pass_ipt').val()));
+			$("#new_pass_ipt").val(CryptoJS.SHA512($('#new_pass_ipt').val()));
+			$("#repeat_new_pass_ipt").val(CryptoJS.SHA512($('#repeat_new_pass_ipt').val()));
+			$("#form-account").ajaxForm({  
+				url: "/edit_account_password", 
+				type: "post",    
+				beforeSubmit: function(){
+	    		$("#bowlG").show();
+	      },
+				success: function(res){	
+					$("#bowlG").hide();
+					if(res == '0')
+			    	errorHandler("sync-enviar-3");
+			    if(res == '1')
+			    	errorHandler("form-account-error-password-different");	
+			    if(res == '2')
+			    	errorHandler("form-account-error-password-old");	
+					else if(res == '10')
+						$('.success').show();
+				}	
+	    });
+		}
+	});
 	
 	// EDIT ZONES------------------------------------------------------------------------
 		$("#form-edit-zone-edit-name").click(function(){
