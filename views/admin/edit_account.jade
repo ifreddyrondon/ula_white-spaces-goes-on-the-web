@@ -1,0 +1,39 @@
+extends ../layout
+
+block content
+	.back
+		a(href="/admin")
+			img(src="images/back.png")
+	.top-center-screen
+		h1(class="insetType")	
+				center	Change your basic account 
+	.center-screen-cvs-download
+		center
+			br
+			br
+			br
+			br
+			form(id="form-account", class="font")
+				table(cellspacing="10")
+					tr	
+						td
+							pre(style="font-size:24px;font-weight:100") Email
+						td
+							input(id="email_ipt", name="email_ipt", autocorrect="on", class="ipt_email border_user ipt_font", type="text", value="#{email}")
+						td
+							.button_wrapper(align="center")
+								.button_underneath.blue(style="width:162px;height:14px")
+									input(id="button-change-email", type="submit", value="Change email", class="button blue", style="width:200px;height:40px;padding-top:6px")
+					tr	
+						td(colspan="3")
+							pre(style="font-size:24px;font-weight:100") Password
+							br
+							.button_wrapper(align="center")
+								.button_underneath.blue(style="width:162px;height:14px")
+									input(id="button-change-password-div", type="submit", value="Change password", class="button blue", style="width:200px;height:40px;padding-top:6px")
+			.error
+			.success
+				center	Changes saved correctly
+				br
+				center
+					a(id="success-got-it", href="#", class="button-success")	Got it

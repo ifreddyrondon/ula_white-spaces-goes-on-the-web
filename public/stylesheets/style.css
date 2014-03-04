@@ -97,6 +97,17 @@ input[type=checkbox] {visibility: hidden}
 	box-shadow: inset 0px 1px 2px 2px #111;
 }
 
+.ipt_email{
+	position: relative; height:15px; width:235px; text-align: center; 
+	background:transparent;
+	padding: 12px;
+	border-style:groove; border-width:0px; outline:none;
+	-webkit-box-shadow: inset 0px 1px 2px 2px #111;
+	-moz-box-shadow: inset 0px 1px 2px 2px #111;
+	box-shadow: inset 0px 1px 2px 2px #111;
+	font-size: 1.3em;
+}
+
 .ipt_zones{
 	position: relative; height:15px; width:235px; text-align: center; top:5px;
 	background:transparent;

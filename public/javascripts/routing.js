@@ -113,6 +113,35 @@ $(document).ready(function(){
 		}
 	});
 	
+	// EDIT ACCOUNT----------------------------------------------------------------------
+	$("#button-change-email").click(function(){
+		if($("#email_ipt").val() == ''){
+			errorHandler("form-account-error-email-empty");	
+			$("#bowlG").hide();
+			return false;
+		
+		} else if(!validator("correo","IsCorreo",$("#email_ipt").attr('id'))) {
+			$("#bowlG").hide();
+			return false;
+		
+		} else {
+			$("#form-account").ajaxForm({  
+				url: "/edit_account_email", 
+				type: "post",    
+				beforeSubmit: function(){
+	    		$("#bowlG").show();
+	      },
+				success: function(res){	
+					$("#bowlG").hide();
+					if(res == '0')
+			    	errorHandler("sync-enviar-3");
+					else if(res == '10')
+						$('.success').show();
+				}	
+	    });
+		}
+	});
+	
 	// EDIT ZONES------------------------------------------------------------------------
 		$("#form-edit-zone-edit-name").click(function(){
 			val = $(document.getElementsByName('zona_admin'));

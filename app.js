@@ -126,6 +126,13 @@ app.get('/admin', login, function(req, res){
 	objBD.end();
 });
 
+app.get('/edit_account', login, function(req, res){
+	res.render('admin/edit_account',{ email:req.session.user});  
+});
+
+app.post('/edit_account_email', admin.editEmail);
+
+
 app.get('/edit_zones', login, function(req, res){
 	objBD = BD.BD();
 	objBD.connect();

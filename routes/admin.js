@@ -3,8 +3,42 @@ var fs = require('graceful-fs')
 	, path = require('path')
 	, lineReader = require('line-reader')
 	, sanitize = require('validator').sanitize
+	, check = require('validator').check
 	, BD = require('../BD')
 	, async = require('async');
+
+
+exports.editEmail = function(req, res){
+	try {
+	  check(req.body.email_ipt).notNull().len(6, 64).isEmail();
+		
+		email = sanitize(req.body.email_ipt).trim(); 	
+		email = sanitize(email).xss();
+		email = sanitize(email).entityDecode();
+		
+		query = "UPDATE user SET email = "+ objBD.escape(email) +" WHERE email = "+ objBD.escape(req.session.user) +"";
+		console.log(query);
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query(query,
+		function(err, rows, fields) {
+	    if (err){
+	    	console.log(err);
+				res.send('0'); 
+			}							
+	    else {
+		    req.session.user = email;
+		    res.send('10');
+			}
+		});
+		objBD.end();  	
+							
+	} catch (e) {
+	  res.send('0'); 
+	  console.log(e.message);
+	}
+
+};
 
 
 exports.editZoneName = function(req, res){
