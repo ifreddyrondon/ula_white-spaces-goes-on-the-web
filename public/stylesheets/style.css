@@ -537,7 +537,6 @@ label.css-label {
 	.no-touch .radio-container:hover, .no-touch .radio-container-wide, .radio-container.active, .radio-container-wide.active { z-index: 9999 }
 	.radio-options {
 	  position: absolute;
-	  max-height: 3em;
 	  width: 100%;
 	  overflow: hidden;
 	  -webkit-transition: 0.7s;
