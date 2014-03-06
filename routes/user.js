@@ -467,7 +467,7 @@ exports.selectChannel = function(req, res){
 
 			    objBD = BD.BD();
 					objBD.connect();
-					objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+id_allocation+" AND channels.from >= "+ objBD.escape(min) +" AND channels.to <= "+ objBD.escape(max) +"",
+					objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+id_allocation+" AND channels.to >= "+ objBD.escape(min) +" AND channels.from <= "+ objBD.escape(max) +"",
 						function(err, rows, fields) {
 							if (err){
 								console.log(err);							
