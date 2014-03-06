@@ -4,8 +4,8 @@ block content
 	.back
 		a(href="/")
 			img(src="images/back.png")
-	.right-side-screen.font-slim
-		a(href="/logout", style="font-size:20px;font-weight:100;")	Log out
+	.right-side-screen.middleHeadline
+		a(href="/logout")	Logout
 	.left-side-screen
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
@@ -17,8 +17,9 @@ block content
 			.button_underneath.orange(style="padding-top:10;width:146px;height:15px")
 				a(href="/edit_account", class="button orange", style="width:180;height:18px;padding-top:6px") Edit Account
 	.top-center-screen
-		h1(class="insetType")
-			center	Upload data
+		center
+			br
+			span.largeHeadline	Upload data
 	.center-screen
 		form(id="form-sync", class="font", enctype="multipart/form-data")
 			center
@@ -32,13 +33,13 @@ block content
 										li
 											input(type="radio", name="zona_admin", id="#{place.name}", value="#{place.name}")
 											label(for="#{place.name}")	#{place.name}
-					h3(style="font-size:20px;font-weight:100;")	or add a zone
+					.middleHeadline	or add a zone
 					br
 					input(id="new_zone", name="new_zone", autocorrect="on", class="ipt_zones border_user ipt_font", type="text", value="", alt="You must enter a zone")
 					br
 					br
 				else
-					h3(style="font-size:20px;font-weight:100;")	No aggregates places, add one
+					.middleHeadline	No aggregates places, add one
 					br
 					input(id="new_zone", name="new_zone", autocorrect="on", class="ipt_zones border_user ipt_font", type="text", value="", alt="You must enter a zone")
 			br	

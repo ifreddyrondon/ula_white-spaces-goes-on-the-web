@@ -6,11 +6,11 @@ block content
 			img(src="images/back.png")
 	.top-center-screen
 		center
-			h1(class="insetType", style="font-size:16px, aling-text:center")	Select Channel
+			span.largeHeadline	Select Channel
 	.parameters-left-side-screen
-		.font(style="font-size:25px;font-weight:100") Parameters
+		.middleHeadline Parameters
 		br
-		table(cellspacing="8",style="font-size:15px;font-weight:100;", class="font")
+		table.paragraphText(cellspacing="8")
 			tr
 				td	
 					b	Threshold:
@@ -26,10 +26,10 @@ block content
 				td	min: #{min}
 				td	max: #{max}
 			tr
-				td(colspan = "2",align="center") 
+				td(colspan = "2",align="left") 
 					br
 					b	#{allocation}
-		br
+		br			
 	.center-screen-check-buttons
 		form(class="font", action="form_select_channel", method="GET")
 			center
@@ -50,7 +50,7 @@ block content
 				table(cellspacing="15", width="348")
 					tr
 						td(colspan="2", align="center")
-							pre(style="font-size:16px;font-weight:100") please select the function <br>to operate on the data
+							.paragraphText2 please select the function <br>to operate on the data
 					tr
 						td
 							input(type="radio", name="type_heatmap", id="radio4", class="css-checkbox", checked="checked", value="Max Value")

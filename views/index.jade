@@ -2,10 +2,10 @@ extends layout
 
 block content
 	if sesion
-		.right-side-screen 
-			a(href="/admin", style="font-size:20px;font-weight:100;")	Admin
-	h1(class="insetType", style="position:absolute;left:15px")	White Spaces <br> Goes on the Web
-	br
+		.right-side-screen.middleHeadline
+			a(href="/admin")	Admin
+	.top-center-screen.largeHeadline
+		center	White Spaces Monitor
 	.center-screen
 		center
 			#threshold_title
@@ -27,7 +27,7 @@ block content
 							input(id="ipt_umbral", name="ipt_umbral", autocorrect="off", class="ipt_umbral border_user ipt_font_big", type="text", value="-70", alt="You must enter your threshold")
 					tr
 						td(colspan="2",align="center")
-							pre(style="font-size:16px;font-weight:100") please select allocation <br>of channel frequency
+							pre(style="font-size:16px") please select allocation <br>of channel frequency
 					tr
 						td(colspan="2",align="center")
 							fieldset(class="radio-container")
@@ -39,10 +39,8 @@ block content
 												li
 													input(type="radio", name="allocation", id="#{allocation.name}", value="#{allocation.name}")
 													label(for="#{allocation.name}")	#{allocation.name}
-					tr
-						td(colspan="2",align="center")
-							.button_wrapper(align="center")
-								.button_underneath.blue(style="width:162px;height:14px")
-									input(id="options-enviar", type="submit", value="Calculate occupation", class="button blue", style="width:200px;height:40px;padding-top:6px")
+				.button_wrapper(align="center")
+					.button_underneath.blue(style="width:162px;height:14px")
+						input(id="options-enviar", type="submit", value="Calculate occupation", class="button blue", style="width:200px;height:40px;padding-top:6px")
 			br
 			.error

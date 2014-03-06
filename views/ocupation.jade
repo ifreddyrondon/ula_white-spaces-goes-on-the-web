@@ -6,9 +6,10 @@ block content
 			img(src="images/back.png")
 	#chart-title-container
 		#chart-title
-			h2(class="insetType", align="center")	Occupation with threshold 
+			center
+				span.largeHeadline	Occupation with threshold 
 				br
-				span(style="background-color:#A8C9F2")	#{umbral} dBm (#{zona}) 
+				span.middleHeadline(style="background-color:#A8C9F2")	#{umbral} dBm (#{zona}) 
 	#chart-left-side-screen
 		.button_wrapper(align="center")
 			.button_underneath.grey(style="padding-top:10;width:146px;height:15px")
@@ -23,8 +24,8 @@ block content
 		br
 		br
 		br
-		.ipt_font_med(style="padding-left:30px;")
-			center Please select a frequency or channel to display a heatmap of zone #{zona}
+		.paragraphText(style="padding-left:30px;")
+			center Please select a frequency or channel to display a heatmap of zone <br><b>#{zona}</b>
 		br
 		br
 		br
@@ -107,8 +108,8 @@ block content
 						tickRenderer:$.jqplot.CanvasAxisTickRenderer,
 						label:'Frequency (MHz)', 
 						labelOptions:{
-							fontFamily:'Helvetica',
-							fontSize: '14pt'
+							fontFamily:'times, Times New Roman, times-roman, georgia, serif',
+							fontSize: '20pt'
 						},
 					},
 					yaxis:{
@@ -121,8 +122,8 @@ block content
 						tickRenderer:$.jqplot.CanvasAxisTickRenderer,
 						labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
 						labelOptions:{
-							fontFamily:'Helvetica',
-							fontSize: '14pt'
+							fontFamily:'times, Times New Roman, times-roman, georgia, serif',
+							fontSize: '20pt'
 						},
 						label:'Occupancy (ratio)'
 					}
