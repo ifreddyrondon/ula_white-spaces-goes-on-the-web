@@ -127,6 +127,7 @@ input[type=checkbox] {visibility: hidden}
 	-moz-box-shadow: inset 0px 1px 2px 2px #111;
 	box-shadow: inset 0px 1px 2px 2px #111;
 	font-size: 1.3em;
+	font-weight: 500;
 }
 
 /*-----LOGIN input css ----------------------*/
