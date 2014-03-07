@@ -14,7 +14,7 @@ block content
 	.left-side-screen-csv-download
 		a(href="/download-csv-data", id="download-csv-data")
 			img(src="images/download_csv_file.png",id="download_csv_heatmap")
-		a(href="#", id="generate_pdf_heatmap")
+		a(href="javascript:void(0)", id="generate_pdf_heatmap")
 			img(src="images/download_pdf_file.png")
 	#map-canvas
 	script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization")
@@ -66,10 +66,7 @@ block content
 		}
 		
 		$(document).ready(function(){
-			$("#generate_pdf_heatmap").click(function(e){
-				window.location.hash = '';
-				history.pushState('', document.title, history.back(-1));
-				e.preventDefault(); 
+			$("#generate_pdf_heatmap").click(function(){
 					
 				html2canvas(document.getElementById('map-canvas'), {
 					useCORS: true,

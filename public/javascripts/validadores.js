@@ -24,7 +24,7 @@ $(document).ready(function(){
 	  	document.getElementById(id).style.backgroundColor="rgba(253,160,160,0.43)";
 	  	if(document.getElementById(stringError) == null){
 		  	$('.error').append('<div id="'+stringError+'"><center>'+error+'</center></div>');
-	  		$('.error').append('<br><center><a id="error-got-it" href="#" class="button-error">Got it</a></center>');
+	  		$('.error').append('<br><center><a id="error-got-it" href="javascript:void(0)" class="button-error">Got it</a></center>');
 	  	}
 	  	return false;
 		}
@@ -258,7 +258,7 @@ $(document).ready(function(){
 		
 		if(document.getElementById(id+'-error') == null){
 	  	$('.error').append('<div id="'+id+'-error"><center>'+stringHandlerError+'</center></div>');
-	  	$('.error').append('<br><center><a id="error-got-it" href="#" class="button-error">Got it</a></center>');
+	  	$('.error').append('<br><center><a id="error-got-it" href="javascript:void(0)" class="button-error">Got it</a></center>');
 	  }
 	}
 	// Ocultar error cuando le da got it

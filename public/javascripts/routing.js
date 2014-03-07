@@ -331,21 +331,11 @@ $(document).ready(function(){
 			    	errorHandler("frequency_not_recorded");	
 		    	}
 		    	else if(res == '0'){
-			    	$("#generate-csv-to-heatmap").hide();
-			    	$("#generate-csv-to-heatmap2").show();
-						$("#dowload-csv-to-myheatmap").hide();	
-						$("#dowload-csv-to-myheatmap2").show();	
+						window.location.href ="/dowload-csv-to-myheatmap";
 		    	}
 				}
 			});
-		
 		}
-	});
-	$("#dowload-csv-to-myheatmap").click(function(){
-		$("#bowlG").hide();
-	});
-	$("#dowload-csv-to-myheatmap2").click(function(){
-		$("#bowlG").hide();
 	});
 	// Download CSV data------------------------------------------------------------------------
 	$("#download-csv-data").click(function(){
@@ -368,14 +358,6 @@ $(document).ready(function(){
 	    	}
 			}
 		});
-	});
-	$("#download_pdf_chart").click(function(){
-		$("#bowlG").hide();
-	});
-	
-	// Download PDF heatmap------------------------------------------------------------------------
-	$("#download_pdf_heatmap").click(function(){
-		$("#bowlG").hide();
 	});
 	
 });
