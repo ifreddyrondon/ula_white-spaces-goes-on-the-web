@@ -36,9 +36,9 @@ input[type=checkbox] {visibility: hidden}
 #map-canvas { width:100%; height:100%; margin:0px; padding:0px}
 #map-canvas a img { display:none; }
 
-#footer {position:absolute;bottom:0;width:100%;height:20px;}
+#footer {position:absolute;bottom:0;width:100%;height:75px;}
 #footer_left{position:absolute;left:5px;bottom:2px}
-#footer_right{position: absolute;right:3px}
+#footer_right{position: absolute;right:2px;}
 
 #threshold_title{position:absolute;right: 26px;top: -35px}
 

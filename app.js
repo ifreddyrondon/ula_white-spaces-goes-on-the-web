@@ -9,6 +9,7 @@ var express = require('express')
   , admin = require('./routes/admin')
   , http = require('http')
   , path = require('path')
+  , fs = require('fs')
   , BD = require('./BD');
 
 var app = express();

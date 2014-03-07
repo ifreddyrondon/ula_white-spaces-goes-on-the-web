@@ -177,13 +177,12 @@ exports.downloadPdfOfChart = function(req, res){
 	    doc.fontSize(25);
 	    doc.text('Occupation with threshold ' + umbral + ' dBm (' + zona + ')', {align: 'center'});
 			doc.image('public/downloads/pdf/chart.png', { width: 850, height: 460});
-			doc.write('public/downloads/pdf/occupation.pdf');
-			
-			fs.unlink('public/downloads/pdf/chart.png', function(){
+			doc.write('public/downloads/pdf/occupation.pdf',function(){
+				fs.unlink('public/downloads/pdf/chart.png', function(){
 				if (err) throw err;
-				res.send('0');
+					res.send('0');
+				});
 			});
-			
 	  });
 		
 	} catch (e) {
@@ -213,13 +212,14 @@ exports.downloadPdfOfHeatmap = function(req, res){
 	    doc.fontSize(15);
 	    doc.text(title, {align: 'center'});
 			doc.image('public/downloads/pdf/heatmap.png', { width: 850});
-			doc.write('public/downloads/pdf/heatmap.pdf');
-			
-			fs.unlink('public/downloads/pdf/heatmap.png', function(){
-				if (err) throw err;
-				res.send('0');
+			doc.write('public/downloads/pdf/heatmap.pdf',function(){
+				fs.unlink('public/downloads/pdf/heatmap.png', function(){
+					if (err) throw err;
+					else{
+						res.send('0');
+					}
+				});
 			});
-			
 	  });
 		
 	} catch (e) {

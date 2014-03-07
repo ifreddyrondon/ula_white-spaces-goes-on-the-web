@@ -364,8 +364,7 @@ $(document).ready(function(){
 	    success: function(res){
 	    	$("#bowlG").hide();
 	    	if(res == '0'){
-		    	$("#generate_pdf_chart").hide();
-					$("#download_pdf_chart").show();	
+		    	window.location.href ="/download-pdf-of-chart";
 	    	}
 			}
 		});
