@@ -4,13 +4,45 @@ block content
 	.back
 		a(href="javascript:history.back()")
 			img(src="images/back.png")
-	.top-center-screen
-		- if (typeof(from) !== 'undefined')
-			.font(style="font-size:20px;font-weight:100;color:#ffffff")	heatmap plotted by #{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max_to_show}, Function #{typeHeatmap}
-			input(id="heatmap_title_pdf", name="ipt_umbral", type="hidden", value="heatmap plotted by #{type} [#{from},#{to}]Mhz, zone: #{zona}, max value #{max_to_show}, Function #{typeHeatmap}")
-		- else (typeof(from) !== 'undefined')
-			.font(style="font-size:20px;font-weight:100;color:#ffffff")	heatmap plotted by #{type}, zone: #{zona}, max value #{max_to_show}, Function #{typeHeatmap}
-			input(id="heatmap_title_pdf", name="ipt_umbral", type="hidden", value="heatmap plotted by #{type}, zone: #{zona}, max value #{max_to_show}, Function #{typeHeatmap}")
+	#footer_data_heatmap
+		- if (type == 'frequency')
+			table.paragraphText3(cellspacing="5")
+				tr
+					td(align="right")	
+						b	Frequency range:
+					td(align="left")		[#{from}, #{to}] Mhz.
+				tr
+					td(align="right")		
+						b	Zone:
+					td(align="left")	#{zona}.
+				tr
+					td(align="right")		
+						b	Max Value:
+					td(align="left")	#{max_to_show} dBm.
+				tr
+					td(align="right")		
+						b	Function:
+					td(align="left")	#{typeHeatmap}			
+			input(id="heatmap_title_pdf", name="ipt_umbral", type="hidden", value="Frequency range: [#{from}, #{to}] Mhz, Zone: #{zona}, Max Value: #{max_to_show} dBm, Function: #{typeHeatmap}")
+		- else if (type == 'channel')
+			table.paragraphText3(cellspacing="5")
+				tr
+					td(align="right")	
+						b	Frequency range:
+					td(align="left")		By channels.
+				tr
+					td(align="right")		
+						b	Zone:
+					td(align="left")	#{zona}.
+				tr
+					td(align="right")		
+						b	Max Value:
+					td(align="left")	#{max_to_show} dBm.
+				tr
+					td(align="right")		
+						b	Function:
+					td(align="left")	#{typeHeatmap}			
+			input(id="heatmap_title_pdf", name="ipt_umbral", type="hidden", value="Frequency range: by channels, Zone: #{zona}, Max Value: #{max_to_show} dBm, Function: #{typeHeatmap}")
 	.left-side-screen-csv-download
 		a(href="/download-csv-data", id="download-csv-data")
 			img(src="images/download_csv_file.png",id="download_csv_heatmap")

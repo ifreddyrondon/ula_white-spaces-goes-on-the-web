@@ -39,6 +39,7 @@ input[type=checkbox] {visibility: hidden}
 #footer {position:absolute;bottom:0;width:100%;height:75px;}
 #footer_left{position:absolute;left:5px;bottom:2px}
 #footer_right{position: absolute;right:2px;}
+#footer_data_heatmap {position:absolute;bottom:0;width:380px;height:170px;right:10px;z-index:100;}
 
 #threshold_title{position:absolute;right: 26px;top: -35px}
 
@@ -196,6 +197,17 @@ input[type=checkbox] {visibility: hidden}
 		line-height: 145%;
 		font-size: 14pt;
 		font-variant: small-caps;
+	}
+	.paragraphText3{
+		color: #ffffff;
+		text-shadow: 0 0 3px #000000;
+	  -moz-text-shadow: 0 0 3px #000000;
+	  -webkit-text-shadow: 0 0 3px #000000;
+    font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
+		letter-spacing:0.1em;
+		text-align:center;
+		line-height: 145%;
+		font-size: 12pt;
 	}
 	h1.insetType{
 		padding-top:17px;

@@ -414,7 +414,7 @@ exports.formFrequency = function(req, res){
 							
 							from = (from / 1000);
 							to = (to / 1000);
-							res.render('heatmap/heatmap', {umbral:umbral, type:"Frequency" ,from:from, to:to , zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng, typeHeatmap:typeHeatmap});
+							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng, typeHeatmap:typeHeatmap});
 						}
 						else
 							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
