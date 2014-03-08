@@ -65,7 +65,7 @@ block content
 				zoom: 13,
 				// coordenada donde se centrara el mapa
 				center: new google.maps.LatLng(#{lat},#{lng}),
-				mapTypeId: google.maps.MapTypeId.SATELLITE,
+				mapTypeId: #{map_showing_settings},
 				
 				mapTypeControl: true,
 				
@@ -85,9 +85,9 @@ block content
 			var map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
 			// heatmap propiedades y asignacion
 			var heatmap = new HeatmapOverlay(map, {
-				"radius":5,
+				"radius":#{radius},
 				"visible":true, 
-				"opacity":60
+				"opacity":#{opacity}
 			});
 			// dataset
 			var dataSet= {

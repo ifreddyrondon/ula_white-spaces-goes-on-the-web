@@ -290,6 +290,10 @@ $(document).ready(function(){
 			errorHandler("values_within_range");	
 			return false;
 		}
+		else if(!validator("number","number","min_count") || !validator("number","number","radius") || !validator("number","number","opacity")){
+			$("#bowlG").hide();
+			return false;
+		}
 	});
 	// Select-channels-enviar------------------------------------------------------------------------
 	$("#select-channels-enviar").click(function(){
@@ -304,6 +308,10 @@ $(document).ready(function(){
 		if(error){	
 			$("#bowlG").hide();
 			errorHandler("select-one-channel");
+			return false;
+		}
+		else if(!validator("number","number","min_count") || !validator("number","number","radius") || !validator("number","number","opacity")){
+			$("#bowlG").hide();
 			return false;
 		}
 	});

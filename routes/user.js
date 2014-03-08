@@ -342,6 +342,10 @@ exports.formFrequency = function(req, res){
 		check(req.query.type_heatmap).notNull();		 	
 		check(req.query.min).notNull().isNumeric();
 		check(req.query.max).notNull().isNumeric();
+		check(req.query.min_count).notNull().isNumeric();
+		check(req.query.radius).notNull().isNumeric();
+		check(req.query.opacity).notNull().isNumeric();
+		check(req.query.map_showing_settings).notNull();		 	
 		 	
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
@@ -363,6 +367,18 @@ exports.formFrequency = function(req, res){
 		
 		max_frequency = sanitize(req.query.max).xss();
 		max_frequency = sanitize(max_frequency).entityDecode();
+		
+		min_count = sanitize(req.query.min_count).xss();
+		min_count = sanitize(min_count).entityDecode();
+		
+		radius = sanitize(req.query.radius).xss();
+		radius = sanitize(radius).entityDecode();
+		
+		opacity = sanitize(req.query.opacity).xss();
+		opacity = sanitize(opacity).entityDecode();
+		
+		map_showing_settings = sanitize(req.query.map_showing_settings).xss();
+		map_showing_settings = sanitize(map_showing_settings).entityDecode();
 		
 		objBD = BD.BD();
 		objBD.connect();
@@ -407,14 +423,29 @@ exports.formFrequency = function(req, res){
 							for(i = 0; i < rows.length; i++){
 								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
 								if(rows[i].count == 0)
-									rows[i].count = 1;
+									rows[i].count = min_count;
 							}
 							
 							max = rows[0].count;
 							
 							from = (from / 1000);
 							to = (to / 1000);
-							res.render('heatmap/heatmap', {umbral:umbral, type:"frequency" ,from:from, to:to , zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng, typeHeatmap:typeHeatmap});
+							res.render('heatmap/heatmap', 
+								{	umbral:umbral, 
+									type:"frequency",
+									from:from, 
+									to:to, 
+									zona:zona, 
+									data: rows, 
+									max:max, 
+									max_to_show:max_to_show, 
+									lat:rows[0].lat, 
+									lng:rows[0].lng, 
+									typeHeatmap:typeHeatmap,
+									radius: radius,
+									opacity: opacity,
+									map_showing_settings: map_showing_settings
+								});
 						}
 						else
 							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
@@ -499,6 +530,10 @@ exports.formChannel = function(req, res){
 		check(req.query.channel).notNull();		 	
 		check(req.query.min).notNull().isNumeric();
 		check(req.query.max).notNull().isNumeric();
+		check(req.query.min_count).notNull().isNumeric();
+		check(req.query.radius).notNull().isNumeric();
+		check(req.query.opacity).notNull().isNumeric();
+		check(req.query.map_showing_settings).notNull();		 	
 		 	
 		zona = sanitize(req.query.zona).xss();
 		zona = sanitize(zona).entityDecode();
@@ -521,6 +556,18 @@ exports.formChannel = function(req, res){
 		channel = channel.substring(1, channel.length);
 		channel = channel.substring(0, channel.length -1);
 		channel = channel.split("),(");
+		
+		min_count = sanitize(req.query.min_count).xss();
+		min_count = sanitize(min_count).entityDecode();
+		
+		radius = sanitize(req.query.radius).xss();
+		radius = sanitize(radius).entityDecode();
+		
+		opacity = sanitize(req.query.opacity).xss();
+		opacity = sanitize(opacity).entityDecode();
+		
+		map_showing_settings = sanitize(req.query.map_showing_settings).xss();
+		map_showing_settings = sanitize(map_showing_settings).entityDecode();
 		
 		objBD = BD.BD();
 		objBD.connect();
@@ -575,11 +622,24 @@ exports.formChannel = function(req, res){
 							for(i = 0; i < rows.length; i++){
 								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
 								if(rows[i].count == 0)
-									rows[i].count = 1;
+									rows[i].count = min_count;
 							}
 							
 							max = rows[0].count;
-							res.render('heatmap/heatmap', {umbral:umbral, type:"channel", zona:zona, data: rows, max:max, max_to_show:max_to_show, lat:rows[0].lat, lng:rows[0].lng, typeHeatmap:typeHeatmap});
+							res.render('heatmap/heatmap', 
+								{	umbral:umbral, 
+									type:"channel", 
+									zona:zona, 
+									data: rows, 
+									max:max, 
+									max_to_show:max_to_show, 
+									lat:rows[0].lat, 
+									lng:rows[0].lng, 
+									typeHeatmap:typeHeatmap,
+									radius: radius,
+									opacity: opacity,
+									map_showing_settings: map_showing_settings
+								});
 						}
 						else
 							res.render('heatmap/select_channel',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 

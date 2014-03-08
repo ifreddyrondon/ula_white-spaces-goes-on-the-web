@@ -9,7 +9,6 @@ block content
 			span.largeHeadline	Select Channel
 	.parameters-left-side-screen
 		.middleHeadline Parameters
-		br
 		table.paragraphText(cellspacing="8")
 			tr
 				td	
@@ -30,8 +29,54 @@ block content
 					br
 					b	#{allocation}
 		br			
-	.center-screen-check-buttons
-		form(class="font", action="form_select_channel", method="GET")
+	form(class="font", action="form_select_channel", method="GET")
+		.parameters-left-side-screen
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			br
+			table.paragraphText(cellspacing="8")
+				tr
+					td(colspan = "2",align="center")
+						b	Heatmap settings:
+				tr
+					td	Min count:
+					td	
+						input(id="min_count", name="min_count", autocorrect="on", class="ipt_heatmap_settings border_top_6 border_bottom_6", type="text", value="1")
+				tr
+					td	Radius:
+					td	
+						input(id="radius", name="radius", autocorrect="on", class="ipt_heatmap_settings border_top_6 border_bottom_6", type="text", value="5")
+				tr
+					td	Opacity:
+					td	
+						input(id="opacity", name="opacity", autocorrect="on", class="ipt_heatmap_settings border_top_6 border_bottom_6", type="text", value="60")
+				tr
+					td(colspan = "2",align="center")
+						b	Map showing settings: 
+				tr
+					td
+						input(type="radio", name="map_showing_settings", id="radio6", class="css-checkbox", checked="checked", value="google.maps.MapTypeId.SATELLITE")
+						label(for="radio6", class="css-label2")	Satellite
+					td
+						input(type="radio", name="map_showing_settings", id="radio7", class="css-checkbox", value="google.maps.MapTypeId.ROADMAP")
+						label(for="radio7", class="css-label2")	Street
+		.center-screen-check-buttons
 			center
 				input(name="ipt_umbral", type="hidden", value="#{umbral}")
 				input(name="zona", type="hidden", value="#{zona}")
