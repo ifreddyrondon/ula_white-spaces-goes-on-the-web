@@ -555,6 +555,11 @@ exports.formChannel = function(req, res){
 		
 		channel = channel.substring(1, channel.length);
 		channel = channel.substring(0, channel.length -1);
+		
+		channelsToShow = channel.replace(/,/g , "-");
+		channelsToShow = channelsToShow.split(")-(");
+		channelsToShow = "[" + channelsToShow.toString() + "] MHz";
+		
 		channel = channel.split("),(");
 		
 		min_count = sanitize(req.query.min_count).xss();
@@ -629,6 +634,7 @@ exports.formChannel = function(req, res){
 							res.render('heatmap/heatmap', 
 								{	umbral:umbral, 
 									type:"channel", 
+									channelsToShow: channelsToShow,
 									zona:zona, 
 									data: rows, 
 									max:max, 
