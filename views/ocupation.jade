@@ -55,14 +55,25 @@ block content
 			$('#select_frequency').attr('href','/select_frequency?zona=#{zona}&ipt_umbral=#{umbral}&allocation=#{allocation}&min='+min+'&max='+max+'');
 			$('#select_channel').attr('href','/select_channel?zona=#{zona}&ipt_umbral=#{umbral}&allocation=#{allocation}&min='+min+'&max='+max+'');
 			
+			$.jqplot.config.enablePlugins = true;
+			$.jqplot._noToImageButton = true;
+    
 			var plot1 = $.jqplot('chart-canvas', [data], {
+				cursor:	{
+					zoom:true, 
+					tooltipLocation:'ne',
+					showVerticalLine: true,
+					showHorizontalLine: true,
+					useAxesFormatters: true
+				},
 				grid: {
 					drawBorder: false,
 					shadow: false,
 					background: 'rgba(0,0,0,0)'
 				},
 				highlighter: { 
-					show: true 
+					show: true,
+					sizeAdjust: 7.5
 				},
 				seriesDefaults: { 
 					shadowAlpha: 0.1,
@@ -79,7 +90,7 @@ block content
 						fillAndStroke: true,
 						markerOptions: {
 							style: 'filledCircle',
-							size: 3
+							size: 5
 						},
 						rendererOptions: {
 							smooth: true
@@ -111,6 +122,8 @@ block content
 						},
 					},
 					yaxis:{
+						min: 0,
+						max: 1,
 						pad: 0,
 						renderer:$.jqplot.LogAxisRenderer,
 						tickOptions:{
