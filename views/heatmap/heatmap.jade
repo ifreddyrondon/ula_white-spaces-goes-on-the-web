@@ -42,7 +42,7 @@ block content
 					td(align="right")		
 						b	Function:
 					td(align="left")	#{typeHeatmap}			
-			input(id="heatmap_title_pdf", name="ipt_umbral", type="hidden", value="Frequency range: by channels, Zone: #{zona}, Max Value: #{max_to_show} dBm, Function: #{typeHeatmap}")
+			input(id="heatmap_title_pdf", name="ipt_umbral", type="hidden", value="Frequency range: #{channelsToShow}, Zone: #{zona}, Max Value: #{max_to_show} dBm, Function: #{typeHeatmap}")
 	.left-side-screen-csv-download
 		a(href="/download-csv-data", id="download-csv-data")
 			img(src="images/download_csv_file.png",id="download_csv_heatmap")

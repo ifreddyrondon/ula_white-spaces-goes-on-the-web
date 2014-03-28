@@ -423,7 +423,7 @@ exports.formFrequency = function(req, res){
 							for(i = 0; i < rows.length; i++){
 								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
 								if(rows[i].count == 0)
-									rows[i].count = min_count;
+									rows[i].count = parseInt(min_count);
 							}
 							
 							max = rows[0].count;
@@ -627,9 +627,9 @@ exports.formChannel = function(req, res){
 							for(i = 0; i < rows.length; i++){
 								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
 								if(rows[i].count == 0)
-									rows[i].count = min_count;
+									rows[i].count = parseInt(min_count);
 							}
-							
+
 							max = rows[0].count;
 							res.render('heatmap/heatmap', 
 								{	umbral:umbral, 
