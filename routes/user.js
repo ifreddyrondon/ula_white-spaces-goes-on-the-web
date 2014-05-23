@@ -208,9 +208,9 @@ exports.selectFrequency = function(req, res){
 exports.downloadCsvToHeatmap = function(req, res){
 	try {
 		check(req.body.from).notNull().isNumeric();
-	  check(req.body.to).notNull().isNumeric();
-	  check(req.body.zona).notNull();
-	  check(req.body.umbral).notNull();
+	  	check(req.body.to).notNull().isNumeric();
+	  	check(req.body.zona).notNull();
+	  	check(req.body.umbral).notNull();
 		
 		zona = sanitize(req.body.zona).trim(); 	
 		zona = sanitize(zona).xss();
@@ -228,47 +228,33 @@ exports.downloadCsvToHeatmap = function(req, res){
 		umbral = sanitize(umbral).xss();
 		umbral = sanitize(umbral).entityDecode();
 		
+		query = "SELECT aux3.lat, aux3.lng, potency_frequency.potency as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" ORDER BY lat , lng DESC";
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +"",
-		function(err, rows, fields) {
-	    if (err){
-	    	console.log(err);
-				res.render('index'); 
-			}							
-	    else {
-	    	id_place = rows[0].id_place;
-	    	query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, potency as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" ORDER BY lat, lng DESC";
-		
-			  objBD = BD.BD();
-				objBD.connect();
-				objBD.query(query,
-				function(err, rows, fields) {
-			    if (err){
-			    	console.log(err);
-						res.render('index'); 
-					}							
-			    else {
-
-						if(rows[0]!= undefined){
-														
-							json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, function(err, csv) {
-							  if (err) console.log(err);
+		objBD.query(query,
+			function(err, rows, fields) {
+	    		if (err){
+	    			console.log(err);
+					res.render('index'); 
+				}							
+	    		else {
+	    			if(rows[0]!= undefined){
+						
+						json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, function(err, csv) {
+							if (err) console.log(err);
 								fs.writeFile('public/downloads/csv/myheatmap/myheatmapALL.csv', csv, function(err) {
-							    if (err) throw err;
-							    console.log('file saved');
-							    res.send('0');
-							  });							  
-							});	
-						}
-						else
-							res.send('1');
-				  }
-				});
-				objBD.end();
-	    	
-	    }
-	  });
+							    	if (err) throw err;
+							    		console.log('file saved');
+							    	res.send('0');
+								});							  
+							}
+						);	
+					
+					} else
+						res.send('1');
+				}
+			}
+		);
 		objBD.end();
 
 	} catch (e) {
