@@ -12,6 +12,7 @@ var BD = require('../BD')
 
 exports.ocupation = function(req, res){
 	try { 
+		
 		check(req.query.zona).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
 		check(req.query.allocation).notNull();
@@ -24,7 +25,7 @@ exports.ocupation = function(req, res){
 		
 		allocation = sanitize(req.query.allocation).xss();
 		allocation = sanitize(allocation).entityDecode();		
-
+		
 		query = "SELECT frequency / 1000 as frequency, SUM(CASE WHEN potency > "+ objBD.escape(umbral) +" THEN 1 ELSE 0 END) / COUNT(*) AS total FROM (SELECT coordinates_vs_potency_frequency.id_potency_frequency as id_potency_frequency FROM (SELECT coordinates.id_coordinate as id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux3, coordinates WHERE coordinates.id_place = aux3.id_place) as aux, coordinates_vs_potency_frequency WHERE aux.id_coordinate = coordinates_vs_potency_frequency.id_coordinate) as aux2, potency_frequency WHERE aux2.id_potency_frequency = potency_frequency.id_potency_frequency GROUP BY frequency";
 		objBD = BD.BD();
 		objBD.connect();
@@ -323,90 +324,77 @@ exports.formFrequency = function(req, res){
 		
 		map_showing_settings = sanitize(req.query.map_showing_settings).xss();
 		map_showing_settings = sanitize(map_showing_settings).entityDecode();
-		
+
+		var query = null;
+    	if(typeHeatmap == "Max Value")
+    		query = "SELECT aux3.lat, aux3.lng, MAX(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" GROUP BY lat , lng ORDER BY count DESC";
+    	else if(typeHeatmap == "Average")
+    		query = "SELECT aux3.lat, aux3.lng, AVG(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" GROUP BY lat , lng ORDER BY count DESC";
+    	
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +"",
-		function(err, rows, fields) {
-	    if (err){
-	    	console.log(err);
-				res.render('index'); 
-			}							
-	    else {
-	    	id_place = rows[0].id_place;
-	    	
-	    	var query = null;
-	    	if(typeHeatmap == "Max Value"){
-		    	query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, MAX(potency) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" GROUP BY latitude, longitude ORDER BY count DESC";
-	    	
-	    	} else if(typeHeatmap == "Average"){
-	    		query = "SELECT coordinates.latitude as lat,coordinates.longitude as lng, AVG(potency)as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +") as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" GROUP BY latitude, longitude ORDER BY count DESC";
-	    	}
-	    	
-	    	objBD = BD.BD();
-				objBD.connect();
-				objBD.query(query,
-				function(err, rows, fields) {
-			    if (err){
-			    	console.log(err);
-						res.render('index'); 
-					}							
-			    else {
-						if(rows[0]!= undefined){
-														
-							json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, function(err, csv) {
+		objBD.query(query,
+			function(err, rows, fields) {
+	    		if (err){
+	    			console.log(err);
+					res.render('index'); 
+				}							
+	    		else {
+	    			if(rows[0]!= undefined){
+					
+						json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, 
+							function(err, csv) {
 							  if (err) console.log(err);
 								fs.writeFile('public/downloads/csv/data/data.csv', csv, function(err) {
-							    if (err) throw err;
+							    if (err) 
+							    	throw err;
 							    console.log('file saved');
 							  });							  
-							});	
+							}
+						);	
 				    	
 				    	max_to_show = rows[0].count;
 				    	
-							for(i = 0; i < rows.length; i++){
-								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
-								if(rows[i].count == 0)
-									rows[i].count = parseInt(min_count);
-							}
-							
-							max = rows[0].count;
-							
-							from = (from / 1000);
-							to = (to / 1000);
-							res.render('heatmap/heatmap', 
-								{	umbral:umbral, 
-									type:"frequency",
-									from:from, 
-									to:to, 
-									zona:zona, 
-									data: rows, 
-									max:max, 
-									max_to_show:max_to_show, 
-									lat:rows[0].lat, 
-									lng:rows[0].lng, 
-									typeHeatmap:typeHeatmap,
-									radius: radius,
-									opacity: opacity,
-									map_showing_settings: map_showing_settings
-								});
+						for(i = 0; i < rows.length; i++){
+							rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
+							if(rows[i].count == 0)
+								rows[i].count = parseInt(min_count);
 						}
-						else
-							res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
-				  }
-				});
-				objBD.end();
-		  }
-		});
-		objBD.end();  	
+							
+						max = rows[0].count;
+						from = (from / 1000);
+						to = (to / 1000);
+							
+						res.render('heatmap/heatmap', 
+							{	umbral:umbral, 
+								type:"frequency",
+								from:from, 
+								to:to, 
+								zona:zona, 
+								data: rows, 
+								max:max, 
+								max_to_show:max_to_show, 
+								lat:rows[0].lat, 
+								lng:rows[0].lng, 
+								typeHeatmap:typeHeatmap,
+								radius: radius,
+								opacity: opacity,
+								map_showing_settings: map_showing_settings
+							}
+						);
+					
+					} else
+						res.render('heatmap/select_frequency',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
+				}
+			}
+		);
+		objBD.end();
 			
 	} catch (e) {
 	  res.render('index'); 
 	  console.log(e.message);
 	}
 }
-
-
 
 exports.selectChannel = function(req, res){
 	try {
@@ -517,87 +505,83 @@ exports.formChannel = function(req, res){
 		
 		map_showing_settings = sanitize(req.query.map_showing_settings).xss();
 		map_showing_settings = sanitize(map_showing_settings).entityDecode();
-		
+
+		channel1 = channel[0].split(",");
+    	var query = null;
+    	if(typeHeatmap == "Max Value"){
+    		query = "SELECT aux3.lat, aux3.lng, MAX(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +" ";
+    		if (channel > 1) {
+	    		for(i = 1; i < channel.length; i++){
+					channelAux = channel[i].split(",");
+					query = query + "SELECT aux3.lat, aux3.lng, MAX(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +" "
+				}
+	    	} 
+	    	query = query + "GROUP BY lat , lng ORDER BY count DESC";
+    	
+    	} else if(typeHeatmap == "Average") {
+    		query = "SELECT aux3.lat, aux3.lng, AVG(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +" ";
+    		if (channel > 1) {
+	    		for(i = 1; i < channel.length; i++){
+					channelAux = channel[i].split(",");
+					query = query + "SELECT aux3.lat, aux3.lng, AVG(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +" "
+				}
+	    	} 
+	    	query = query + "GROUP BY lat , lng ORDER BY count DESC";
+    		
+    	}
+    	
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +"",
-		function(err, rows, fields) {
-	    if (err){
-	    	console.log(err);
-				res.render('index'); 
-			}							
-	    else {
-	    	id_place = rows[0].id_place;
-	    	
-	    	channel1 = channel[0].split(",");
-	    	var query = null;
-	    	if(typeHeatmap == "Max Value"){
-		    	query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, MAX(potency) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM (";
-	    	
-	    	} else if(typeHeatmap == "Average"){
-	    		query = "SELECT coordinates.latitude as lat, coordinates.longitude as lng, AVG(potency) as count FROM (SELECT coordinates_vs_potency_frequency.id_coordinate as id_coordinate, potency_frequency.potency as potency FROM (";
-	    	}
-	    	
-	    	query = query + "SELECT * FROM potency_frequency WHERE frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +""
-	    			
-				for(i = 1; i < channel.length; i++){
-					channelAux = channel[i].split(",");
-					query = query + " UNION SELECT * FROM potency_frequency WHERE frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +""
-				}
+		objBD.query(query,
+			function(err, rows, fields) {
+		    	if (err){
+		    		console.log(err);
+					res.render('index'); 
 				
-				query = query + ") as potency_frequency, coordinates_vs_potency_frequency WHERE potency_frequency.id_potency_frequency = coordinates_vs_potency_frequency.id_potency_frequency) as aux, coordinates WHERE aux.id_coordinate = coordinates.id_coordinate AND coordinates.id_place = "+ objBD.escape(id_place) +" GROUP BY latitude, longitude ORDER BY count DESC";
-				
-	    	objBD = BD.BD();
-				objBD.connect();
-				objBD.query(query,
-				function(err, rows, fields) {
-			    if (err){
-			    	console.log(err);
-						res.render('index'); 
-					}							
-			    else {
-						if(rows[0]!= undefined){
-														
-							json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, function(err, csv) {
+				} else {
+					if(rows[0]!= undefined){
+						
+						json2csv({data: rows, fields: ['lat', 'lng', 'count'], fieldNames: ['latitude', 'longitude', 'potencia']}, 
+							function(err, csv) {
 							  if (err) console.log(err);
 								fs.writeFile('public/downloads/csv/data/data.csv', csv, function(err) {
-							    if (err) throw err;
+							    if (err) 
+							    	throw err;
 							    console.log('file saved');
 							  });							  
-							});	
-				    	
-				    	max_to_show = rows[0].count;
-				    	
-							for(i = 0; i < rows.length; i++){
-								rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
-								if(rows[i].count == 0)
-									rows[i].count = parseInt(min_count);
 							}
-
-							max = rows[0].count;
-							res.render('heatmap/heatmap', 
-								{	umbral:umbral, 
-									type:"channel", 
-									channelsToShow: channelsToShow,
-									zona:zona, 
-									data: rows, 
-									max:max, 
-									max_to_show:max_to_show, 
-									lat:rows[0].lat, 
-									lng:rows[0].lng, 
-									typeHeatmap:typeHeatmap,
-									radius: radius,
-									opacity: opacity,
-									map_showing_settings: map_showing_settings
-								});
+						);									
+												    	
+					    max_to_show = rows[0].count;
+					    for(i = 0; i < rows.length; i++){
+							rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
+							if(rows[i].count == 0)
+								rows[i].count = parseInt(min_count);
 						}
-						else
-							res.render('heatmap/select_channel',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
-				  }
-				});
-				objBD.end();
-		  }
-		});
+						max = rows[0].count;
+								
+						res.render('heatmap/heatmap', 
+							{	umbral:umbral, 
+								type:"channel", 
+								channelsToShow: channelsToShow,
+								zona:zona, 
+								data: rows, 
+								max:max, 
+								max_to_show:max_to_show, 
+								lat:rows[0].lat, 
+								lng:rows[0].lng, 
+								typeHeatmap:typeHeatmap,
+								radius: radius,
+								opacity: opacity,
+								map_showing_settings: map_showing_settings
+							}
+						);
+					
+					} else
+						res.render('heatmap/select_channel',{ umbral:umbral, zona:zona, min:min_frequency, max:max_frequency, error:"Frequency values ​​are not recorded. Do you want to try again?" }); 
+				}
+			}
+		);
 		objBD.end();	
 			
 	} catch (e) {
@@ -605,8 +589,6 @@ exports.formChannel = function(req, res){
 	  console.log(e.message);
 	}
 }
-
-
 
 
 exports.loginSend = function(req, res){
