@@ -24,128 +24,72 @@ exports.ocupation = function(req, res){
 		
 		allocation = sanitize(req.query.allocation).xss();
 		allocation = sanitize(allocation).entityDecode();		
-				
-		objBD = BD.BD();
-		objBD.connect();		
-		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +"",
-		function(err, rows, fields) {
-	    if (err){
-	    	console.log(err);
-				res.render('index'); 
-			}							
-	    else {
-	    	id_place = rows[0].id_place;
-	    	
-	    	objBD = BD.BD();
-				objBD.connect();
-				objBD.query("SELECT frequency, COUNT(*) AS total FROM (SELECT coordinates_vs_potency_frequency.id_potency_frequency as id_potency_frequency FROM (SELECT coordinates.id_coordinate as id_coordinate FROM coordinates WHERE coordinates.id_place = "+ id_place +") as aux, coordinates_vs_potency_frequency WHERE aux.id_coordinate = coordinates_vs_potency_frequency.id_coordinate) as aux2, potency_frequency WHERE aux2.id_potency_frequency = potency_frequency.id_potency_frequency GROUP BY frequency",
-				function(err, rows, fields) {
-			    if (err){
-			    	console.log(err);
-						res.render('index'); 
-					}							
-			    else {
-			    	var totales = rows;
-						objBD = BD.BD();
-						objBD.connect();
-						objBD.query("SELECT frequency, COUNT(*) AS pasaron_umbral FROM (SELECT coordinates_vs_potency_frequency.id_potency_frequency as id_potency_frequency FROM (SELECT coordinates.id_coordinate as id_coordinate FROM coordinates WHERE coordinates.id_place = "+ id_place +") as aux, coordinates_vs_potency_frequency WHERE aux.id_coordinate = coordinates_vs_potency_frequency.id_coordinate) as aux2, potency_frequency WHERE aux2.id_potency_frequency = potency_frequency.id_potency_frequency AND potency > "+ objBD.escape(umbral) +" GROUP BY frequency",
-						function(err, rows, fields) {
-					    if (err){
-					    	console.log(err);
-								res.render('index'); 
-							}							
-					    else {
-					    	if(rows == ""){
-						    	res.render('ocupation',{ error:"No items to area '"+zona+"' that pass the threshold " + umbral });  
-						    	return null;
-					    	}
-					    
-					    	var pasaron = rows;
-					    	var tablaFinal = new Array();
-					    	
-								for(i=0; i < totales.length; i++){
-									
-									for(j=0; j < pasaron.length; j++){
-										
-										if(totales[i].frequency == pasaron[j].frequency){
-											tablaFinal.push([totales[i].frequency / 1000, pasaron[j].pasaron_umbral / totales[i].total]);
-											break;
-										} 
-										else if(totales[i].frequency < pasaron[j].frequency){
-											tablaFinal.push([totales[i].frequency / 1000, 0]);
-											break;
-										}
-									}	
-								}
 
-								objBD = BD.BD();
-								objBD.connect();
-								objBD.query("SELECT id_allocation FROM allocation_channels WHERE name = "+ objBD.escape(allocation) +"",
-									function(err, rows, fields) {
-										if (err)
-								    	console.log(err);						
-								    else{
-									  	id_allocation = rows[0].id_allocation;
-									  	objBD = BD.BD();
-											objBD.connect();
-											objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+ id_allocation +"",
-												function(err, rows, fields) {
-													if (err)
-											    	console.log(err);						
-											    else{
-											    	var channels = new Array();
-											    	
-											    	for(i = 0; i <  rows.length; i++){
-											    	
-											    		temp = {};
-											    	
-												    	rectangle = {};
-															rectangle.xmin = rows[i].from;
-															rectangle.xmax  = rows[i].to;
-															rectangle.ymin = 0.0;
-															rectangle.ymax = 1;
-															rectangle.xminOffset = '0px';
-															rectangle.xmaxOffset = '0px';
-															rectangle.yminOffset = '0px';
-															rectangle.ymaxOffset = '0px';
-															
-															if(i%2==0)
-																rectangle.color = 'rgba(0, 017, 255, 0.25)';
-															else
-																rectangle.color = 'rgba(100,50,50,.25)';
-																
-															rectangle.showTooltip = true;
-															rectangle.tooltipFormatString = '<h2>-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-</h1>';
-															
-															temp.rectangle = rectangle;
-															channels.push(temp);	
-											    	}
-											    	
-														res.render('ocupation',
-																{ 
-																	data:tablaFinal, 
-																	umbral: umbral, 
-																	zona:zona, 
-																	channels:channels, 
-																	allocation:allocation
-																});  
-											    }
-												});
-											objBD.end();
-								    }
-									});
-								objBD.end();							
-														
-						  }
-						});
-						objBD.end();  	
-				  }
-				});
-				objBD.end();  	
-	    }
-	  });
+		query = "SELECT frequency / 1000 as frequency, SUM(CASE WHEN potency > "+ objBD.escape(umbral) +" THEN 1 ELSE 0 END) / COUNT(*) AS total FROM (SELECT coordinates_vs_potency_frequency.id_potency_frequency as id_potency_frequency FROM (SELECT coordinates.id_coordinate as id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux3, coordinates WHERE coordinates.id_place = aux3.id_place) as aux, coordinates_vs_potency_frequency WHERE aux.id_coordinate = coordinates_vs_potency_frequency.id_coordinate) as aux2, potency_frequency WHERE aux2.id_potency_frequency = potency_frequency.id_potency_frequency GROUP BY frequency";
+		objBD = BD.BD();
+		objBD.connect();
+		objBD.query(query,
+			function(err,rows,fields){
+				if (err){
+	    			console.log(err);
+					res.render('index'); 
+				
+				} else {
+					var tablaFinal = [];
+					for(i = 0; i <  rows.length; i++)
+						tablaFinal.push([rows[i].frequency,rows[i].total]);
+
+					query = "SELECT channels.from, channels.to, channels.channel FROM (SELECT id_allocation FROM allocation_channels WHERE name = "+ objBD.escape(allocation) +") as aux, channels WHERE channels.id_allocation = aux.id_allocation";
+					objBD = BD.BD();
+					objBD.connect();
+					objBD.query(query,
+						function(err,rows,fields){
+							if (err){
+				    			console.log(err);
+								res.render('index'); 
+							
+							} else {
+								var channels = new Array();
+								for(i = 0; i <  rows.length; i++){
+									temp = {};
+						    		rectangle = {};
+									rectangle.xmin = rows[i].from;
+									rectangle.xmax  = rows[i].to;
+									rectangle.ymin = 0.0;
+									rectangle.ymax = 1;
+									rectangle.xminOffset = '0px';
+									rectangle.xmaxOffset = '0px';
+									rectangle.yminOffset = '0px';
+									rectangle.ymaxOffset = '0px';
+									
+									if(i%2==0)
+										rectangle.color = 'rgba(0, 017, 255, 0.25)';
+									else
+										rectangle.color = 'rgba(100,50,50,.25)';
+										
+									rectangle.showTooltip = true;
+									rectangle.tooltipFormatString = '<h2>-Channel '+rows[i].channel+' [' +rows[i].from +','+rows[i].to+ ']-</h1>';
+									
+									temp.rectangle = rectangle;
+									channels.push(temp);	
+								}
+								res.render('ocupation',
+								{ 
+									data:tablaFinal, 
+									umbral: umbral, 
+									zona:zona, 
+									channels:channels, 
+									allocation:allocation
+								});
+							}
+						}
+					);
+					objBD.end();
+				}						
+			}
+		);
 		objBD.end();
-								
+
 	} catch (e) {
 	  res.render('index'); 
 	  console.log(e.message);
