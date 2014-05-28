@@ -238,9 +238,8 @@ findPlaceId = function(zonaAdmin,newZone,files,callback){
 					return;
 				}
 			}
-			else {
-				readFiles(files,rows.insertId,callback);	
-			}
+			else 
+				readFiles(files,rows.insertId,callback);
 		});
 		objBD.end(); 
 	}
@@ -249,23 +248,21 @@ findPlaceId = function(zonaAdmin,newZone,files,callback){
 		objBD.connect();
 		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
 			function(err, rows, fields) {
-				if (err){
-		    	console.log(err);
-					callback('3'); 
+				if (err) {
+		    		console.log(err);
+					callback('error3'); 
 					return;
 				}
-				else 
-					readFiles(files,rows[0].id_place,callback);
+				else
+					readFiles(files,rows[0].id_place,callback); 
 		});
-		objBD.end(); 	
+		objBD.end();
 	}
 };
 
 
-
 // Leer archivos -------------------------------------------------------------------------------
 readFiles = function(files,idPlace,callback){
-
 	if(files[0] == undefined){
 		if(path.extname(files.name).toLowerCase() === '.txt'){
 			frequency_potency = new Array();												
@@ -281,55 +278,92 @@ readFiles = function(files,idPlace,callback){
 					coordinate.push(line_split);
 			
 			  if (last){
-			  	saveArraysIntoDb(frequency_potency,coordinate,idPlace,callback);
+			  	objBD = BD.BD();
+				objBD.connect();
+			  	saveArraysIntoDb(frequency_potency,coordinate,idPlace,objBD,function(){
+			  		objBD.end();	
+			  		callback();
+			  	});
 			  	fs.unlink(files.path, function(err) {
-			    	if (err)	callback('3'); 
+			    	if (err)	
+			    		callback('3'); 
 					});
-				  return false; 
-			  }
+				  	return false; 
+			 	}
 			});	
 		}
 		else
 			callback('2');
 	
-	} else if(files.length > 1){		 
+	} else if(files.length > 1){
 		try {
-	
-			frequency_potency = new Array();
-			coordinate = new Array();
-			
-			for(i = 0; i < files.length; i++){
-				
-				var rd = readline.createInterface({
-			    input: fs.createReadStream(files[i].path, {autoClose: true}),
-			    output: process.stdout,
-			    terminal: false,
-				});
-	
-				rd.on('line', function(line) {
-					lineSplit = line.split("\t");	
-					
-					if(lineSplit.length == 2)
-						frequency_potency.push(lineSplit);
+			all = new Array();
 
-					else if(lineSplit.length == 1)
-						coordinate.push(lineSplit);
-					
-					if(coordinate.length % 3 == 0 && coordinate.length > 0){
-						saveArraysIntoDb(frequency_potency,coordinate,idPlace,callback);
-						frequency_potency = [];
-						coordinate = [];
-					}	
-				});
-		    /*
-				fs.unlink(files[i].path, function(err) {
-				  if (err){
-				  	console.log(err);
-					  res.send('3'); 
-				  }	
-				});
-				*/
-			}
+			async.eachSeries(files, function(file, callback) {
+
+				frequency_potency = new Array();
+				coordinate = new Array();
+
+				if (path.extname(file.name).toLowerCase() === '.txt') {
+
+					async.series([
+						function(callback){
+						    array = fs.readFileSync(file.path).toString().split("\n");
+							callback();
+						},
+						function(callback){
+							async.eachSeries(array, function(line, callback) {
+
+						    	lineSplit = line.split("\t");	
+								if(lineSplit.length == 2)
+									frequency_potency.push(lineSplit);
+
+								else if(lineSplit.length == 1)
+									coordinate.push(lineSplit);
+
+								callback();
+								  
+							}, null);
+									
+							callback();
+						},
+						function(callback){
+							coordinate.splice(-1);
+							all.push([frequency_potency,coordinate]);
+							callback();
+						},
+						function(callback){
+							fs.unlink(file.path, function(err) {
+						  		if (err)
+						  			console.log(err);
+							});
+						}
+						]			
+					);
+
+				} else
+					callback('2');
+
+				callback();
+			}, function(){
+
+				objBD = BD.BD();
+				objBD.connect();
+
+				async.eachSeries(all, 
+					function(single,callback) {
+						saveArraysIntoDb(single[0],single[1],idPlace,objBD,callback);
+						callback();
+					}, 
+					function(err) {
+				    	if(err) 
+				      		callback('3');
+				      	else 
+				      		callback();
+				    }
+				);
+			});
+
 		} catch (e) {
 			callback('4'); 
 			console.log(e.message);
@@ -338,20 +372,16 @@ readFiles = function(files,idPlace,callback){
 }
 
 
-
 // Insertar vectores en DB -----------------------------------------------------------------------------------
-saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,callback){
+saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,objBD,callback){
 
 	if(frequency_potency[0] != undefined && frequency_potency[1] != undefined){
 		
 		id_coordinates = new Array();
-	
-		objBD = BD.BD();
-		objBD.connect();
 		objBD.query("INSERT INTO coordinates (latitude, longitude, id_place, date) VALUES ("+ objBD.escape(coordinate[0]) +","+ objBD.escape(coordinate[1]) +","+ objBD.escape(idPlace) +","+ objBD.escape(coordinate[2]) +")",
 			function(err, rows, fields) {
-		    if (err){
-		    	console.log(err);
+		    	if (err){
+		    		console.log(err);
 					callback('3'); 
 				} else {
 					// Guardamos potencia y frecuencia en la DB --------------------------------------------------------------------------------
@@ -363,12 +393,10 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,callback){
 					}
 					query = query + ";";
 				
-					objBD = BD.BD();
-					objBD.connect();
 					objBD.query(query,
 						function(err, rows2, fields) {
-					    if (err){
-					    	console.log(err);
+						    if (err){
+						    	console.log(err);
 								callback('3'); 
 							} else {
 							
@@ -380,26 +408,20 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,callback){
 								query = query + ";";
 								id_coordinates.splice(0, 1);
 								
-								objBD = BD.BD();
-								objBD.connect();
 								objBD.query(query,
 									function(err, rows, fields) {
 								    if (err){
 								    	console.log(err);
 									    callback('3'); 
 								    }
-								    else {
+								    else 
 									    callback();
-								    }
 								});
-								objBD.end();
 							}
-					});
-					objBD.end();
-					
+						}
+					);
 				}
-		});
-		objBD.end();
+			}
+		);
 	}
-	
 }
