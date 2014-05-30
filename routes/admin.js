@@ -328,7 +328,6 @@ readFiles = function(files,idPlace,callback){
 							callback();
 						},
 						function(callback){
-							coordinate.splice(-1);
 							all.push([frequency_potency,coordinate]);
 							callback();
 						},
