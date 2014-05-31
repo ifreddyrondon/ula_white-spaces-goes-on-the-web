@@ -1,171 +1,93 @@
-var fs = require('graceful-fs')
-	, readline = require('readline')
+var editAccount = require('../editAccount/editAccount')
+	, editZone = require('../editZone/editZone')
+	, fs = require('graceful-fs')	
 	, path = require('path')
 	, lineReader = require('line-reader')
 	, sanitize = require('validator').sanitize
 	, check = require('validator').check
-	, BD = require('../BD')
+	, BD = require('../../BD')
 	, crypto = require('crypto')
 	, async = require('async');
 
-
-exports.editEmail = function(req, res){
+/*--------------------------------------------------------------------------------------------------------------*/
+exports.login = function(req, res){
 	try {
-	  check(req.body.email_ipt).notNull().len(6, 64).isEmail();
+	  check(req.body.login_user).notNull().len(6, 64).isEmail();
+	  check(req.body.login_pass).notNull();
 		
-		email = sanitize(req.body.email_ipt).trim(); 	
-		email = sanitize(email).xss();
-		email = sanitize(email).entityDecode();
+		login_user = sanitize(req.body.login_user).trim(); 	
+		login_user = sanitize(login_user).xss();
+		login_user = sanitize(login_user).entityDecode();
+				
+		pass = sanitize(req.body.login_pass).trim(); 	
+		pass = sanitize(pass).xss();
+		pass = sanitize(pass).entityDecode();
 		
-		query = "UPDATE user SET email = "+ objBD.escape(email) +" WHERE email = "+ objBD.escape(req.session.user) +"";
+		pass= crypto.createHash('sha256').update(pass).digest("hex");
+		pass= pass.substr(0,1)+"u"+pass.substr(2,pass.length/2)+"se"+pass.substr(pass.length/2)+"r";
+				
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query(query,
+		objBD.query("SELECT email FROM user WHERE email = "+ objBD.escape(login_user) +" AND password = "+ objBD.escape(pass) +"",
 			function(err, rows, fields) {
 				objBD.end();  	
 			    if (err){
 			    	console.log(err);
-						res.send('0'); 
-					}							
-			    else {
-				    req.session.user = email;
-				    res.send('10');
+					res.send('1'); 
+				
+				} else {
+				    if (rows.length == 1){
+				    	req.session.user = login_user;
+				    	res.send('/admin');
 					}
+					else
+						res.send('1');
 				}
-		);
-							
-	} catch (e) {
-	  res.send('0'); 
-	  console.log(e.message);
-	}
-
-};
-
-
-exports.editPassword = function(req, res){
-	try {
-	  check(req.body.old_pass_ipt).notNull();
-	  check(req.body.new_pass_ipt).notNull();
-	  check(req.body.repeat_new_pass_ipt).notNull();
-		
-		old_pass_ipt = sanitize(req.body.old_pass_ipt).trim(); 	
-		old_pass_ipt = sanitize(old_pass_ipt).xss();
-		old_pass_ipt = sanitize(old_pass_ipt).entityDecode();
-		old_pass_ipt= crypto.createHash('sha256').update(old_pass_ipt).digest("hex");
-		old_pass_ipt= old_pass_ipt.substr(0,1)+"u"+old_pass_ipt.substr(2,old_pass_ipt.length/2)+"se"+old_pass_ipt.substr(old_pass_ipt.length/2)+"r";
-		
-		new_pass_ipt = sanitize(req.body.new_pass_ipt).trim(); 	
-		new_pass_ipt = sanitize(new_pass_ipt).xss();
-		new_pass_ipt = sanitize(new_pass_ipt).entityDecode();
-		new_pass_ipt= crypto.createHash('sha256').update(new_pass_ipt).digest("hex");
-		new_pass_ipt= new_pass_ipt.substr(0,1)+"u"+new_pass_ipt.substr(2,new_pass_ipt.length/2)+"se"+new_pass_ipt.substr(new_pass_ipt.length/2)+"r";
-		
-		repeat_new_pass_ipt = sanitize(req.body.repeat_new_pass_ipt).trim(); 	
-		repeat_new_pass_ipt = sanitize(repeat_new_pass_ipt).xss();
-		repeat_new_pass_ipt = sanitize(repeat_new_pass_ipt).entityDecode();
-		repeat_new_pass_ipt= crypto.createHash('sha256').update(repeat_new_pass_ipt).digest("hex");
-		repeat_new_pass_ipt= repeat_new_pass_ipt.substr(0,1)+"u"+repeat_new_pass_ipt.substr(2,repeat_new_pass_ipt.length/2)+"se"+repeat_new_pass_ipt.substr(repeat_new_pass_ipt.length/2)+"r";
-		
-		if(new_pass_ipt != repeat_new_pass_ipt)
-			res.send('1');
-		else {			
-			objBD = BD.BD();
-			objBD.connect();
-			query = "SELECT password FROM user WHERE email = "+ objBD.escape(req.session.user) +"";
-			objBD.query(query,
-				function(err, rows, fields) {
-				    if (err){
-				    	objBD.end();
-				    	console.log(err);
-						res.send('0'); 
-					
-					} else {
-				    	if(rows[0].password != old_pass_ipt){
-							objBD.end();
-				    		res.send('2');
-				    	
-				    	} else {
-					    	query = "UPDATE user SET password = "+ objBD.escape(new_pass_ipt) +" WHERE email = "+ objBD.escape(req.session.user) +"";
-							objBD.query(query,
-								function(err, rows, fields) {
-						    		objBD.end();
-						    		if (err){
-						    			console.log(err);
-										res.send('0'); 
-									}							
-								    else 
-									    res.send('10');
-								}
-							);
-				    	}
-					}
-				}
-			);
-		} 
-		
-	} catch (e) {
-	  res.send('0'); 
-	  console.log(e.message);
-	}
-
-};
-
-
-
-exports.editZoneName = function(req, res){
-
-	if(req.body.zona_admin != undefined || req.body.new_name_zone != undefined){
-		zonaAdmin = sanitize(req.body.zona_admin).xss();
-		zonaAdmin = sanitize(zonaAdmin).entityDecode();
-	
-		newZoneName = sanitize(req.body.new_name_zone).xss();
-		newZoneName = sanitize(newZoneName).entityDecode();
-		
-		objBD = BD.BD();
-		objBD.connect();
-		objBD.query("UPDATE places SET name = "+ objBD.escape(newZoneName) +" WHERE name = "+ objBD.escape(zonaAdmin) +"",
-			function(err, rows, fields) {
-				objBD.end(); 
-				if (err){
-					console.log(err);
-					res.send('1');
-				}
-				else 
-					res.send('10');
 			}
 		);
-	
-	} else
-		res.send('0');
+								
+	} catch (e) {
+	  res.send('1'); 
+	  console.log(e.message);
+	}
 };
 
-
-
-exports.deleteZone = function(req, res){
-	
-	if(req.body.zona_admin != undefined){
-	
-		zonaAdmin = sanitize(req.body.zona_admin).xss();
-		zonaAdmin = sanitize(zonaAdmin).entityDecode();
-		
-		objBD = BD.BD();
-		objBD.connect();
-		objBD.query("DELETE FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
-			function(err, rows, fields) {
-				objBD.end();
-				if (err){
-					console.log(err);
-					res.send('1');
-				} else 
-					res.send('10');
-			}
-		);		
-		
-	} else
-		res.send('0');
+/*--------------------------------------------------------------------------------------------------------------*/
+exports.logout = function(req, res){
+	if (req.session.user){
+		delete req.session.user;
+		res.redirect('/');
+	}
 };
 
+/*--------------------------------------------------------------------------------------------------------------*/
+exports.show = function(req, res){
+	objBD = BD.BD();
+	objBD.connect();
+	objBD.query("SELECT name FROM places",
+		function(err, rows, fields) {
+			objBD.end();
+			if (err)
+	    		console.log(err);						
+	    	else
+	    		places = rows;
+		  
+		  	res.render('admin/admin', {places : places}); 
+		}
+	);
+};
 
+/*--------------------------------------------------------------------------------------------------------------*/
+exports.callEditAccount = function(req, res){
+	editAccount.show(req, res);
+};
+
+/*--------------------------------------------------------------------------------------------------------------*/
+exports.callEditZone = function(req, res){
+	editZone.show(req, res);
+};
+
+/*--------------------------------------------------------------------------------------------------------------*/
 exports.syncUpload = function(req, res){
 	
 	if(req.body.zona_admin != undefined || req.body.new_zone != undefined){
@@ -192,8 +114,6 @@ exports.syncUpload = function(req, res){
 	} else 
 	  res.send('0');
 };
-
-
 
 // Guarda y/o busca id lugar -------------------------------------------------------------------
 findPlaceId = function(zonaAdmin,newZone,files,callback){
@@ -238,7 +158,6 @@ findPlaceId = function(zonaAdmin,newZone,files,callback){
 	}
 };
 
-
 // Leer archivos -------------------------------------------------------------------------------
 readFiles = function(files,idPlace,callback){
 	if(files[0] == undefined)
@@ -246,6 +165,7 @@ readFiles = function(files,idPlace,callback){
 	else if(files.length > 1) 
 		readSeveralFiles(files,idPlace,callback);
 }
+
 // Leer 1 Archivo ------------------------------------------------------------------------------
 readOneFile = function(files,idPlace,callback){
 	if(path.extname(files.name).toLowerCase() === '.txt'){
@@ -279,6 +199,7 @@ readOneFile = function(files,idPlace,callback){
 	else
 		callback('2');
 }
+
 // Leer varios Archivo --------------------------------------------------------------------------
 readSeveralFiles = function(files,idPlace,callback){
 	try {
@@ -355,7 +276,6 @@ readSeveralFiles = function(files,idPlace,callback){
 	}
 }
 
-
 // Insertar vectores en DB -----------------------------------------------------------------------------------
 saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,objBD,callback){
 
@@ -388,3 +308,6 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,objBD,callback)
 		);
 	}
 }
+
+
+

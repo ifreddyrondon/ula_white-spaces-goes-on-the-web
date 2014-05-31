@@ -4,161 +4,99 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , admin = require('./routes/admin')
-  , http = require('http')
-  , path = require('path')
-  , fs = require('fs')
-  , BD = require('./BD');
+	, http = require('http')
+	, path = require('path')
+	, fs = require('fs')
+	, BD = require('./BD')
+	, index = require('./routes/index')
+	, occupation = require('./routes/occupation/occupation')
+	, selectFrequency = require('./routes/selectFrequency/selectFrequency')
+	, selectChannel = require('./routes/selectChannel/selectChannel')
+	, heatmap = require('./routes/heatmap/heatmap')
+	, whiteSpaces = require('./routes/whiteSpaces/whiteSpaces')
+	, login = require('./routes/login/login')
+	, admin = require('./routes/admin/admin')
+	, editAccount = require('./routes/editAccount/editAccount')
+	, editZone = require('./routes/editZone/editZone');
 
+/*--------------------------------------------------------------------------------------------------------------*/
 var app = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
-  app.use(express.session());
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
+	app.set('port', process.env.PORT || 3000);
+	app.set('views', __dirname + '/views');
+	app.set('view engine', 'jade');
+	app.use(express.favicon());
+	app.use(express.logger('dev'));
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(express.cookieParser('your secret here'));
+	app.use(express.session());
+	app.use(app.router);
+	app.use(express.static(path.join(__dirname, 'public')));
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler());
+ 	app.use(express.errorHandler());
 });
 
-function login(req, res, next){
+/*--------------------------------------------------------------------------------------------------------------*/
+function pass(req, res, next){
 	if(req.session.user)
 		next();
 	else 
 		res.redirect('/login');
 }
 
-/*-------------------------------------*/
-app.get('/', function(req,res){ 
-	objBD = BD.BD();
-	objBD.connect();
-	objBD.query("SELECT name FROM places",
-		function(err, rows, fields) {
-			if (err) {
-				objBD.end();
-				console.log(err);
-			
-			} else{
-			    places = rows;
-				objBD.query("SELECT name FROM allocation_channels",
-					function(err, rows, fields) {
-						objBD.end();
-						if (err)
-				    		console.log(err);						
-				    	else 
-							res.render('index',{ sesion: req.session.user, places : places, allocations: rows } );  
-					}
-				);
-		    }
-		}
-	);
-});
+/* USER---------------------------------------------------------------------------------------------------------*/
+// index
+app.get('/', index.index);
 
-app.get('/white_spaces', function(req,res){ 
-	res.render('que_son_white_spaces'); 
-});
+// occupation
+app.get('/ocupation', occupation.show);
+app.post('/generate-pdf-of-chart', occupation.generatePdfOfChart);
+app.get('/download-pdf-of-chart', occupation.downloadPdfOfChart);
+app.get('/select_frequency', occupation.callSelectFrequency);
+app.get('/select_channel', occupation.callSelectChannel);
 
-app.get('/ocupation', user.ocupation);
-app.get('/select_frequency', user.selectFrequency);
-app.get('/select_channel', user.selectChannel);
+// select frequency
+app.post('/generate-csv-to-myheatmap', selectFrequency.generateCsvToHeatmap);
+app.get('/dowload-csv-to-myheatmap', selectFrequency.downloadCsvToHeatmap);
+app.get('/form_select_frequency', selectFrequency.callHeatmap);
 
-app.get('/form_select_frequency', user.formFrequency);
-app.get('/form_select_channel', user.formChannel);
+// select channel
+app.get('/form_select_channel', selectChannel.callHeatmap);
 
-app.post('/generate-csv-to-myheatmap', user.downloadCsvToHeatmap);
-app.get('/dowload-csv-to-myheatmap', function(req, res){
-  res.download('public/downloads/csv/myheatmap/myheatmapALL.csv'); 
-});
+// heatmap
+app.post('/generate-pdf-of-heatmap', heatmap.generatePdfOfHeatmap);
+app.get('/download-pdf-of-heatmap', heatmap.downloadPdfOfHeatmap);
+app.get('/download-csv-data', heatmap.downloadCsvOfHeatmap);
 
-app.post('/generate-pdf-of-chart', user.downloadPdfOfChart);
-app.get('/download-pdf-of-chart', function(req, res){
-  res.download('public/downloads/pdf/occupation.pdf'); 
-});
+// white spaces
+app.get('/white_spaces', whiteSpaces.show);
 
-app.post('/generate-pdf-of-heatmap', user.downloadPdfOfHeatmap);
-app.get('/download-pdf-of-heatmap', function(req, res){
-  res.download('public/downloads/pdf/heatmap.pdf'); 
-});
+/* ADMIN--------------------------------------------------------------------------------------------------------*/
+// login
+app.get('/login', login.show);
+app.post('/loginSend', login.callLoginCheck);
 
-app.get('/download-csv-data', function(req, res){
-  res.download('public/downloads/csv/data/data.csv'); 
-});
-/*-------------------------------------*/
+// admin
+app.get('/logout', pass, admin.logout);
+app.get('/admin', pass, admin.show);
+app.post('/sync/upload', pass, admin.syncUpload);
+app.get('/edit_account', admin.callEditAccount);
+app.get('/edit_zones', admin.callEditZone);
 
-app.get('/login', function(req,res){ 
-	res.render('login'); 
-});
+// edit account
+app.post('/edit_account_email',pass, editAccount.editEmail);
+app.post('/edit_account_password',pass, editAccount.editPassword);
 
-app.post('/loginSend', user.loginSend);
-
-app.get('/logout', login, function(req,res){
-	if (req.session.user){
-		delete req.session.user;
-		res.redirect('/');
-	}
-});
-
-/*-------------------------------------*/
-
-app.get('/admin', login, function(req, res){
-	objBD = BD.BD();
-	objBD.connect();
-	objBD.query("SELECT name FROM places",
-		function(err, rows, fields) {
-			objBD.end();
-			if (err)
-	    		console.log(err);						
-	    	else
-	    		places = rows;
-		  
-		  	res.render('admin/admin', {places : places}); 
-		}
-	);
-});
-
-app.get('/edit_account', login, function(req, res){
-	res.render('admin/edit_account',{ email:req.session.user});  
-});
-
-app.post('/edit_account_email', admin.editEmail);
-app.post('/edit_account_password', admin.editPassword);
-
-app.get('/edit_zones', login, function(req, res){
-	objBD = BD.BD();
-	objBD.connect();
-	objBD.query("SELECT name FROM places",
-		function(err, rows, fields) {
-			objBD.end();
-			if (err)
-	    		console.log(err);						
-	    	else
-	    		places = rows;
-		  
-		  	res.render('admin/edit_zones', {places : places}); 
-		}
-	);
-});
-
-app.post('/edit_zone_name', login, admin.editZoneName);
-
-app.post('/delete_zone', login, admin.deleteZone);
-
-app.post('/sync/upload', login, admin.syncUpload);
-
-/*-------------------------------------*/
+// edit zone
+app.post('/edit_zone_name', pass, editZone.editZoneName);
+app.post('/delete_zone', pass, editZone.deleteZone);
 
 
+/*--------------------------------------------------------------------------------------------------------------*/
 http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
+	console.log("Express server listening on port " + app.get('port'));
 });
