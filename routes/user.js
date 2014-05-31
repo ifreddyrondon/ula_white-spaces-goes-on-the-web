@@ -30,10 +30,13 @@ exports.ocupation = function(req, res){
 		query = "SELECT frequency / 1000 as frequency, SUM(CASE WHEN potency > "+ objBD.escape(umbral) +" THEN 1 ELSE 0 END) / COUNT(*) AS total FROM (SELECT coordinates.id_coordinate as id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE aux2.id_coordinate = potency_frequency.id_coordinate GROUP BY frequency";
 		objBD.query(query,
 			function(err,rows,fields){
-				if (err){
+				if (err) {
 					objBD.end();
 	    			console.log(err);
 					res.render('index'); 
+				} else if (rows.length == 0){
+					objBD.end();
+					res.render('ocupation',{ error:"There are no data in the area '"+zona+"'" });
 				
 				} else {
 					var tablaFinal = [];
