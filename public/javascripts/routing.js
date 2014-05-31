@@ -101,8 +101,10 @@ $(document).ready(function(){
 							errorHandler("sync-enviar-4");
 						else if(res == 5)
 							errorHandler("sync-enviar-5");
-						else if(res == 10)
+						else if(res == 10) {
+							$('#new_zone').val('');
 							$('.success').show();
+						}
 					}	
 		    }); 
 			}

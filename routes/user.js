@@ -12,7 +12,6 @@ var BD = require('../BD')
 
 exports.ocupation = function(req, res){
 	try { 
-		
 		check(req.query.zona).notNull();
 		check(req.query.ipt_umbral).notNull().isNumeric();
 		check(req.query.allocation).notNull();
@@ -26,12 +25,13 @@ exports.ocupation = function(req, res){
 		allocation = sanitize(req.query.allocation).xss();
 		allocation = sanitize(allocation).entityDecode();		
 		
-		query = "SELECT frequency / 1000 as frequency, SUM(CASE WHEN potency > "+ objBD.escape(umbral) +" THEN 1 ELSE 0 END) / COUNT(*) AS total FROM (SELECT coordinates_vs_potency_frequency.id_potency_frequency as id_potency_frequency FROM (SELECT coordinates.id_coordinate as id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux3, coordinates WHERE coordinates.id_place = aux3.id_place) as aux, coordinates_vs_potency_frequency WHERE aux.id_coordinate = coordinates_vs_potency_frequency.id_coordinate) as aux2, potency_frequency WHERE aux2.id_potency_frequency = potency_frequency.id_potency_frequency GROUP BY frequency";
 		objBD = BD.BD();
 		objBD.connect();
+		query = "SELECT frequency / 1000 as frequency, SUM(CASE WHEN potency > "+ objBD.escape(umbral) +" THEN 1 ELSE 0 END) / COUNT(*) AS total FROM (SELECT coordinates.id_coordinate as id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE aux2.id_coordinate = potency_frequency.id_coordinate GROUP BY frequency";
 		objBD.query(query,
 			function(err,rows,fields){
 				if (err){
+					objBD.end();
 	    			console.log(err);
 					res.render('index'); 
 				
@@ -41,10 +41,9 @@ exports.ocupation = function(req, res){
 						tablaFinal.push([rows[i].frequency,rows[i].total]);
 
 					query = "SELECT channels.from, channels.to, channels.channel FROM (SELECT id_allocation FROM allocation_channels WHERE name = "+ objBD.escape(allocation) +") as aux, channels WHERE channels.id_allocation = aux.id_allocation";
-					objBD = BD.BD();
-					objBD.connect();
 					objBD.query(query,
 						function(err,rows,fields){
+							objBD.end();
 							if (err){
 				    			console.log(err);
 								res.render('index'); 
@@ -85,11 +84,9 @@ exports.ocupation = function(req, res){
 							}
 						}
 					);
-					objBD.end();
 				}						
 			}
 		);
-		objBD.end();
 
 	} catch (e) {
 	  res.render('index'); 
@@ -228,11 +225,12 @@ exports.downloadCsvToHeatmap = function(req, res){
 		umbral = sanitize(umbral).xss();
 		umbral = sanitize(umbral).entityDecode();
 		
-		query = "SELECT aux3.lat, aux3.lng, potency_frequency.potency as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" ORDER BY lat , lng DESC";
 		objBD = BD.BD();
 		objBD.connect();
+		query = "SELECT aux2.lat, aux2.lng, potency_frequency.potency as count FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE potency_frequency.id_coordinate = aux2.id_coordinate AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" ORDER BY lat , lng DESC";
 		objBD.query(query,
 			function(err, rows, fields) {
+				objBD.end();
 	    		if (err){
 	    			console.log(err);
 					res.render('index'); 
@@ -255,8 +253,6 @@ exports.downloadCsvToHeatmap = function(req, res){
 				}
 			}
 		);
-		objBD.end();
-
 	} catch (e) {
 	  res.render('index'); 
 	  console.log(e.message);
@@ -311,16 +307,17 @@ exports.formFrequency = function(req, res){
 		map_showing_settings = sanitize(req.query.map_showing_settings).xss();
 		map_showing_settings = sanitize(map_showing_settings).entityDecode();
 
-		var query = null;
-    	if(typeHeatmap == "Max Value")
-    		query = "SELECT aux3.lat, aux3.lng, MAX(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" GROUP BY lat , lng ORDER BY count DESC";
-    	else if(typeHeatmap == "Average")
-    		query = "SELECT aux3.lat, aux3.lng, AVG(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" GROUP BY lat , lng ORDER BY count DESC";
-    	
 		objBD = BD.BD();
 		objBD.connect();
+		var query = null;
+    	if(typeHeatmap == "Max Value")
+    		query = "SELECT aux2.lat, aux2.lng, MAX(potency_frequency.potency) as count FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE potency_frequency.id_coordinate = aux2.id_coordinate AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" GROUP BY lat , lng ORDER BY count DESC";
+    	else if(typeHeatmap == "Average")
+    		query = "SELECT aux2.lat, aux2.lng, AVG(potency_frequency.potency) as count FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE potency_frequency.id_coordinate = aux2.id_coordinate AND potency_frequency.frequency BETWEEN "+ objBD.escape(from) +" AND "+ objBD.escape(to) +" GROUP BY lat , lng ORDER BY count DESC";
+    	
 		objBD.query(query,
 			function(err, rows, fields) {
+				objBD.end();
 	    		if (err){
 	    			console.log(err);
 					res.render('index'); 
@@ -374,7 +371,6 @@ exports.formFrequency = function(req, res){
 				}
 			}
 		);
-		objBD.end();
 			
 	} catch (e) {
 	  res.render('index'); 
@@ -409,28 +405,24 @@ exports.selectChannel = function(req, res){
 		objBD.connect();
 		objBD.query("SELECT id_allocation FROM allocation_channels WHERE name = "+ objBD.escape(allocation) +"",
 			function(err, rows, fields) {
-				if (err)
-		    	console.log(err);						
-		    else{
-			    id_allocation = rows[0].id_allocation;
-
-			    objBD = BD.BD();
-					objBD.connect();
+				if (err){
+					objBD.end();
+					console.log(err);
+				
+				} else{
+			    	id_allocation = rows[0].id_allocation;
 					objBD.query("SELECT channels.from,channels.to,channels.channel FROM channels WHERE id_allocation = "+id_allocation+" AND channels.to >= "+ objBD.escape(min) +" AND channels.from <= "+ objBD.escape(max) +"",
 						function(err, rows, fields) {
-							if (err){
+							objBD.end();
+							if (err)
 								console.log(err);							
-							}
-					    else{
-						  	res.render('heatmap/select_channel',{ umbral:umbral, zona:zona ,allocation:allocation, channels:rows }); 	
-					    }
-						});
-					objBD.end();	
-
-		    }
-			});
-		objBD.end();	
-	
+					    	else
+						  		res.render('heatmap/select_channel',{ umbral:umbral, zona:zona ,allocation:allocation, channels:rows }); 	
+						}
+					);
+				}
+			}
+		);
 	} catch (e) {
 	  res.render('index'); 
 	  console.log(e.message);
@@ -493,33 +485,35 @@ exports.formChannel = function(req, res){
 		map_showing_settings = sanitize(map_showing_settings).entityDecode();
 
 		channel1 = channel[0].split(",");
+
+		objBD = BD.BD();
+		objBD.connect();
     	var query = null;
     	if(typeHeatmap == "Max Value"){
-    		query = "SELECT aux3.lat, aux3.lng, MAX(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +" ";
+    		query = "SELECT aux2.lat, aux2.lng, MAX(potency_frequency.potency) as count FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE potency_frequency.id_coordinate = aux2.id_coordinate AND potency_frequency.frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +" ";
     		if (channel > 1) {
 	    		for(i = 1; i < channel.length; i++){
 					channelAux = channel[i].split(",");
-					query = query + "SELECT aux3.lat, aux3.lng, MAX(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +" "
+					query = query + "SELECT aux2.lat, aux2.lng, MAX(potency_frequency.potency) as count FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE potency_frequency.id_coordinate = aux2.id_coordinate AND potency_frequency.frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +" ";
 				}
 	    	} 
 	    	query = query + "GROUP BY lat , lng ORDER BY count DESC";
     	
     	} else if(typeHeatmap == "Average") {
-    		query = "SELECT aux3.lat, aux3.lng, AVG(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +" ";
+    		query = "SELECT aux2.lat, aux2.lng, AVG(potency_frequency.potency) as count FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE potency_frequency.id_coordinate = aux2.id_coordinate AND potency_frequency.frequency BETWEEN "+ objBD.escape(channel1[0]*1000) +" AND "+ objBD.escape(channel1[1]*1000) +" ";
     		if (channel > 1) {
 	    		for(i = 1; i < channel.length; i++){
 					channelAux = channel[i].split(",");
-					query = query + "SELECT aux3.lat, aux3.lng, AVG(potency_frequency.potency) as count FROM (SELECT aux2.lat, aux2.lng, coordinates_vs_potency_frequency.id_potency_frequency FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux2.id_coordinate) as aux3, potency_frequency WHERE potency_frequency.id_potency_frequency = aux3.id_potency_frequency AND potency_frequency.frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +" "
+					query = query + "SELECT aux2.lat, aux2.lng, AVG(potency_frequency.potency) as count FROM (SELECT coordinates.latitude as lat, coordinates.longitude as lng, coordinates.id_coordinate FROM (SELECT id_place FROM places WHERE name = "+ objBD.escape(zona) +") as aux, coordinates WHERE coordinates.id_place = aux.id_place) as aux2, potency_frequency WHERE potency_frequency.id_coordinate = aux2.id_coordinate AND potency_frequency.frequency BETWEEN "+ objBD.escape(channelAux[0]*1000) +" AND "+ objBD.escape(channelAux[1]*1000) +" ";
 				}
 	    	} 
 	    	query = query + "GROUP BY lat , lng ORDER BY count DESC";
     		
     	}
     	
-		objBD = BD.BD();
-		objBD.connect();
 		objBD.query(query,
 			function(err, rows, fields) {
+				objBD.end();
 		    	if (err){
 		    		console.log(err);
 					res.render('index'); 
@@ -568,7 +562,6 @@ exports.formChannel = function(req, res){
 				}
 			}
 		);
-		objBD.end();	
 			
 	} catch (e) {
 	  res.render('index'); 
@@ -578,7 +571,6 @@ exports.formChannel = function(req, res){
 
 
 exports.loginSend = function(req, res){
-
 	try {
 	  check(req.body.login_user).notNull().len(6, 64).isEmail();
 	  check(req.body.login_pass).notNull();
@@ -594,25 +586,25 @@ exports.loginSend = function(req, res){
 		pass= crypto.createHash('sha256').update(pass).digest("hex");
 		pass= pass.substr(0,1)+"u"+pass.substr(2,pass.length/2)+"se"+pass.substr(pass.length/2)+"r";
 				
-		
 		objBD = BD.BD();
 		objBD.connect();
 		objBD.query("SELECT email FROM user WHERE email = "+ objBD.escape(login_user) +" AND password = "+ objBD.escape(pass) +"",
-		function(err, rows, fields) {
-	    if (err){
-	    	console.log(err);
-				res.send('1'); 
-			}							
-	    else {
-		    if (rows.length == 1){
-		    	req.session.user = login_user;
-		    	res.send('/admin');
+			function(err, rows, fields) {
+				objBD.end();  	
+			    if (err){
+			    	console.log(err);
+					res.send('1'); 
+				
+				} else {
+				    if (rows.length == 1){
+				    	req.session.user = login_user;
+				    	res.send('/admin');
+					}
+					else
+						res.send('1');
 				}
-				else
-					res.send('1');
 			}
-		});
-		objBD.end();  	
+		);
 								
 	} catch (e) {
 	  res.send('1'); 

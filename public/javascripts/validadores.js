@@ -204,20 +204,20 @@ $(document).ready(function(){
 	}
 	function ajaxDatosReload(url,id,error_id,type_send){
 		$(document.getElementById(id)).ajaxForm({
-	  	type: 'POST',
+		  	type: 'POST',
 			url: url,
-	    beforeSend: function(){
-			 	$("#bowlG").show();
+		    beforeSend: function(){
+				$("#bowlG").show();
 			},
-	    success: function(res){
-	    	$("#bowlG").hide();
-	    	if (res == '1')
-	    		if(error_id)
-		      	errorHandler(error_id);
-		      else
-		      	alert("Error");
-	    	else 
-	        window.location = res;
+		    success: function(res){
+		    	$("#bowlG").hide();
+		    	if (res == '1')
+		    		if(error_id)
+			      		errorHandler(error_id);
+			      	else
+			      		alert("Error");
+		    	else 
+		        	window.location = res;
 			}
 		});
 	}

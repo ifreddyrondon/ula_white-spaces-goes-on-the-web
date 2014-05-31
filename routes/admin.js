@@ -21,17 +21,18 @@ exports.editEmail = function(req, res){
 		objBD = BD.BD();
 		objBD.connect();
 		objBD.query(query,
-		function(err, rows, fields) {
-	    if (err){
-	    	console.log(err);
-				res.send('0'); 
-			}							
-	    else {
-		    req.session.user = email;
-		    res.send('10');
-			}
-		});
-		objBD.end();  	
+			function(err, rows, fields) {
+				objBD.end();  	
+			    if (err){
+			    	console.log(err);
+						res.send('0'); 
+					}							
+			    else {
+				    req.session.user = email;
+				    res.send('10');
+					}
+				}
+		);
 							
 	} catch (e) {
 	  res.send('0'); 
@@ -68,37 +69,38 @@ exports.editPassword = function(req, res){
 		if(new_pass_ipt != repeat_new_pass_ipt)
 			res.send('1');
 		else {			
-			query = "SELECT password FROM user WHERE email = "+ objBD.escape(req.session.user) +"";
 			objBD = BD.BD();
 			objBD.connect();
+			query = "SELECT password FROM user WHERE email = "+ objBD.escape(req.session.user) +"";
 			objBD.query(query,
-			function(err, rows, fields) {
-		    if (err){
-		    	console.log(err);
-					res.send('0'); 
-				}							
-		    else {
-		    	if(rows[0].password != old_pass_ipt)
-		    		res.send('2');
-		    	else {
-			    	query = "UPDATE user SET password = "+ objBD.escape(new_pass_ipt) +" WHERE email = "+ objBD.escape(req.session.user) +"";
-						objBD = BD.BD();
-						objBD.connect();
-						objBD.query(query,
-						function(err, rows, fields) {
-					    if (err){
-					    	console.log(err);
-								res.send('0'); 
-							}							
-					    else 
-						    res.send('10');
-
-						});
-						objBD.end();  	
-		    	}
+				function(err, rows, fields) {
+				    if (err){
+				    	objBD.end();
+				    	console.log(err);
+						res.send('0'); 
+					
+					} else {
+				    	if(rows[0].password != old_pass_ipt){
+							objBD.end();
+				    		res.send('2');
+				    	
+				    	} else {
+					    	query = "UPDATE user SET password = "+ objBD.escape(new_pass_ipt) +" WHERE email = "+ objBD.escape(req.session.user) +"";
+							objBD.query(query,
+								function(err, rows, fields) {
+						    		objBD.end();
+						    		if (err){
+						    			console.log(err);
+										res.send('0'); 
+									}							
+								    else 
+									    res.send('10');
+								}
+							);
+				    	}
+					}
 				}
-			});
-			objBD.end();  	
+			);
 		} 
 		
 	} catch (e) {
@@ -122,15 +124,16 @@ exports.editZoneName = function(req, res){
 		objBD = BD.BD();
 		objBD.connect();
 		objBD.query("UPDATE places SET name = "+ objBD.escape(newZoneName) +" WHERE name = "+ objBD.escape(zonaAdmin) +"",
-		function(err, rows, fields) {
-			if (err){
-				console.log(err);
-				res.send('1');
+			function(err, rows, fields) {
+				objBD.end(); 
+				if (err){
+					console.log(err);
+					res.send('1');
+				}
+				else 
+					res.send('10');
 			}
-			else 
-				res.send('10');
-		});
-		objBD.end(); 
+		);
 	
 	} else
 		res.send('0');
@@ -147,44 +150,16 @@ exports.deleteZone = function(req, res){
 		
 		objBD = BD.BD();
 		objBD.connect();
-		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
-		function(err, rows, fields) {
-			if (err){
-				console.log(err);
-				res.send('1');
-			}
-			else {
-				id_place = rows[0].id_place;
-				query = "DELETE potency_frequency FROM (SELECT id_potency_frequency FROM (SELECT id_coordinate FROM coordinates WHERE id_place = "+id_place+") as aux, coordinates_vs_potency_frequency WHERE coordinates_vs_potency_frequency.id_coordinate = aux.id_coordinate) as aux2, potency_frequency WHERE potency_frequency.id_potency_frequency = aux2.id_potency_frequency";
-				
-				objBD = BD.BD();
-				objBD.connect();
-				objBD.query(query,
-				function(err, rows, fields) {
-					if (err){
-						console.log(err);
-						res.send('1');
-					}
-					else {
-						objBD = BD.BD();
-						objBD.connect();
-						objBD.query("DELETE places FROM places WHERE id_place = "+ id_place +"",
-						function(err, rows, fields) {
-							if (err){
-								console.log(err);
-								res.send('1');
-							}
-							else {
-								res.send('10');
-							}
-						});
-						objBD.end();
-					}
-				});
+		objBD.query("DELETE FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
+			function(err, rows, fields) {
 				objBD.end();
+				if (err){
+					console.log(err);
+					res.send('1');
+				} else 
+					res.send('10');
 			}
-		});
-		objBD.end();
+		);		
 		
 	} else
 		res.send('0');
@@ -222,151 +197,161 @@ exports.syncUpload = function(req, res){
 
 // Guarda y/o busca id lugar -------------------------------------------------------------------
 findPlaceId = function(zonaAdmin,newZone,files,callback){
+	objBD = BD.BD();
+	objBD.connect();
+
 	if(zonaAdmin == '' && newZone != ''){
-		objBD = BD.BD();
-		objBD.connect();
 		objBD.query("INSERT INTO places (name) VALUES ("+ objBD.escape(newZone) +")",
-		function(err, rows, fields) {
-			if (err){
-				if(err.code = 'ER_DUP_ENTRY'){
-					callback('5');
-					return;
-				}
-				else{
-					console.log(err);
-					callback('3');
-					return;
-				}
+			function(err, rows, fields) {
+				objBD.end();
+				if (err){
+					if(err.code = 'ER_DUP_ENTRY'){
+						callback('5');
+						return;
+					}
+					else {
+						console.log(err);
+						callback('3');
+						return;
+					}
+				} else 
+					readFiles(files,rows.insertId,callback);
 			}
-			else 
-				readFiles(files,rows.insertId,callback);
-		});
-		objBD.end(); 
+		);
 	}
 	else if(zonaAdmin != '' && newZone == ''){
-		objBD = BD.BD();
-		objBD.connect();
 		objBD.query("SELECT id_place FROM places WHERE name = "+ objBD.escape(zonaAdmin) +"",
 			function(err, rows, fields) {
+				objBD.end();
 				if (err) {
 		    		console.log(err);
-					callback('error3'); 
+					callback('3');
 					return;
-				}
-				else
+				
+				} else
 					readFiles(files,rows[0].id_place,callback); 
-		});
+			}
+		);
+	} else {
 		objBD.end();
+		callback('3');
 	}
 };
 
 
 // Leer archivos -------------------------------------------------------------------------------
 readFiles = function(files,idPlace,callback){
-	if(files[0] == undefined){
-		if(path.extname(files.name).toLowerCase() === '.txt'){
-			frequency_potency = new Array();												
-			coordinate = new Array();
+	if(files[0] == undefined)
+		readOneFile(files,idPlace,callback); 
+	else if(files.length > 1) 
+		readSeveralFiles(files,idPlace,callback);
+}
+// Leer 1 Archivo ------------------------------------------------------------------------------
+readOneFile = function(files,idPlace,callback){
+	if(path.extname(files.name).toLowerCase() === '.txt'){
+		frequency_potency = new Array();												
+		coordinate = new Array();
+		
+		lineReader.eachLine(files.path, function(line, last) {
+		  line_split = line.split("\t");	
 			
-			lineReader.eachLine(files.path, function(line, last) {
-			  line_split = line.split("\t");	
+			if(line_split.length == 2)
+				frequency_potency.push(line_split);
 				
-				if(line_split.length == 2)
-					frequency_potency.push(line_split);
-					
-				else if(line_split.length == 1)
-					coordinate.push(line_split);
-			
-			  if (last){
-			  	objBD = BD.BD();
-				objBD.connect();
-			  	saveArraysIntoDb(frequency_potency,coordinate,idPlace,objBD,function(){
-			  		objBD.end();	
-			  		callback();
-			  	});
-			  	fs.unlink(files.path, function(err) {
-			    	if (err)	
-			    		callback('3'); 
-					});
-				  	return false; 
-			 	}
-			});	
-		}
-		else
-			callback('2');
-	
-	} else if(files.length > 1){
-		try {
-			all = new Array();
+			else if(line_split.length == 1)
+				coordinate.push(line_split);
+		
+		  if (last){
+		  	objBD = BD.BD();
+			objBD.connect();
+		  	saveArraysIntoDb(frequency_potency,coordinate,idPlace,objBD,function(){
+		  		objBD.end();
+		  		callback();
+		  	});
+		  	fs.unlink(files.path, function(err) {
+		    	if (err)	
+		    		callback('3'); 
+				});
+			  	return false; 
+		 	}
+		});	
+	}
+	else
+		callback('2');
+}
+// Leer varios Archivo --------------------------------------------------------------------------
+readSeveralFiles = function(files,idPlace,callback){
+	try {
+		all = new Array();
 
-			async.eachSeries(files, function(file, callback) {
+		async.eachSeries(files, function(file, callback) {
 
-				frequency_potency = new Array();
-				coordinate = new Array();
+			frequency_potency = new Array();
+			coordinate = new Array();
 
-				if (path.extname(file.name).toLowerCase() === '.txt') {
+			if (path.extname(file.name).toLowerCase() === '.txt') {
 
-					async.series([
-						function(callback){
-						    array = fs.readFileSync(file.path).toString().split("\n");
-							callback();
-						},
-						function(callback){
-							async.eachSeries(array, function(line, callback) {
-
-						    	lineSplit = line.split("\t");	
-								if(lineSplit.length == 2)
-									frequency_potency.push(lineSplit);
-
-								else if(lineSplit.length == 1)
-									coordinate.push(lineSplit);
-
-								callback();
-								  
-							}, null);
-									
-							callback();
-						},
-						function(callback){
-							all.push([frequency_potency,coordinate]);
-							callback();
-						},
-						function(callback){
-							fs.unlink(file.path, function(err) {
-						  		if (err)
-						  			console.log(err);
-							});
-						}
-						]			
-					);
-
-				} else
-					callback('2');
-
-				callback();
-			}, function(){
-
-				objBD = BD.BD();
-				objBD.connect();
-
-				async.eachSeries(all, 
-					function(single,callback) {
-						saveArraysIntoDb(single[0],single[1],idPlace,objBD,callback);
+				async.series([
+					function(callback){
+					    array = fs.readFileSync(file.path).toString().split("\n");
 						callback();
-					}, 
-					function(err) {
-				    	if(err) 
-				      		callback('3');
-				      	else 
-				      		callback();
-				    }
-				);
-			});
+					},
+					function(callback){
+						async.eachSeries(array, function(line, callback) {
 
-		} catch (e) {
-			callback('4'); 
-			console.log(e.message);
-		}
+					    	lineSplit = line.split("\t");	
+							if(lineSplit.length == 2)
+								frequency_potency.push(lineSplit);
+
+							else if(lineSplit.length == 1)
+								coordinate.push(lineSplit);
+
+							callback();
+							  
+						}, null);
+								
+						callback();
+					},
+					function(callback){
+						all.push([frequency_potency,coordinate]);
+						callback();
+					},
+					function(callback){
+						fs.unlink(file.path, function(err) {
+					  		if (err)
+					  			console.log(err);
+						});
+					}
+					]			
+				);
+
+			} else
+				callback('2');
+
+			callback();
+		}, function(){
+
+			objBD = BD.BD();
+			objBD.connect();
+
+			async.eachSeries(all, 
+				function(single,callback) {
+					saveArraysIntoDb(single[0],single[1],idPlace,objBD,callback);
+					//callback();
+				}, 
+				function(err) {
+					objBD.end();
+			    	if(err) 
+			      		callback('3');
+			      	else 
+			      		callback();
+			    }
+			);
+		});
+
+	} catch (e) {
+		callback('4'); 
+		console.log(e.message);
 	}
 }
 
@@ -376,7 +361,6 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,objBD,callback)
 
 	if(frequency_potency[0] != undefined && frequency_potency[1] != undefined){
 		
-		id_coordinates = new Array();
 		objBD.query("INSERT INTO coordinates (latitude, longitude, id_place, date) VALUES ("+ objBD.escape(coordinate[0]) +","+ objBD.escape(coordinate[1]) +","+ objBD.escape(idPlace) +","+ objBD.escape(coordinate[2]) +")",
 			function(err, rows, fields) {
 		    	if (err){
@@ -384,12 +368,10 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,objBD,callback)
 					callback('3'); 
 				} else {
 					// Guardamos potencia y frecuencia en la DB --------------------------------------------------------------------------------
-					id_coordinates.push(rows.insertId);
-					
-					query = "INSERT INTO potency_frequency (frequency, potency) VALUES ("+ objBD.escape(frequency_potency[1][0]) +","+ objBD.escape(frequency_potency[1][1]) +")";
-					for(i = 1; i < frequency_potency.length; i++){
-						query =  query + ", ("+ objBD.escape(frequency_potency[i][0]) +","+ objBD.escape(frequency_potency[i][1]) +")";
-					}
+					id_coordinates = rows.insertId;
+					query = "INSERT INTO potency_frequency (frequency, potency, id_coordinate) VALUES ("+ objBD.escape(frequency_potency[1][0]) +","+ objBD.escape(frequency_potency[1][1]) +","+ id_coordinates +")";
+					for(i = 1; i < frequency_potency.length; i++)
+						query =  query + ", ("+ objBD.escape(frequency_potency[i][0]) +","+ objBD.escape(frequency_potency[i][1]) +","+ id_coordinates +")";
 					query = query + ";";
 				
 					objBD.query(query,
@@ -397,26 +379,8 @@ saveArraysIntoDb = function(frequency_potency,coordinate,idPlace,objBD,callback)
 						    if (err){
 						    	console.log(err);
 								callback('3'); 
-							} else {
-							
-								id_potency_frequency = rows2.insertId;
-								query = "INSERT INTO coordinates_vs_potency_frequency (id_potency_frequency, id_coordinate) VALUES ("+ id_potency_frequency +","+ id_coordinates[0] +")";
-								for(j = id_potency_frequency+1; j < id_potency_frequency+frequency_potency.length; j++){
-									query =  query + ", ("+ j +","+ id_coordinates[0] +")";
-								}
-								query = query + ";";
-								id_coordinates.splice(0, 1);
-								
-								objBD.query(query,
-									function(err, rows, fields) {
-								    if (err){
-								    	console.log(err);
-									    callback('3'); 
-								    }
-								    else 
-									    callback();
-								});
-							}
+							} else 
+								callback();
 						}
 					);
 				}

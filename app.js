@@ -45,25 +45,24 @@ app.get('/', function(req,res){
 	objBD.connect();
 	objBD.query("SELECT name FROM places",
 		function(err, rows, fields) {
-			if (err)
-	    	console.log(err);						
-	    else{
-		    places = rows;
-		    objBD = BD.BD();
-				objBD.connect();
+			if (err) {
+				objBD.end();
+				console.log(err);
+			
+			} else{
+			    places = rows;
 				objBD.query("SELECT name FROM allocation_channels",
 					function(err, rows, fields) {
+						objBD.end();
 						if (err)
-				    	console.log(err);						
-				    else{
-					  	allocations = rows;
-							res.render('index',{ sesion: req.session.user, places : places, allocations:allocations } );  
-				    }
-					});
-				objBD.end();	
-	    }
-		});
-	objBD.end();	
+				    		console.log(err);						
+				    	else 
+							res.render('index',{ sesion: req.session.user, places : places, allocations: rows } );  
+					}
+				);
+		    }
+		}
+	);
 });
 
 app.get('/white_spaces', function(req,res){ 
@@ -117,14 +116,15 @@ app.get('/admin', login, function(req, res){
 	objBD.connect();
 	objBD.query("SELECT name FROM places",
 		function(err, rows, fields) {
+			objBD.end();
 			if (err)
-	    	console.log(err);						
-	    else
-	    	places = rows;
+	    		console.log(err);						
+	    	else
+	    		places = rows;
 		  
-		  res.render('admin/admin', {places : places}); 
-		});
-	objBD.end();
+		  	res.render('admin/admin', {places : places}); 
+		}
+	);
 });
 
 app.get('/edit_account', login, function(req, res){
@@ -139,14 +139,15 @@ app.get('/edit_zones', login, function(req, res){
 	objBD.connect();
 	objBD.query("SELECT name FROM places",
 		function(err, rows, fields) {
+			objBD.end();
 			if (err)
-	    	console.log(err);						
-	    else
-	    	places = rows;
+	    		console.log(err);						
+	    	else
+	    		places = rows;
 		  
-		  res.render('admin/edit_zones', {places : places}); 
-		});
-	objBD.end();
+		  	res.render('admin/edit_zones', {places : places}); 
+		}
+	);
 });
 
 app.post('/edit_zone_name', login, admin.editZoneName);
