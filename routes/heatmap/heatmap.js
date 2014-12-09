@@ -85,10 +85,14 @@ exports.showWhenSelectFrequency = function(req, res){
 				    	
 				    	max_to_show = rows[0].count;
 				    	
+				    	console.log('Max: '+rows[0].count);
+				    	console.log('Min: '+rows[rows.length - 1 ].count);
+
 						for(i = 0; i < rows.length; i++){
 							rows[i].count = (rows[i].count - rows[rows.length - 1 ].count);
 							if(rows[i].count == 0)
 								rows[i].count = parseInt(min_count);
+							console.log(rows[i]);
 						}
 							
 						max = rows[0].count;

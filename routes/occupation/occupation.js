@@ -73,6 +73,7 @@ exports.show = function(req, res){
 									temp.rectangle = rectangle;
 									channels.push(temp);	
 								}
+								
 								res.render('occupation/occupation',
 								{ 
 									data:tablaFinal, 
